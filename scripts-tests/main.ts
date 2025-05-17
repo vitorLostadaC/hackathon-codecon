@@ -25,7 +25,7 @@ let INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 let INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
 let INCREMENTAL_STRESS_PER_USER_NOT_CODING = 10
 let MULTIPLIER_STRESS = 2
-let stress = 20
+let stress = 90
 
 const lofiURl = 'https://www.youtube.com/watch?v=lS0ux_9gH8o'
 
@@ -129,6 +129,7 @@ Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 -  Se o estresse for acima de 70, seja extremamente ofensivo, impaciente e use palavrões (diversifique ao máximo, tente não usar palavrões repetidos em sequência). Seja agressivo e direto.
 -  Se o usuário não estiver codando, mande ele voltar a trabalhar, de forma agressiva e ofensiva.
 -  Nunca use ofensas discriminatórias.
+-  Tente sempre variar as palavras e frases, para não ficar repetitivo.
 
 Exemplos:
 Estresse 50:
@@ -164,7 +165,12 @@ Nível de estresse: ${stress}`
               )
           }),
           execute: async ({ message }) => {
-            console.log('\x1b[31m userNotCoding stress:', stress)
+            console.log(
+              '\x1b[31m userNotCoding stress:',
+              stress,
+              'message:',
+              message
+            )
             const apps = await openedApps()
 
             // I know there are other smarter ways to build it, but for the hackathon, I will keep it like this. Just to focus my time on the other parts.

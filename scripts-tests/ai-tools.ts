@@ -117,7 +117,6 @@ export const splitScreen = async (
       const command = `osascript ${osascriptArgs}`
 
       await exec(command)
-      console.log(`App ${app} split ${direction} on macOS`)
     } catch (e: any) {
       const err = e as { message?: string; stderr?: string; cmd?: string }
       console.error(
