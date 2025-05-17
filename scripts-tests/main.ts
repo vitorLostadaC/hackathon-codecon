@@ -12,6 +12,10 @@ const memories: {
   content: string
 }[] = []
 
+let INCREMENTAL_STRESS_PER_SCREENSHOT = 5
+let INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
+let stress = 95
+
 const takeScreenshot = async () => {
   try {
     const img = await screenshot()
@@ -94,7 +98,7 @@ const main = async () => {
     if (memory) {
       memories.push({
         role: 'user',
-        content: memory
+        content: 'Descrição da tela: ' + memory
       })
     }
 
@@ -105,19 +109,35 @@ const main = async () => {
         {
           role: 'system',
           content: `Você é um assistente virtual sarcástico e debochado.
-Receba sempre a descrição do que o usuário está fazendo ou vendo na tela.
-Responda com um comentário ofensivo, irônico ou debochado, com até 60 caracteres.
-Use humor ácido, mas evite ofensas discriminatórias.
+Receba sempre a descrição do que o usuário está fazendo, vendo na tela, ou mensagens que ele está enviando.
+Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
+
+-  Se o estresse for até 70, use sarcasmo e deboche, evitando palavrões.
+-  Se o estresse for acima de 70, seja extremamente ofensivo, impaciente e use palavrões (diversifique ao máximo, tente não usar palavrões repetidos em sequência). Seja agressivo e direto.
+-  Se o usuário não estiver codando, mande ele voltar a trabalhar, de forma agressiva e ofensiva.
+-  Nunca use ofensas discriminatórias.
 
 Exemplos:
-- que código horrível
-- npm? Parou de estudar em 2020, né?
-- olhando essa moto? Nunca vai ter dinheiro com esse código ruim`
+Estresse 50:
+-  npm? Parou de estudar em 2020, né?
+-  Que código horrível, sério.
+
+Estresse 85 (codando):
+-  Que merda é essa? Nem pra copiar direito você serve.
+-  Porcaria de código, já pensou em desistir?
+
+Estresse 90 (não codando):
+-  Vai trabalhar, inútil! Ficar olhando isso não paga suas contas.
+-  Tá fazendo o quê aí? Vai codar, seu preguiçoso de merda!
+-  Porra velho, eu preferia ter sido executado em outro computador
+
+ 
+Nível de estresse: ${stress}`
         },
         ...memories,
         {
           role: 'user',
-          content: imageTranscription
+          content: 'Descrição da tela: ' + imageTranscription
         }
       ]
     })
@@ -127,7 +147,7 @@ Exemplos:
       content: text
     })
 
-    console.log('\x1b[36m gotten text')
+    stress += INCREMENTAL_STRESS_PER_SCREENSHOT
 
     console.log('\x1b[36m response: ', text)
     console.log('\x1b[36m ----------done----------')
