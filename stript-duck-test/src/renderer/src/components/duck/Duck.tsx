@@ -16,7 +16,7 @@ declare global {
 
 const Duck: React.FC = () => {
   const [position, setPosition] = useState(0)
-  const [direction, setDirection] = useState(1) // 1 for right, -1 for left
+  const [direction, setDirection] = useState<1 | -1>(1)
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
