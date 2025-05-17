@@ -2,8 +2,17 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import { openai } from '@ai-sdk/openai'
-import { generateText } from 'ai'
+import { generateText, tool } from 'ai'
 import screenshot from 'screenshot-desktop'
+import { z } from 'zod'
+import {
+  getFocusedApp,
+  maximizeApp,
+  openedApps,
+  openUrlOnGoogle,
+  quitApp,
+  splitScreen
+} from './ai-tools'
 
 export const PRINT_INTERVAL_MS = 30 * 1000
 
@@ -14,7 +23,10 @@ const memories: {
 
 let INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 let INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
-let stress = 95
+let MULTIPLIER_STRESS = 2
+let stress = 20
+
+const lofiURl = 'https://www.youtube.com/watch?v=lS0ux_9gH8o'
 
 const takeScreenshot = async () => {
   try {
@@ -139,7 +151,87 @@ Nível de estresse: ${stress}`
           role: 'user',
           content: 'Descrição da tela: ' + imageTranscription
         }
-      ]
+      ],
+      tools: {
+        userNotCoding: tool({
+          description: 'Pune o usuario por nao estar codando',
+          parameters: z.object({
+            message: z
+              .string()
+              .describe(
+                'Uma mensagem punitiva para o usuario, levando em consideracao o estresse atual'
+              )
+          }),
+          execute: async ({ message }) => {
+            console.log('\x1b[31m userNotCoding stress:', stress)
+            const apps = await openedApps()
+
+            // I know there are other smarter ways to build it, but for the hackathon, I will keep it like this. Just to focus my time on the other parts.
+
+            const mostUsedCodeEditors = [
+              'Cursor',
+              'VSCode',
+              'JetBrains',
+              'WindSurf',
+              'Sublime',
+              'Electron' // This is the vscode app name???? I don't know what but is just a temporary fix
+            ]
+
+            const currentEditor = mostUsedCodeEditors.find((codeEditor) =>
+              apps.includes(codeEditor)
+            )
+
+            if (!currentEditor) {
+              const focusedApp = await getFocusedApp()
+              if (focusedApp) {
+                await quitApp(focusedApp)
+              }
+
+              return 'Abre teu editor de texto, seu preguiçoso!'
+            }
+
+            if (stress < 40) {
+              openUrlOnGoogle(lofiURl)
+
+              const mostUsedBrowsers = [
+                'Google Chrome',
+                'Firefox',
+                'Safari',
+                'Edge',
+                'Arc',
+                'Brave',
+                'Opera',
+                'Arc',
+                'Zen'
+              ]
+
+              const currentBrowser = mostUsedBrowsers.find((browser) =>
+                apps.includes(browser)
+              )
+
+              if (!currentBrowser) {
+                return 'Tá de sacanagem que você não usa um navegador de verdade?'
+              }
+
+              await splitScreen(currentBrowser, 'left')
+              await splitScreen(currentEditor, 'right')
+
+              return 'Trabalha e relaxa, distrações não vão te ajudar'
+            }
+
+            if (stress >= 40 && stress < 70) {
+              maximizeApp(currentEditor)
+              return message
+            }
+
+            if (stress >= 70) {
+              maximizeApp(currentEditor)
+              stress += INCREMENTAL_STRESS_PER_USER_MESSAGE * MULTIPLIER_STRESS
+              return message
+            }
+          }
+        })
+      }
     })
 
     memories.push({
@@ -149,6 +241,7 @@ Nível de estresse: ${stress}`
 
     stress += INCREMENTAL_STRESS_PER_SCREENSHOT
 
+    console.log('\x1b[36m stress: ', stress)
     console.log('\x1b[36m response: ', text)
     console.log('\x1b[36m ----------done----------')
   }, PRINT_INTERVAL_MS)

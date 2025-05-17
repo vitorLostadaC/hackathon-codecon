@@ -3,7 +3,7 @@ import { promisify } from 'util'
 
 const exec = promisify(callbackExec)
 
-const openedApps = async (): Promise<string[]> => {
+export const openedApps = async (): Promise<string[]> => {
   try {
     if (process.platform === 'darwin') {
       const { stdout } = await exec(
@@ -36,7 +36,7 @@ const openedApps = async (): Promise<string[]> => {
   }
 }
 
-const quitApp = async (app: string) => {
+export const quitApp = async (app: string) => {
   if (process.platform === 'darwin') {
     exec(`osascript -e 'tell application "${app}" to quit'`)
   } else if (process.platform === 'linux') {
@@ -44,7 +44,7 @@ const quitApp = async (app: string) => {
   }
 }
 
-const maximizeApp = async (app: string) => {
+export const maximizeApp = async (app: string) => {
   if (process.platform === 'darwin') {
     exec(`osascript -e 'tell application "${app}" to activate'`)
     exec(
@@ -55,7 +55,7 @@ const maximizeApp = async (app: string) => {
   }
 }
 
-const splitScreen = async (
+export const splitScreen = async (
   app: string,
   direction: 'left' | 'right' | 'top' | 'bottom'
 ) => {
@@ -214,10 +214,19 @@ const splitScreen = async (
   }
 }
 
-const openUrlOnGoogle = (url: string) => {
+export const openUrlOnGoogle = (url: string) => {
   if (process.platform === 'darwin') {
     exec(`open "${url}"`)
   } else if (process.platform === 'linux') {
     exec(`xdg-open "${url}"`)
+  }
+}
+
+export const getFocusedApp = async () => {
+  if (process.platform === 'darwin') {
+    const { stdout } = await exec(
+      'osascript -e \'tell application "System Events" to get name of first application process whose frontmost is true\''
+    )
+    return stdout.trim()
   }
 }
