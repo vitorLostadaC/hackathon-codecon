@@ -3,9 +3,6 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  // Duck interaction functions
-  duckClicked: () => ipcRenderer.send('duck-clicked'),
-
   // Mouse event handling
   setIgnoreMouseEvents: (ignore: boolean, options?: { forward: boolean }) =>
     ipcRenderer.send('set-ignore-mouse-events', ignore, options)

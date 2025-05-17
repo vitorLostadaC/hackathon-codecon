@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import './Duck.css'
 
-import duckGif from '../assets/duck.gif'
+import duckGif from '../../assets/duck.gif'
 
 declare global {
   interface Window {
     api: {
-      duckClicked: () => void
       setIgnoreMouseEvents: (ignore: boolean, options?: { forward: boolean }) => void
     }
   }
@@ -81,11 +80,6 @@ const Duck: React.FC = () => {
     window.api.setIgnoreMouseEvents(true, { forward: true })
   }
 
-  const handleClick = (): void => {
-    window.api.duckClicked()
-    console.log('Duck clicked!')
-  }
-
   const handleMouseDown = (e: React.MouseEvent): void => {
     setIsDragging(true)
     setDragOffset({
@@ -139,7 +133,6 @@ const Duck: React.FC = () => {
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
       onMouseDown={handleMouseDown}
     />
   )

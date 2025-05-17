@@ -67,12 +67,6 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  // Handle duck interactions
-  ipcMain.on('duck-clicked', () => {
-    console.log('Duck was clicked!')
-    // You can add more interaction handling here
-  })
-
   // Allow duck to be clickable
   ipcMain.on('set-ignore-mouse-events', (_, ignore, options) => {
     mainWindow?.setIgnoreMouseEvents(ignore, options)
