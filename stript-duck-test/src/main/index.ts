@@ -1,15 +1,27 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+let mainWindow: BrowserWindow | null = null
+
 function createWindow(): void {
+  // Get screen dimensions
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
+
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
+  mainWindow = new BrowserWindow({
+    width: screenWidth, // Full width of screen
+    height: 100, // Just tall enough for the duck
+    x: 0, // Left edge of screen
+    y: screenHeight - 100, // Bottom of screen
+    transparent: true, // Transparent background so only duck shows
+    frame: false, // No window frame (no title bar, etc.)
+    alwaysOnTop: true, // Stay on top of other windows
+    skipTaskbar: true, // Don't show in taskbar
     autoHideMenuBar: true,
+    resizable: false, // Prevent resizing
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -17,8 +29,11 @@ function createWindow(): void {
     }
   })
 
+  // Make the window click-through except for the duck
+  mainWindow.setIgnoreMouseEvents(true, { forward: true })
+
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow!.show()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -51,6 +66,17 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  // Handle duck interactions
+  ipcMain.on('duck-clicked', () => {
+    console.log('Duck was clicked!')
+    // You can add more interaction handling here
+  })
+
+  // Allow duck to be clickable
+  ipcMain.on('set-ignore-mouse-events', (_, ignore, options) => {
+    mainWindow?.setIgnoreMouseEvents(ignore, options)
+  })
 
   createWindow()
 

@@ -1,0 +1,25 @@
+.duck {
+  position: absolute;
+  bottom: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+  z-index: 9999; /* Make sure duck is on top of anything else */
+}
+
+/* Flip the duck when moving left */
+.duck.flip {
+  transform: scaleX(-1);
+}
+
+/* Visual feedback when hovering over duck */
+.duck.hovered {
+  filter: brightness(1.2);
+}
+
+.duck.dragging {
+  cursor: grabbing;
+  filter: brightness(1.1);
+} 
