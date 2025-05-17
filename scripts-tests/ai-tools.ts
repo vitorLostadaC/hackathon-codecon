@@ -229,3 +229,48 @@ export const getFocusedApp = async () => {
     return stdout.trim()
   }
 }
+
+export const getBrowser = async () => {
+  // I know there are other smarter ways to build it, but for the hackathon, I will keep it like this. Just to focus my time on the other parts.
+
+  const apps = await openedApps()
+
+  const mostUsedBrowsers = [
+    'Google Chrome',
+    'Firefox',
+    'Safari',
+    'Edge',
+    'Arc',
+    'Brave',
+    'Opera',
+    'Arc',
+    'Zen'
+  ]
+
+  const currentBrowser = mostUsedBrowsers.find((browser) =>
+    apps.includes(browser)
+  )
+
+  return currentBrowser
+}
+
+export const getCodeEditor = async () => {
+  const apps = await openedApps()
+
+  // I know there are other smarter ways to build it, but for the hackathon, I will keep it like this. Just to focus my time on the other parts.
+
+  const mostUsedCodeEditors = [
+    'Cursor',
+    'VSCode',
+    'JetBrains',
+    'WindSurf',
+    'Sublime',
+    'Electron' // This is the vscode app name???? I don't know what but is just a temporary fix
+  ]
+
+  const currentEditor = mostUsedCodeEditors.find((codeEditor) =>
+    apps.includes(codeEditor)
+  )
+
+  return currentEditor
+}

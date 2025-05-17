@@ -5,14 +5,7 @@ import { openai } from '@ai-sdk/openai'
 import { generateText, tool } from 'ai'
 import screenshot from 'screenshot-desktop'
 import { z } from 'zod'
-import {
-  getFocusedApp,
-  maximizeApp,
-  openedApps,
-  openUrlOnGoogle,
-  quitApp,
-  splitScreen
-} from './ai-tools'
+import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
 
 export const PRINT_INTERVAL_MS = 30 * 1000
 
@@ -171,22 +164,8 @@ Nível de estresse: ${stress}`
               'message:',
               message
             )
-            const apps = await openedApps()
 
-            // I know there are other smarter ways to build it, but for the hackathon, I will keep it like this. Just to focus my time on the other parts.
-
-            const mostUsedCodeEditors = [
-              'Cursor',
-              'VSCode',
-              'JetBrains',
-              'WindSurf',
-              'Sublime',
-              'Electron' // This is the vscode app name???? I don't know what but is just a temporary fix
-            ]
-
-            const currentEditor = mostUsedCodeEditors.find((codeEditor) =>
-              apps.includes(codeEditor)
-            )
+            const currentEditor = await getCodeEditor()
 
             if (!currentEditor) {
               const focusedApp = await getFocusedApp()
@@ -197,43 +176,17 @@ Nível de estresse: ${stress}`
               return 'Abre teu editor de texto, seu preguiçoso!'
             }
 
-            // open lofi with coding
-            if (stress < 40) {
-              openUrlOnGoogle(lofiURl)
-
-              const mostUsedBrowsers = [
-                'Google Chrome',
-                'Firefox',
-                'Safari',
-                'Edge',
-                'Arc',
-                'Brave',
-                'Opera',
-                'Arc',
-                'Zen'
-              ]
-
-              const currentBrowser = mostUsedBrowsers.find((browser) =>
-                apps.includes(browser)
-              )
-
-              if (!currentBrowser) {
-                return 'Tá de sacanagem que você não usa um navegador de verdade?'
-              }
-
-              await splitScreen(currentBrowser, 'left')
-              await splitScreen(currentEditor, 'right')
-
-              return 'Trabalha e relaxa, distrações não vão te ajudar'
+            if (stress < 80) {
+              return message
             }
 
             const focusedApp = await getFocusedApp()
+
             if (focusedApp) {
               await quitApp(focusedApp)
             }
 
-            maximizeApp(currentEditor)
-            stress += INCREMENTAL_STRESS_PER_USER_NOT_CODING
+            await maximizeApp(currentEditor)
 
             return message
           }
