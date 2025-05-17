@@ -263,12 +263,19 @@ const splitScreen = async (
   }
 }
 
+const openUrlOnGoogle = (url: string) => {
+  if (process.platform === 'darwin') {
+    exec(`open "${url}"`)
+  } else if (process.platform === 'linux') {
+    exec(`xdg-open "${url}"`)
+  }
+}
+
 const main = async () => {
   // const base64Image = await takeScreenshot()
   // const text = await readImage(base64Image)
   // console.log(text)
-
-  console.log(await splitScreen('Discord', 'top'))
+  openUrlOnGoogle('https://www.youtube.com/watch?v=Zj3a5-0QYas')
 }
 
 main()
