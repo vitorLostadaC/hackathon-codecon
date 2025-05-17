@@ -23,6 +23,7 @@ const memories: {
 
 let INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 let INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
+let INCREMENTAL_STRESS_PER_USER_NOT_CODING = 10
 let MULTIPLIER_STRESS = 2
 let stress = 20
 
@@ -190,6 +191,7 @@ Nível de estresse: ${stress}`
               return 'Abre teu editor de texto, seu preguiçoso!'
             }
 
+            // open lofi with coding
             if (stress < 40) {
               openUrlOnGoogle(lofiURl)
 
@@ -219,16 +221,10 @@ Nível de estresse: ${stress}`
               return 'Trabalha e relaxa, distrações não vão te ajudar'
             }
 
-            if (stress >= 40 && stress < 70) {
-              maximizeApp(currentEditor)
-              return message
-            }
+            maximizeApp(currentEditor)
+            stress += INCREMENTAL_STRESS_PER_USER_NOT_CODING
 
-            if (stress >= 70) {
-              maximizeApp(currentEditor)
-              stress += INCREMENTAL_STRESS_PER_USER_MESSAGE * MULTIPLIER_STRESS
-              return message
-            }
+            return message
           }
         })
       }
