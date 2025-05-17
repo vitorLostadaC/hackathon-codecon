@@ -1,34 +1,16 @@
+/* Chat container styling */
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
   max-width: 100%;
   margin: 0 auto;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+  background-color: #121212;
   overflow: hidden;
 }
 
-.chat-header {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: #ffeb3b;
-  color: #333;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.chat-duck-icon {
-  width: 32px;
-  height: 32px;
-  margin-right: 12px;
-}
-
-.chat-header h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
+/* Chat messages area */
 .chat-messages {
   flex: 1;
   padding: 16px;
@@ -69,55 +51,114 @@
 
 .duck .message-bubble {
   background-color: #ffeb3b;
-  color: #333;
+  color: #121212;
   border-bottom-left-radius: 4px;
 }
 
-.chat-input-form {
+/* Prompt field styling - new design */
+.prompt-field-container {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  padding: 16px;
+}
+
+.prompt-field {
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #000;
+  color: white;
+  overflow: hidden;
+  height: 100%;
   display: flex;
-  padding: 12px;
-  border-top: 1px solid #e0e0e0;
-  background-color: white;
+  flex-direction: column;
 }
 
-.chat-input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid #e0e0e0;
-  border-radius: 24px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.chat-input:focus {
-  border-color: #ffeb3b;
-}
-
-.send-button {
-  margin-left: 8px;
-  padding: 0 16px;
-  background-color: #ffeb3b;
-  color: #333;
+.prompt-textarea {
+  width: 100%;
+  background-color: transparent;
+  color: white;
   border: none;
-  border-radius: 24px;
-  font-weight: bold;
+  outline: none;
+  resize: none;
+  padding: 16px;
+  flex: 1;
+  font-size: 16px;
+}
+
+.prompt-textarea::placeholder {
+  color: #777;
+}
+
+.prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid #222;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #777;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
-.send-button:hover {
-  background-color: #ffdc00;
+.action-button:hover {
+  color: white;
+  background-color: #222;
 }
 
-.send-button:active {
-  background-color: #ffd600;
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* Responsive styles */
+.icon-button:hover {
+  color: white;
+  background-color: #222;
+}
+
+.icon-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-small {
+  width: 14px;
+  height: 14px;
+}
+
+/* Responsive adjustments */
 @media (max-width: 480px) {
   .message-bubble {
     max-width: 85%;
     font-size: 13px;
+  }
+  
+  .prompt-field-container {
+    padding: 8px;
   }
 }
