@@ -122,6 +122,11 @@ Exemplos:
       ]
     })
 
+    memories.push({
+      role: 'assistant',
+      content: text
+    })
+
     console.log('\x1b[36m gotten text')
 
     console.log('\x1b[36m response: ', text)
