@@ -1,7 +1,8 @@
-import { openai } from '@ai-sdk/openai'
-import { generateText } from 'ai'
 import dotenv from 'dotenv'
 dotenv.config()
+
+import { openai } from '@ai-sdk/openai'
+import { generateText } from 'ai'
 
 import screenshot from 'screenshot-desktop'
 
