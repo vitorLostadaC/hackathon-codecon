@@ -1,0 +1,10 @@
+{
+	"dependencies": {
+		"fs": "0.0.1-security",
+		"screenshot-desktop": "^1.15.1"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.18",
+		"@types/screenshot-desktop": "^1.12.3"
+	}
+}
