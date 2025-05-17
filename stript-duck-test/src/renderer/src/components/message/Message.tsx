@@ -39,15 +39,6 @@ const Message: React.FC<MessageProps> = ({ message, direction, position, isVisib
     <div className={`message-balloon ${fadeClass}`} style={balloonPosition}>
       <div className="message-content">{message}</div>
       <div className={`message-tail ${direction === -1 ? 'left' : 'right'}`}></div>
-      <button
-        className="close-button"
-        onClick={() => {
-          setFadeClass('fade-out')
-          setTimeout(onClose, 500)
-        }}
-      >
-        ×
-      </button>
     </div>
   )
 }
