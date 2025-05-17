@@ -96,12 +96,20 @@ const openedApps = async () => {
   }
 }
 
+const quitApp = async (app: string) => {
+  if (process.platform === 'darwin') {
+    exec(`osascript -e 'tell application "${app}" to quit'`)
+  } else if (process.platform === 'linux') {
+    exec(`pkill -f "${app}"`)
+  }
+}
+
 const main = async () => {
   // const base64Image = await takeScreenshot()
   // const text = await readImage(base64Image)
   // console.log(text)
 
-  console.log(await openedApps())
+  console.log(await quitApp('Todoist'))
 }
 
 main()
