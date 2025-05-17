@@ -84,13 +84,13 @@ function createChatWindow(): void {
 
   // Create the chat window
   chatWindow = new BrowserWindow({
-    width: Math.floor(screenWidth * 0.6),
+    width: Math.floor(screenWidth * 0.4),
     height: 200,
-    x: Math.floor((screenWidth - screenWidth * 0.6) / 2),
+    x: Math.floor((screenWidth - screenWidth * 0.4) / 2),
     y: Math.floor((screenHeight - 300) / 2), // Center vertically
     title: 'Chat with Duck',
     frame: false, // Remove window frame
-    transparent: false,
+    transparent: true,
     resizable: true,
     minimizable: true,
     maximizable: false,
