@@ -27,7 +27,7 @@ const readImage = async (base64Image: string) => {
           content: [
             {
               type: 'text',
-              text: 'What do you see in this image? Please describe it in detail.'
+              text: 'O que você vê nesta imagem? Por favor, descreva em detalhes.'
             },
             {
               type: 'image',
