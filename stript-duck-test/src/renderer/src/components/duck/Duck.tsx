@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import './Duck.css'
+import Message from '../message/Message'
 
 import duckGif from '../../assets/duck.gif'
 
@@ -7,6 +8,8 @@ declare global {
   interface Window {
     api: {
       setIgnoreMouseEvents: (ignore: boolean, options?: { forward: boolean }) => void
+      getDuckMessages: () => Promise<string[]>
+      onNewMessage: (callback: (message: string) => void) => () => void
     }
   }
 }
@@ -20,11 +23,53 @@ const Duck: React.FC = () => {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [verticalPosition, setVerticalPosition] = useState(0)
 
+  // Message state
+  const [showMessage, setShowMessage] = useState(false)
+  const [currentMessage, setCurrentMessage] = useState('')
+  const [duckMessages, setDuckMessages] = useState<string[]>([
+    'Quack! Need help with your code?',
+    'Did you remember to commit your changes?',
+    "Take a break! You've been coding for a while.",
+    'Have you tried turning it off and on again?',
+    'Remember to stay hydrated while coding!',
+    "Quack! Don't forget to write tests for your code.",
+    "Maybe it's time to refactor this function?",
+    'Quack quack! Your code looks great today!'
+  ])
+
   const animationFrameRef = useRef<number | null>(null)
   const directionRef = useRef(direction)
   const duckWidth = 60
   const duckHeight = 60
   const speed = 2
+
+  // Effect to fetch messages from API if available
+  useEffect(() => {
+    if (window.api.getDuckMessages) {
+      // Try to get messages from the API
+      window.api
+        .getDuckMessages()
+        .then((messages) => {
+          if (messages && messages.length > 0) {
+            setDuckMessages(messages)
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching duck messages:', error)
+        })
+    }
+
+    // Subscribe to new messages
+    if (window.api.onNewMessage) {
+      const unsubscribe = window.api.onNewMessage((message) => {
+        setCurrentMessage(message)
+        setShowMessage(true)
+      })
+
+      // Clean up subscription
+      return unsubscribe
+    }
+  }, [])
 
   useEffect(() => {
     directionRef.current = direction
@@ -62,13 +107,24 @@ const Duck: React.FC = () => {
 
     animationFrameRef.current = requestAnimationFrame(animate)
 
+    // Periodically show duck messages
+    const messageInterval = setInterval(() => {
+      // Only show messages when duck is visible and not being dragged
+      if (!isDragging && Math.random() > 0.7) {
+        const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
+        setCurrentMessage(randomMessage)
+        setShowMessage(true)
+      }
+    }, 10000) // Check every 10 seconds with 30% chance to show a message
+
     return () => {
       window.removeEventListener('resize', updateScreenWidth)
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
+      clearInterval(messageInterval)
     }
-  }, [])
+  }, [isDragging, duckMessages])
 
   const handleMouseEnter = (): void => {
     setIsHovered(true)
@@ -91,6 +147,9 @@ const Duck: React.FC = () => {
       cancelAnimationFrame(animationFrameRef.current)
       animationFrameRef.current = null
     }
+
+    // Hide message when starting to drag
+    setShowMessage(false)
   }
 
   useEffect(() => {
@@ -120,21 +179,46 @@ const Duck: React.FC = () => {
     }
   }, [isDragging, dragOffset])
 
+  // Handle closing the message
+  const handleCloseMessage = (): void => {
+    setShowMessage(false)
+  }
+
+  // Handle duck click to show a message
+  const handleDuckClick = (): void => {
+    // Only show message on click if not already showing and not dragging
+    if (!showMessage && !isDragging) {
+      const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
+      setCurrentMessage(randomMessage)
+      setShowMessage(true)
+    }
+  }
+
   return (
-    <div
-      className={`duck ${direction === -1 ? 'flip' : ''} ${isHovered ? 'hovered' : ''} ${isDragging ? 'dragging' : ''}`}
-      style={{
-        left: `${position}px`,
-        bottom: isDragging ? 'auto' : '0',
-        top: isDragging ? `${verticalPosition}px` : 'auto',
-        backgroundImage: `url(${duckGif})`,
-        width: `${duckWidth}px`,
-        height: `${duckHeight}px`
-      }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseDown={handleMouseDown}
-    />
+    <>
+      <Message
+        message={currentMessage}
+        direction={direction}
+        position={position}
+        isVisible={showMessage}
+        onClose={handleCloseMessage}
+      />
+      <div
+        className={`duck ${direction === -1 ? 'flip' : ''} ${isHovered ? 'hovered' : ''} ${isDragging ? 'dragging' : ''}`}
+        style={{
+          left: `${position}px`,
+          bottom: isDragging ? 'auto' : '0',
+          top: isDragging ? `${verticalPosition}px` : 'auto',
+          backgroundImage: `url(${duckGif})`,
+          width: `${duckWidth}px`,
+          height: `${duckHeight}px`
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseDown={handleMouseDown}
+        onClick={handleDuckClick}
+      />
+    </>
   )
 }
 
