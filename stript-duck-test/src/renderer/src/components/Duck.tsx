@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import './Duck.css'
 
-// Import duck sprites
-import duckWalk1 from '../assets/duck-walk-1.png'
-import duckWalk2 from '../assets/duck-walk-2.png'
+// Import duck GIF
+import duckGif from '../assets/duck.gif'
 
 declare global {
   interface Window {
@@ -17,7 +16,6 @@ declare global {
 const Duck: React.FC = () => {
   const [position, setPosition] = useState(0)
   const [direction, setDirection] = useState(1) // 1 for right, -1 for left
-  const [currentFrame, setCurrentFrame] = useState(0)
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [isHovered, setIsHovered] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -25,16 +23,11 @@ const Duck: React.FC = () => {
   const [verticalPosition, setVerticalPosition] = useState(0)
 
   const animationFrameRef = useRef<number | null>(null)
-  const duckWidth = 60 // Adjust based on your sprite size
-  const duckHeight = 60 // Adjust based on your sprite size
+  const duckWidth = 60 // Adjust based on your GIF size
+  const duckHeight = 60 // Adjust based on your GIF size
   const speed = 2 // Pixels per frame
 
-  const duckSprites = [duckWalk1, duckWalk2]
-
   const animate = (): void => {
-    // Switch animation frame
-    setCurrentFrame((prev) => (prev + 1) % duckSprites.length)
-
     // Update position
     setPosition((prev) => {
       const newPosition = prev + direction * speed
@@ -146,7 +139,7 @@ const Duck: React.FC = () => {
         left: `${position}px`,
         bottom: isDragging ? 'auto' : '0',
         top: isDragging ? `${verticalPosition}px` : 'auto',
-        backgroundImage: `url(${duckSprites[currentFrame]})`,
+        backgroundImage: `url(${duckGif})`,
         width: `${duckWidth}px`,
         height: `${duckHeight}px`
       }}
