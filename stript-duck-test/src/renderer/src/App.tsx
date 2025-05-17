@@ -1,8 +1,37 @@
+import { useState, useEffect } from 'react'
 import Duck from './components/duck/Duck'
+import Chat from './components/chat/Chat'
 import './assets/main.css'
 
 function App(): React.JSX.Element {
-  return (
+  const [isChat, setIsChat] = useState(false)
+
+  useEffect(() => {
+    // Check if this window should display the chat interface
+    // based on the URL hash (#chat)
+    const checkIfChatMode = (): void => {
+      setIsChat(window.location.hash === '#chat')
+    }
+
+    // Check initially
+    checkIfChatMode()
+
+    // Listen for hash changes (though not needed in this specific implementation)
+    window.addEventListener('hashchange', checkIfChatMode)
+
+    return () => window.removeEventListener('hashchange', checkIfChatMode)
+  }, [])
+
+  // Handler for sending messages from chat to the main process
+  const handleSendMessage = (message: string): void => {
+    // Send the message to the main process to forward to the duck window
+    window.electron.ipcRenderer.send('send-message-to-duck', message)
+  }
+
+  // Render either the chat interface or the duck based on the mode
+  return isChat ? (
+    <Chat onSendMessage={handleSendMessage} />
+  ) : (
     <div className="app-container">
       <Duck />
     </div>

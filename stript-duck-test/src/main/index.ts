@@ -1,9 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, screen, globalShortcut } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 let mainWindow: BrowserWindow | null = null
+let chatWindow: BrowserWindow | null = null
 
 // Sample duck messages - in a real app, these would come from an API
 const duckMessages = [
@@ -69,6 +70,51 @@ function createWindow(): void {
   }
 }
 
+// Function to create a chat window to interact with the duck
+function createChatWindow(): void {
+  if (chatWindow) {
+    // If window already exists, just focus it
+    chatWindow.focus()
+    return
+  }
+
+  // Get screen dimensions for positioning
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
+
+  // Create the chat window
+  chatWindow = new BrowserWindow({
+    width: 400,
+    height: 500,
+    x: screenWidth - 450, // Position near right edge
+    y: screenHeight - 600, // Position above the duck
+    title: 'Chat with Duck',
+    resizable: true,
+    minimizable: true,
+    maximizable: false,
+    alwaysOnTop: false,
+    ...(process.platform === 'linux' ? { icon } : {}),
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false
+    }
+  })
+
+  // Load the chat interface
+  // For now, we'll reuse the main page, but in a real app
+  // you would have a specific chat interface HTML file
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    chatWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '#chat')
+  } else {
+    chatWindow.loadFile(join(__dirname, '../renderer/index.html'), { hash: 'chat' })
+  }
+
+  // Handle window closed event
+  chatWindow.on('closed', () => {
+    chatWindow = null
+  })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -81,6 +127,18 @@ app.whenReady().then(() => {
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
+  })
+
+  // Register global shortcut to open the chat window
+  globalShortcut.register('CommandOrControl+D', () => {
+    // Open the chat window when Ctrl+D is pressed
+    createChatWindow()
+
+    // Send a notification to the duck to show a message about the chat window
+    if (mainWindow) {
+      const chatMessage = "Quack! I'm ready to chat with you. What's on your mind?"
+      mainWindow.webContents.send('new-duck-message', chatMessage)
+    }
   })
 
   // IPC test
@@ -101,6 +159,13 @@ app.whenReady().then(() => {
     }
   })
 
+  // Handle messages sent to the duck from the chat window
+  ipcMain.on('send-message-to-duck', (_, message) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('new-duck-message', message)
+    }
+  })
+
   createWindow()
 
   // In a real app, you might set up polling or a websocket to get new messages
@@ -108,8 +173,8 @@ app.whenReady().then(() => {
   if (mainWindow) {
     // Simulate receiving new messages every 30-60 seconds
     setInterval(() => {
-      if (mainWindow && Math.random() > 0.7) {
-        // 30% chance to send a message
+      if (mainWindow && Math.random() > 0.7 && !chatWindow) {
+        // 30% chance to send a message, but only if chat window is not open
         const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
         mainWindow.webContents.send('new-duck-message', randomMessage)
       }
@@ -130,6 +195,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// Unregister all shortcuts when app is quitting
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll()
 })
 
 // In this file you can include the rest of your app's specific main process
