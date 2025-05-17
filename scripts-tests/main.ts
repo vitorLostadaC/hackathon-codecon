@@ -104,12 +104,23 @@ const quitApp = async (app: string) => {
   }
 }
 
+const maximizeApp = async (app: string) => {
+  if (process.platform === 'darwin') {
+    exec(`osascript -e 'tell application "${app}" to activate'`)
+    exec(
+      `osascript -e 'tell application "System Events" to set frontmost of process "${app}" to true'`
+    )
+  } else if (process.platform === 'linux') {
+    exec(`wmctrl -r "${app}" -b add,maximized_vert,maximized_horz`)
+  }
+}
+
 const main = async () => {
   // const base64Image = await takeScreenshot()
   // const text = await readImage(base64Image)
   // console.log(text)
 
-  console.log(await quitApp('Todoist'))
+  console.log(await maximizeApp('Discord'))
 }
 
 main()
