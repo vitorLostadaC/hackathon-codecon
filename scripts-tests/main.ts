@@ -160,7 +160,7 @@ Nível de estresse: ${stress}`
             message: z
               .string()
               .describe(
-                'Uma mensagem punitiva para o usuario, levando em consideracao o estresse atual'
+                'Uma mensagem punitiva para o usuario, levando em consideracao o estresse atual. Se o estresse for maior que 40, use palavrões e seja bem agressivo.'
               )
           }),
           execute: async ({ message }) => {
@@ -219,6 +219,11 @@ Nível de estresse: ${stress}`
               await splitScreen(currentEditor, 'right')
 
               return 'Trabalha e relaxa, distrações não vão te ajudar'
+            }
+
+            const focusedApp = await getFocusedApp()
+            if (focusedApp) {
+              await quitApp(focusedApp)
             }
 
             maximizeApp(currentEditor)
