@@ -259,6 +259,8 @@ Nível de estresse: ${stress}`
   return text
 }
 
+export { getTemporaryMessage }
+
 // main()
 
 function test() {
