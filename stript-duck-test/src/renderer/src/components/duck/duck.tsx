@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import './Duck.css'
-import Message from '../message/Message'
+import './duck.css'
+import Message from '../message/message'
 
 import duckGif from '../../assets/duck.gif'
 import stopedDuck from '../../assets/stoped-duck.png'

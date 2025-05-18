@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import Duck from './components/duck/Duck'
-import Chat from './components/chat/Chat'
+import Duck from './components/duck/duck'
+import Chat from './components/chat/chat'
 import './assets/main.css'
 
 function App(): React.JSX.Element {

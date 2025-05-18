@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import React from 'react'
-import './Message.css'
+import './message.css'
 
 interface MessageProps {
   message: string

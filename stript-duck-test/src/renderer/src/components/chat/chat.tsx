@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import './Chat.css'
+import './chat.css'
 import paw from '../../assets/paw.svg'
 
 const Chat: React.FC = () => {
