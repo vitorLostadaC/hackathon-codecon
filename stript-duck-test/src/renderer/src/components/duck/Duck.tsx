@@ -37,30 +37,26 @@ const Duck: React.FC = () => {
 
   // Effect to fetch messages from API if available
   useEffect(() => {
-    if (window.api.getDuckMessages) {
-      // Get messages from the main process
-      window.api
-        .getDuckMessages()
-        .then((messages) => {
-          if (messages && messages.length > 0) {
-            setDuckMessages(messages)
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching duck messages:', error)
-        })
-    }
-
-    // Subscribe to new messages
-    if (window.api.onNewMessage) {
-      const unsubscribe = window.api.onNewMessage((message) => {
-        setCurrentMessage(message)
-        setShowMessage(true)
+    // Get messages from the main process
+    window.api
+      .getDuckMessages()
+      .then((messages) => {
+        if (messages && messages.length > 0) {
+          setDuckMessages(messages)
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching duck messages:', error)
       })
 
-      // Clean up subscription
-      return unsubscribe
-    }
+    // Subscribe to new messages
+    const unsubscribe = window.api.onNewMessage((message) => {
+      setCurrentMessage(message)
+      setShowMessage(true)
+    })
+
+    // Clean up subscription
+    return unsubscribe
   }, [])
 
   useEffect(() => {

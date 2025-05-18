@@ -9,6 +9,7 @@ let chatWindow: BrowserWindow | null = null
 // Sample duck messages - in a real app, these would come from an API
 const duckMessages = [
   'Oii Anderson! Lembra de mim? Seu patinho, seremos amigos... para sempre.....'
+  // Add more messages here if needed
 ]
 
 // This would be the actual API integration in a real app
