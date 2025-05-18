@@ -1,18 +1,18 @@
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { exec as callbackExec } from 'child_process'
+import dotenv from 'dotenv'
 import {
   app,
-  shell,
   BrowserWindow,
+  desktopCapturer,
+  globalShortcut,
   ipcMain,
   screen,
-  globalShortcut,
-  desktopCapturer
+  shell
 } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
-import { exec as callbackExec } from 'child_process'
 import { promisify } from 'util'
-import dotenv from 'dotenv'
+import icon from '../../resources/icon.png?asset'
 
 // Load environment variables in the main process
 dotenv.config()
@@ -145,6 +145,24 @@ async function getCodeEditor(): Promise<string | undefined> {
   return mostUsedCodeEditors.find((editor) => apps.includes(editor))
 }
 
+async function lockScreen(): Promise<void> {
+  try {
+    if (process.platform === 'darwin') {
+      await exec('pmset displaysleepnow')
+    } else if (process.platform === 'linux') {
+      await exec('xdg-screensaver lock')
+    } else if (process.platform === 'win32') {
+      await exec('rundll32.exe user32.dll,LockWorkStation')
+    } else {
+      throw new Error('Unsupported operating system')
+    }
+  } catch (err: unknown) {
+    const error = err as Error
+    console.error('Error locking screen:', error.message || error)
+    throw error
+  }
+}
+
 function createWindow(): void {
   // Get screen dimensions
   const primaryDisplay = screen.getPrimaryDisplay()
@@ -228,6 +246,16 @@ app.whenReady().then(() => {
       return await getOpenedApps()
     } catch (error) {
       console.error('Error getting opened apps:', error)
+      throw error
+    }
+  })
+
+  ipcMain.handle('lock-screen', async () => {
+    try {
+      await lockScreen()
+      return true
+    } catch (error) {
+      console.error('Error locking screen:', error)
       throw error
     }
   })

@@ -1,5 +1,5 @@
-import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
@@ -31,6 +31,11 @@ const api = {
 
   getCodeEditor: async (): Promise<string | undefined> => {
     return await ipcRenderer.invoke('get-code-editor')
+  },
+
+  // Lock screen function
+  lockScreen: async (): Promise<boolean> => {
+    return await ipcRenderer.invoke('lock-screen')
   },
 
   // Shell command execution
