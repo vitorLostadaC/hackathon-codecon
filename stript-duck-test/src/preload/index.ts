@@ -7,9 +7,6 @@ const api = {
   setIgnoreMouseEvents: (ignore: boolean, options?: { forward: boolean }) =>
     ipcRenderer.send('set-ignore-mouse-events', ignore, options),
 
-  // Duck message API - for future integration with external message API
-  getDuckMessages: () => ipcRenderer.invoke('get-duck-messages'),
-
   // Subscribe to new messages (for real-time updates)
   onNewMessage: (callback: (message: string) => void): (() => void) => {
     const newMessageListener = (_event: Electron.IpcRendererEvent, message: string): void => {

@@ -6,19 +6,6 @@ import icon from '../../resources/icon.png?asset'
 let mainWindow: BrowserWindow | null = null
 let chatWindow: BrowserWindow | null = null
 
-// Sample duck messages - in a real app, these would come from an API
-const duckMessages = [
-  'Oii Anderson! Lembra de mim? Seu patinho, seremos amigos... para sempre.....'
-  // Add more messages here if needed
-]
-
-// This would be the actual API integration in a real app
-async function fetchDuckMessagesFromAPI(): Promise<string[]> {
-  // In a real implementation, this would be an API call
-  // For now, we're just returning the sample messages
-  return duckMessages
-}
-
 function createWindow(): void {
   // Get screen dimensions
   const primaryDisplay = screen.getPrimaryDisplay()
@@ -147,28 +134,7 @@ app.whenReady().then(() => {
     mainWindow?.setIgnoreMouseEvents(ignore, options)
   })
 
-  // Handle duck message requests
-  ipcMain.handle('get-duck-messages', async () => {
-    try {
-      return await fetchDuckMessagesFromAPI()
-    } catch (error) {
-      console.error('Error fetching duck messages:', error)
-      return duckMessages // Fallback to default messages
-    }
-  })
-
   createWindow()
-
-  // In a real app, you might set up polling or a websocket to get new messages
-  // This is just a simulation of receiving new messages periodically
-  if (mainWindow) {
-    setInterval(() => {
-      if (mainWindow && Math.random() > 0.1 && !chatWindow) {
-        const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
-        mainWindow.webContents.send('new-duck-message', randomMessage)
-      }
-    }, 10000)
-  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
