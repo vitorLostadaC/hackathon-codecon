@@ -4,11 +4,10 @@
 // import dotenv from 'dotenv'
 // dotenv.config()
 
-import { openai } from '@ai-sdk/openai'
-import { env } from '@renderer/env'
 import { generateText, tool } from 'ai'
 import { z } from 'zod'
 import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
+import { openai } from './openai'
 
 // Create an async function to set up our OpenAI API key from the main process
 async function initializeEnv() {
