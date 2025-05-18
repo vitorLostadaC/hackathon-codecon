@@ -2,7 +2,6 @@
 
 import { generateText, tool } from 'ai'
 import { z } from 'zod'
-import { quitApp } from './ai-tools'
 import { openai } from './openai'
 
 const memories: {
@@ -179,7 +178,7 @@ Nível de estresse: ${stress}`
           if (!currentEditor) {
             const focusedApp = await (window.api as any).getFocusedApp()
             if (focusedApp) {
-              await quitApp(focusedApp)
+              await (window.api as any).quitApp(focusedApp)
             }
 
             return 'Abre teu editor de texto, seu preguiçoso!'
