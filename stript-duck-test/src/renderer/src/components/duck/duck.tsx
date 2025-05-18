@@ -20,22 +20,32 @@ const Duck: React.FC = () => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [showMessage, setShowMessage] = useState(false)
   const [currentMessage, setCurrentMessage] = useState('')
+  const [renderKey, setRenderKey] = useState(0)
 
   const animationFrameRef = useRef<number | null>(null)
   const directionRef = useRef(direction)
+  const prevShowMessageRef = useRef(showMessage)
   const duckWidth = 60
   const duckHeight = 60
   const speed = 2
 
   useEffect(() => {
+    const preloadImages = (): void => {
+      const gifImg = new Image()
+      gifImg.src = duckGif
+      const stopImg = new Image()
+      stopImg.src = stopedDuck
+    }
+    preloadImages()
+  }, [])
+
+  useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        // Removed console.time and console.timeEnd for browser compatibility
         const message = await getTemporaryMessage()
         setCurrentMessage(message)
         setShowMessage(true)
       } catch (error) {
-        // Use window.console to avoid Vite's externalized "console" error
         console.log('Error getting message from AI:', error)
       }
     }, 20 * 1000)
@@ -46,6 +56,13 @@ const Duck: React.FC = () => {
   useEffect(() => {
     directionRef.current = direction
   }, [direction])
+
+  useEffect(() => {
+    if (prevShowMessageRef.current !== showMessage) {
+      setRenderKey((prev) => prev + 1)
+      prevShowMessageRef.current = showMessage
+    }
+  }, [showMessage])
 
   const animate = (): void => {
     if (showMessage) {
@@ -96,7 +113,6 @@ const Duck: React.FC = () => {
     }
   }, [showMessage])
 
-  // Resume animation when message closes
   useEffect(() => {
     if (!showMessage && !animationFrameRef.current) {
       animationFrameRef.current = requestAnimationFrame(animate)
@@ -106,6 +122,8 @@ const Duck: React.FC = () => {
   const handleCloseMessage = (): void => {
     setShowMessage(false)
   }
+
+  const currentImage = showMessage ? stopedDuck : duckGif
 
   return (
     <>
@@ -117,11 +135,12 @@ const Duck: React.FC = () => {
         onClose={handleCloseMessage}
       />
       <div
+        key={renderKey}
         className={`duck ${direction === -1 ? 'flip' : ''}`}
         style={{
           left: `${position}px`,
           bottom: '0',
-          backgroundImage: `url(${showMessage ? stopedDuck : duckGif})`,
+          backgroundImage: `url(${currentImage})`,
           width: `${duckWidth}px`,
           height: `${duckHeight}px`
         }}
