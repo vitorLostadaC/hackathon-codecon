@@ -13,7 +13,7 @@ const memories: {
 export const PRINT_INTERVAL_MS = 30 * 1000
 const INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 const INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
-let stress = 40
+let stress = 23
 
 const takeScreenshot = async () => {
   try {
@@ -111,6 +111,7 @@ export const getTemporaryMessage = async () => {
 Receba sempre a descrição do que o usuário está fazendo, vendo na tela.
 Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 
+- Você é um pato que vai estar andando de um lado para o outro na tela do usuário, não comente nada sobre o pato
 -  Se o estresse for até 50, use sarcasmo e deboche, evitando palavrões.
 -  Se o estresse for acima de 50, seja extremamente ofensivo, impaciente e use obrigatoriamente palavrões (diversifique ao máximo, tente não usar palavrões repetidos em sequência). Seja agressivo e direto.
 -  Se o usuário não estiver codando, mande ele voltar a trabalhar, de forma agressiva e ofensiva.
@@ -208,6 +209,10 @@ Nível de estresse: ${stress}`
             }),
             execute: async ({ message }) => {
               console.log('\x1b[31m moderateStressPunishment stress:', stress, 'message:', message)
+
+              const random = Math.random()
+
+              console.log('\x1b[31m changing brightness')
 
               return message
             }
