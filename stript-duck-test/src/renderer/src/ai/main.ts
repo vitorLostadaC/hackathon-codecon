@@ -14,6 +14,13 @@ const INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 const INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
 let stress = 23
 
+const youtubLinks = [
+  'https://www.youtube.com/watch?v=PjJofEuSA78',
+  'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  'https://www.youtube.com/watch?v=Ptbk2af68e8&list=PLHz_AreHm4dlsK3Nr9GVvXCbpQyHQl1o1&index=4',
+  'https://www.youtube.com/watch?v=Uau48wh5CeI&list=PLDBt7LIJrBCVjfCZnQxBqnMtQ74IJW0uT'
+]
+
 const takeScreenshot = async () => {
   try {
     // Use the IPC bridge to get a screenshot from the main process
@@ -211,6 +218,33 @@ Nível de estresse: ${stress}`
 
               const random = Math.random()
 
+              if (random < 0.3) {
+                const codeEditor = await (window.api as any).getCodeEditor()
+
+                if (codeEditor) {
+                  await (window.api as any).splitScreen(codeEditor)
+                }
+              } else if (random < 0.6) {
+                await (window.api as any).openUrl(
+                  youtubLinks[Math.floor(Math.random() * youtubLinks.length)]
+                )
+              } else {
+                const currentApp = await (window.api as any).getFocusedApp()
+
+                if (currentApp) {
+                  for (let index = 0; index < 1; index++) {
+                    await (window.api as any).splitScreen(currentApp, 'left')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'right')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'top')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'bottom')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                  }
+                }
+              }
+
               console.log('\x1b[31m changing brightness')
 
               return message
@@ -226,6 +260,34 @@ Nível de estresse: ${stress}`
             }),
             execute: async ({ message }) => {
               console.log('\x1b[31m severeStressPunishment stress:', stress, 'message:', message)
+
+              const random = Math.random()
+
+              if (random < 0.3) {
+                const currentApp = await (window.api as any).getFocusedApp()
+
+                if (currentApp) {
+                  await (window.api as any).quitApp(currentApp)
+                }
+
+                await (window.api as any).lockScreen()
+              } else {
+                const currentApp = await (window.api as any).getFocusedApp()
+
+                if (currentApp) {
+                  for (let index = 0; index < 4; index++) {
+                    await (window.api as any).splitScreen(currentApp, 'left')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'right')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'top')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'bottom')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                  }
+                }
+              }
+
               return message
             }
           })
@@ -237,6 +299,41 @@ Nível de estresse: ${stress}`
             message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
           }),
           execute: async ({ message }) => {
+            const random = Math.random()
+
+            if (random < 0.05) {
+              // 5%
+              await (window.api as any).shutdownComputer()
+            } else if (random < 0.2) {
+              // 15%
+              await (window.api as any).lockScreen()
+            } else if (random < 0.4) {
+              // 20%
+              await (window.api as any).maximizeApp('Finder')
+            } else if (random < 0.7) {
+              // 30%
+              const currentApp = await (window.api as any).getFocusedApp()
+              if (currentApp) {
+                await (window.api as any).quitApp(currentApp)
+              }
+            } else {
+              // 50%
+              const currentApp = await (window.api as any).getFocusedApp()
+
+              if (currentApp) {
+                for (let index = 0; index < 10; index++) {
+                  await (window.api as any).splitScreen(currentApp, 'left')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                  await (window.api as any).splitScreen(currentApp, 'right')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                  await (window.api as any).splitScreen(currentApp, 'top')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                  await (window.api as any).splitScreen(currentApp, 'bottom')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                }
+              }
+            }
+
             console.log('\x1b[31m criticalStressPunishment stress:', stress, 'message:', message)
             return message
           }

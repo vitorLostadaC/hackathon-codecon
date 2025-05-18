@@ -38,6 +38,19 @@ const api = {
     return await ipcRenderer.invoke('lock-screen')
   },
 
+  // Shutdown computer function
+  shutdownComputer: async (): Promise<boolean> => {
+    return await ipcRenderer.invoke('shutdown-computer')
+  },
+
+  // Split screen function
+  splitScreen: async (
+    app: string,
+    direction: 'left' | 'right' | 'top' | 'bottom'
+  ): Promise<boolean> => {
+    return await ipcRenderer.invoke('split-screen', app, direction)
+  },
+
   // Shell command execution
   executeShellCommand: async (command: string): Promise<{ stdout: string; stderr: string }> => {
     return await ipcRenderer.invoke('execute-shell-command', command)
