@@ -102,7 +102,7 @@ export const getTemporaryMessage = async () => {
   }
 
   console.log('\x1b[36m generating text')
-  const { text } = await generateText({
+  const { text, toolResults } = await generateText({
     model: openai('gpt-4.1'),
     messages: [
       {
@@ -241,16 +241,18 @@ Nível de estresse: ${stress}`
     }
   })
 
+  const response = text || toolResults[toolResults.length - 1].result
+
   memories.push({
     role: 'assistant',
-    content: text
+    content: response
   })
 
   stress += INCREMENTAL_STRESS_PER_SCREENSHOT
 
   console.log('\x1b[36m stress: ', stress)
-  console.log('\x1b[36m response: ', text)
+  console.log('\x1b[36m response: ', response)
   console.log('\x1b[36m ----------done----------')
 
-  return text
+  return response
 }

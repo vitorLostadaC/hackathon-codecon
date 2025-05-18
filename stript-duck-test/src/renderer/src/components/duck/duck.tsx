@@ -38,7 +38,7 @@ const Duck: React.FC = () => {
         // Use window.console to avoid Vite's externalized "console" error
         console.log('Error getting message from AI:', error)
       }
-    }, 30 * 1000)
+    }, 20 * 1000)
 
     return () => clearInterval(interval)
   }, [])
