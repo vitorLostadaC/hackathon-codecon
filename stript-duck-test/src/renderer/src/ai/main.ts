@@ -1,14 +1,30 @@
 /* eslint-disable */
 
-import dotenv from 'dotenv'
-dotenv.config()
+// Remove dotenv imports and config since we handle this in the main process now
+// import dotenv from 'dotenv'
+// dotenv.config()
 
 import { openai } from '@ai-sdk/openai'
 import { env } from '@renderer/env'
 import { generateText, tool } from 'ai'
-import screenshot from 'screenshot-desktop'
 import { z } from 'zod'
 import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
+
+// Create an async function to set up our OpenAI API key from the main process
+async function initializeEnv() {
+  // Get OPENAI_API_KEY from the main process via IPC
+  const apiKey = await (window.api as any).getEnv('OPENAI_API_KEY')
+  if (apiKey) {
+    // Set it in the Vite environment
+    // @ts-ignore - Adding a property to import.meta.env
+    import.meta.env.VITE_OPENAI_API_KEY = apiKey
+  } else {
+    console.error('OpenAI API key not found in environment variables')
+  }
+}
+
+// Initialize environment variables
+initializeEnv()
 
 const memories: {
   role: 'user' | 'assistant'
@@ -22,9 +38,9 @@ let stress = 40
 
 const takeScreenshot = async () => {
   try {
-    const img = await screenshot()
-    const base64Image = img.toString('base64')
-    return `data:image/webp;base64,${base64Image}`
+    // Use the IPC bridge to get a screenshot from the main process
+    // This avoids any direct Node.js module usage in the renderer
+    return await (window.api as any).takeScreenshot()
   } catch (err) {
     console.error('Error taking screenshot:', err)
     throw err
@@ -263,8 +279,13 @@ export { getTemporaryMessage }
 
 // main()
 
-function test() {
-  console.log(env.VITE_OPENAI_API_KEY)
-}
+// Updated test function
+// async function test() {
+//   // Use the environment variables set by initializeEnv
+//   console.log('API Key in env:', env.VITE_OPENAI_API_KEY)
+// }
 
-test()
+// // Run the test only after environment is initialized
+// setTimeout(() => {
+//   test()
+// }, 1000) // Give initializeEnv time to complete

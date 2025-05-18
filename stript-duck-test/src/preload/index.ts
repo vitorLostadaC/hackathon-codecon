@@ -19,6 +19,46 @@ const api = {
     return () => {
       ipcRenderer.removeListener('new-duck-message', newMessageListener)
     }
+  },
+
+  // Take a screenshot using the main process
+  takeScreenshot: async (): Promise<string> => {
+    return await ipcRenderer.invoke('take-screenshot')
+  },
+
+  // AI tools functions
+  getOpenedApps: async (): Promise<string[]> => {
+    return await ipcRenderer.invoke('get-opened-apps')
+  },
+
+  quitApp: async (app: string): Promise<boolean> => {
+    return await ipcRenderer.invoke('quit-app', app)
+  },
+
+  maximizeApp: async (app: string): Promise<boolean> => {
+    return await ipcRenderer.invoke('maximize-app', app)
+  },
+
+  getFocusedApp: async (): Promise<string | undefined> => {
+    return await ipcRenderer.invoke('get-focused-app')
+  },
+
+  getCodeEditor: async (): Promise<string | undefined> => {
+    return await ipcRenderer.invoke('get-code-editor')
+  },
+
+  // Shell command execution
+  executeShellCommand: async (command: string): Promise<{ stdout: string; stderr: string }> => {
+    return await ipcRenderer.invoke('execute-shell-command', command)
+  },
+
+  executeAppleScript: async (script: string): Promise<{ stdout: string; stderr: string }> => {
+    return await ipcRenderer.invoke('execute-apple-script', script)
+  },
+
+  // Environment variables
+  getEnv: async (key: string): Promise<string | null> => {
+    return await ipcRenderer.invoke('get-env', key)
   }
 }
 

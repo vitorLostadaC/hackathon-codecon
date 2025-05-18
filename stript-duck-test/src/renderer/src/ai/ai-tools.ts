@@ -1,57 +1,29 @@
 /* eslint-disable */
 
-import { exec as callbackExec } from 'child_process'
-import { promisify } from 'util'
-
-const exec = promisify(callbackExec)
-
 export const openedApps = async (): Promise<string[]> => {
   try {
-    if (process.platform === 'darwin') {
-      const { stdout } = await exec(
-        'osascript -e \'tell application "System Events" to get name of every process whose visible is true\''
-      )
-      const apps = stdout
-        .split(', ')
-        .map((app) => app.trim())
-        .filter(Boolean)
-      return apps
-    } else if (process.platform === 'linux') {
-      // TODO: test on linux
-      const { stdout } = await exec('ps -e -o comm')
-      const apps = stdout
-        .split('\n')
-        .slice(1) // Skip header
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .map((app) => app.split('/').pop() || app) // Get just the app name without path
-        .filter((app) => !app.startsWith('kworker') && !app.startsWith('systemd')) // Filter system processes
-      return apps
-    } else {
-      throw new Error('Unsupported operating system')
-    }
-  } catch (err: any) {
-    console.error('Error getting opened apps:', err.message || err)
+    return await (window.api as any).getOpenedApps()
+  } catch (err) {
+    console.error('Error getting opened apps:', err)
     throw err
   }
 }
 
 export const quitApp = async (app: string) => {
-  if (process.platform === 'darwin') {
-    exec(`osascript -e 'tell application "${app}" to quit'`)
-  } else if (process.platform === 'linux') {
-    exec(`pkill -f "${app}"`)
+  try {
+    return await (window.api as any).quitApp(app)
+  } catch (err) {
+    console.error(`Error quitting app ${app}:`, err)
+    throw err
   }
 }
 
 export const maximizeApp = async (app: string) => {
-  if (process.platform === 'darwin') {
-    exec(`osascript -e 'tell application "${app}" to activate'`)
-    exec(
-      `osascript -e 'tell application "System Events" to set frontmost of process "${app}" to true'`
-    )
-  } else if (process.platform === 'linux') {
-    exec(`wmctrl -r "${app}" -b add,maximized_vert,maximized_horz`)
+  try {
+    return await (window.api as any).maximizeApp(app)
+  } catch (err) {
+    console.error(`Error maximizing app ${app}:`, err)
+    throw err
   }
 }
 
@@ -113,7 +85,7 @@ export const splitScreen = async (app: string, direction: 'left' | 'right' | 'to
         .join(' ')
       const command = `osascript ${osascriptArgs}`
 
-      await exec(command)
+      await (window.api as any).executeAppleScript(command)
     } catch (e: any) {
       const err = e as { message?: string; stderr?: string; cmd?: string }
       console.error(`Error splitting screen on macOS for app ${app}:`, err.message || e)
@@ -123,7 +95,9 @@ export const splitScreen = async (app: string, direction: 'left' | 'right' | 'to
     }
   } else if (process.platform === 'linux') {
     try {
-      const { stdout: dimOutput } = await exec("xdpyinfo | grep dimensions | awk '{print $2}'")
+      const { stdout: dimOutput } = await (window.api as any).executeShellCommand(
+        "xdpyinfo | grep dimensions | awk '{print $2}'"
+      )
       const dimensions = dimOutput.trim().split('x')
       const screenWidth = parseInt(dimensions[0])
       const screenHeight = parseInt(dimensions[1])
@@ -164,18 +138,20 @@ export const splitScreen = async (app: string, direction: 'left' | 'right' | 'to
           return
       }
 
-      await exec(`wmctrl -R "${app}"`)
+      await (window.api as any).executeShellCommand(`wmctrl -R "${app}"`)
       await new Promise((resolve) => setTimeout(resolve, 300))
 
       try {
-        await exec(`wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz`)
+        await (window.api as any).executeShellCommand(
+          `wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz`
+        )
       } catch (e: any) {
         console.warn(`Could not unmaximize window (this might be okay): ${e.message || e}`)
       }
       await new Promise((resolve) => setTimeout(resolve, 100))
 
       const moveResizeCmd = `wmctrl -r :ACTIVE: -e 0,${x},${y},${w},${h}`
-      await exec(moveResizeCmd)
+      await (window.api as any).executeShellCommand(moveResizeCmd)
       console.log(`App ${app} split ${direction} on Linux`)
     } catch (e: any) {
       const err = e as { message?: string; stderr?: string; cmd?: string }
@@ -199,19 +175,23 @@ export const splitScreen = async (app: string, direction: 'left' | 'right' | 'to
 }
 
 export const openUrlOnGoogle = (url: string) => {
-  if (process.platform === 'darwin') {
-    exec(`open "${url}"`)
-  } else if (process.platform === 'linux') {
-    exec(`xdg-open "${url}"`)
+  try {
+    if (process.platform === 'darwin') {
+      ;(window.api as any).executeShellCommand(`open "${url}"`)
+    } else if (process.platform === 'linux') {
+      ;(window.api as any).executeShellCommand(`xdg-open "${url}"`)
+    }
+  } catch (err) {
+    console.error(`Error opening URL ${url}:`, err)
   }
 }
 
 export const getFocusedApp = async () => {
-  if (process.platform === 'darwin') {
-    const { stdout } = await exec(
-      'osascript -e \'tell application "System Events" to get name of first application process whose frontmost is true\''
-    )
-    return stdout.trim()
+  try {
+    return await (window.api as any).getFocusedApp()
+  } catch (err) {
+    console.error('Error getting focused app:', err)
+    throw err
   }
 }
 
@@ -238,20 +218,10 @@ export const getBrowser = async () => {
 }
 
 export const getCodeEditor = async () => {
-  const apps = await openedApps()
-
-  // I know there are other smarter ways to build it, but for the hackathon, I will keep it like this. Just to focus my time on the other parts.
-
-  const mostUsedCodeEditors = [
-    'Cursor',
-    'VSCode',
-    'JetBrains',
-    'WindSurf',
-    'Sublime',
-    'Electron' // This is the vscode app name???? I don't know what but is just a temporary fix
-  ]
-
-  const currentEditor = mostUsedCodeEditors.find((codeEditor) => apps.includes(codeEditor))
-
-  return currentEditor
+  try {
+    return await (window.api as any).getCodeEditor()
+  } catch (err) {
+    console.error('Error getting code editor:', err)
+    throw err
+  }
 }
