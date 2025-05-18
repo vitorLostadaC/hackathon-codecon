@@ -3,7 +3,6 @@ import Message from '../message/message'
 import './duck.css'
 
 import { getTemporaryMessage } from '@renderer/ai/main'
-import console from 'console'
 import duckGif from '../../assets/duck.gif'
 import stopedDuck from '../../assets/stoped-duck.png'
 
@@ -29,14 +28,19 @@ const Duck: React.FC = () => {
   const speed = 2
 
   useEffect(() => {
-    setInterval(async () => {
+    const interval = setInterval(async () => {
       try {
+        // Removed console.time and console.timeEnd for browser compatibility
         const message = await getTemporaryMessage()
         setCurrentMessage(message)
+        setShowMessage(true)
       } catch (error) {
-        console.error('Error getting message from AI:', error)
+        // Use window.console to avoid Vite's externalized "console" error
+        console.log('Error getting message from AI:', error)
       }
     }, 30 * 1000)
+
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
