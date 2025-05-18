@@ -7,7 +7,7 @@ export type MessageHandler = (message: string) => void
 export function createMessageScheduler(
   shouldShow: () => boolean,
   onShowMessage: MessageHandler,
-  intervalMs = 30000 // Set default to 30 seconds
+  intervalMs = 10000 // Set default to 30 seconds
 ): () => void {
   const intervalId = setInterval(async () => {
     if (shouldShow()) {
