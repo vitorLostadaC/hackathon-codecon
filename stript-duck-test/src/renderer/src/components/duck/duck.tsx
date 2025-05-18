@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
-import './duck.css'
+import { useEffect, useRef, useState } from 'react'
 import Message from '../message/message'
+import './duck.css'
 
+import { getTemporaryMessage } from '@renderer/ai/main'
+import console from 'console'
 import duckGif from '../../assets/duck.gif'
 import stopedDuck from '../../assets/stoped-duck.png'
-import { createMessageScheduler } from './messageService'
 
 declare global {
   interface Window {
@@ -27,30 +28,16 @@ const Duck: React.FC = () => {
   const duckHeight = 60
   const speed = 2
 
-  // Effect to set up message handling
   useEffect(() => {
-    // Subscribe to direct messages from the main process
-    const unsubscribe = window.api.onNewMessage((message) => {
-      setCurrentMessage(message)
-      setShowMessage(true)
-    })
-
-    // Set up the message scheduler that will periodically show messages
-    const cleanupScheduler = createMessageScheduler(
-      // Only show random messages when not already showing a message
-      () => !showMessage,
-      // Handler for when a message should be shown
-      (message) => {
+    setInterval(async () => {
+      try {
+        const message = await getTemporaryMessage()
         setCurrentMessage(message)
-        setShowMessage(true)
+      } catch (error) {
+        console.error('Error getting message from AI:', error)
       }
-    )
-
-    return () => {
-      unsubscribe()
-      cleanupScheduler()
-    }
-  }, [showMessage])
+    }, 30 * 1000)
+  }, [])
 
   useEffect(() => {
     directionRef.current = direction
