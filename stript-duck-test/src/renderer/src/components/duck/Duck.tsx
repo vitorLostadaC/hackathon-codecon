@@ -3,6 +3,7 @@ import './Duck.css'
 import Message from '../message/Message'
 
 import duckGif from '../../assets/duck.gif'
+import stopedDuck from '../../assets/stoped-duck.png'
 
 declare global {
   interface Window {
@@ -76,6 +77,11 @@ const Duck: React.FC = () => {
   }, [direction])
 
   const animate = (): void => {
+    // Don't animate if a message is showing
+    if (showMessage) {
+      return
+    }
+
     const currentDirection = directionRef.current
 
     setPosition((prev) => {
@@ -105,12 +111,18 @@ const Duck: React.FC = () => {
     window.addEventListener('resize', updateScreenWidth)
     updateScreenWidth()
 
-    animationFrameRef.current = requestAnimationFrame(animate)
+    if (!showMessage) {
+      animationFrameRef.current = requestAnimationFrame(animate)
+    } else if (animationFrameRef.current) {
+      // Stop animation when message is showing
+      cancelAnimationFrame(animationFrameRef.current)
+      animationFrameRef.current = null
+    }
 
     // Periodically show duck messages
     const messageInterval = setInterval(() => {
       // Only show messages when duck is visible and not being dragged
-      if (!isDragging && Math.random() > 0.7) {
+      if (!isDragging && !showMessage && Math.random() > 0.7) {
         const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
         setCurrentMessage(randomMessage)
         setShowMessage(true)
@@ -124,7 +136,14 @@ const Duck: React.FC = () => {
       }
       clearInterval(messageInterval)
     }
-  }, [isDragging, duckMessages])
+  }, [isDragging, duckMessages, showMessage])
+
+  // Resume animation when message closes
+  useEffect(() => {
+    if (!showMessage && !isDragging && !animationFrameRef.current) {
+      animationFrameRef.current = requestAnimationFrame(animate)
+    }
+  }, [showMessage, isDragging])
 
   const handleMouseEnter = (): void => {
     setIsHovered(true)
@@ -163,7 +182,7 @@ const Duck: React.FC = () => {
     const handleMouseUp = (): void => {
       setIsDragging(false)
 
-      if (!animationFrameRef.current) {
+      if (!animationFrameRef.current && !showMessage) {
         animationFrameRef.current = requestAnimationFrame(animate)
       }
     }
@@ -177,7 +196,7 @@ const Duck: React.FC = () => {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, dragOffset])
+  }, [isDragging, dragOffset, showMessage])
 
   // Handle closing the message
   const handleCloseMessage = (): void => {
@@ -209,7 +228,7 @@ const Duck: React.FC = () => {
           left: `${position}px`,
           bottom: isDragging ? 'auto' : '0',
           top: isDragging ? `${verticalPosition}px` : 'auto',
-          backgroundImage: `url(${duckGif})`,
+          backgroundImage: `url(${showMessage ? stopedDuck : duckGif})`,
           width: `${duckWidth}px`,
           height: `${duckHeight}px`
         }}
