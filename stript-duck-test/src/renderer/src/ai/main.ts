@@ -57,7 +57,7 @@ const readImage = async (base64Image: string) => {
   }
 }
 
-const generateMemory = async (message: string) => {
+export const generateMemory = async (message: string) => {
   const { text } = await generateText({
     model: openai('gpt-4.1'),
     maxTokens: 200,
@@ -108,7 +108,7 @@ const getTemporaryMessage = async () => {
       {
         role: 'system',
         content: `Você é um assistente virtual sarcástico e debochado.
-Receba sempre a descrição do que o usuário está fazendo, vendo na tela, ou mensagens que ele está enviando.
+Receba sempre a descrição do que o usuário está fazendo, vendo na tela.
 Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 
 -  Se o estresse for até 70, use sarcasmo e deboche, evitando palavrões.
@@ -116,6 +116,7 @@ Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 -  Se o usuário não estiver codando, mande ele voltar a trabalhar, de forma agressiva e ofensiva.
 -  Nunca use ofensas discriminatórias.
 -  Tente sempre variar as palavras e frases, para não ficar repetitivo.
+-  Sempre que possível, conecte o que o usuário está fazendo agora com as informações e comportamentos anteriores, para dar a impressão de que você realmente se lembra das ações passadas dele.
 
 IMPORTANTE: Você tem acesso a 2 ferramentas que DEVEM ser usadas a cada interação, voce sempre deve punir o usuario quando houver a possibilidade (se o estresse for suficiente):
 1. userNotCoding: Use esta ferramenta quando o usuário não estiver codando. Ela vai punir o usuário e tentar fazer ele voltar a codar,
@@ -253,18 +254,3 @@ Nível de estresse: ${stress}`
 
   return text
 }
-
-export { getTemporaryMessage }
-
-// main()
-
-// Updated test function
-// async function test() {
-//   // Use the environment variables set by initializeEnv
-//   console.log('API Key in env:', env.VITE_OPENAI_API_KEY)
-// }
-
-// // Run the test only after environment is initialized
-// setTimeout(() => {
-//   test()
-// }, 1000) // Give initializeEnv time to complete
