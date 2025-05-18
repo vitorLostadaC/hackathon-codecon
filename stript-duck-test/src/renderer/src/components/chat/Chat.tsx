@@ -2,21 +2,10 @@ import React, { useState, useRef, useEffect } from 'react'
 import './Chat.css'
 import paw from '../../assets/paw.svg'
 
-interface Message {
-  id: number
-  text: string
-  sender: 'user' | 'duck'
-}
-
-interface ChatProps {
-  onSendMessage: (message: string) => void
-}
-
-const Chat: React.FC<ChatProps> = ({ onSendMessage }) => {
+const Chat: React.FC = () => {
   const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState<Message[]>([])
-  const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
   // Auto-resize the textarea based on content
   useEffect(() => {
@@ -26,37 +15,21 @@ const Chat: React.FC<ChatProps> = ({ onSendMessage }) => {
     }
   }, [message])
 
-  // Scroll to bottom when new messages arrive
+  // Resize window when content changes
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    if (chatContainerRef.current && window.electron) {
+      // We've set min/max height constraints in the main process,
+      // so we don't need to do anything else here
+      // If we wanted to implement explicit resizing:
+      // const chatHeight = chatContainerRef.current.scrollHeight
+      // window.electron.ipcRenderer.send('resize-chat-window', chatHeight)
+    }
+  }, [message])
 
   const handleSendMessage = (e: React.FormEvent): void => {
     e.preventDefault()
 
     if (!message.trim()) return
-
-    // Add user message to chat
-    const newUserMessage: Message = {
-      id: Date.now(),
-      text: message,
-      sender: 'user'
-    }
-
-    setMessages((prev) => [...prev, newUserMessage])
-
-    // Send message to main process
-    onSendMessage(message)
-
-    // Add a mock response from the duck (this would normally come from your backend)
-    setTimeout(() => {
-      const duckResponse: Message = {
-        id: Date.now() + 1,
-        text: 'Quack! Estou pensando na sua pergunta...',
-        sender: 'duck'
-      }
-      setMessages((prev) => [...prev, duckResponse])
-    }, 500)
 
     // Clear input field
     setMessage('')
@@ -70,17 +43,7 @@ const Chat: React.FC<ChatProps> = ({ onSendMessage }) => {
   }
 
   return (
-    <div className="chat-container">
-      {/* Chat messages area */}
-      <div className="chat-messages">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`chat-message ${msg.sender}`}>
-            <div className="message-bubble">{msg.text}</div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
+    <div className="chat-container" ref={chatContainerRef}>
       {/* Input area with button on the right */}
       <div className="prompt-field-container">
         <div className="prompt-field">

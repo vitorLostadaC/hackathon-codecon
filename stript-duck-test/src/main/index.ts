@@ -85,7 +85,9 @@ function createChatWindow(): void {
   // Create the chat window
   chatWindow = new BrowserWindow({
     width: Math.floor(screenWidth * 0.4),
-    height: 200,
+    height: 300, // Increased default height
+    minHeight: 200, // Set minimum height
+    maxHeight: Math.floor(screenHeight * 0.7), // Set maximum height to 70% of screen
     x: Math.floor((screenWidth - screenWidth * 0.4) / 2),
     y: Math.floor((screenHeight - 300) / 2), // Center vertically
     title: 'Chat with Duck',
