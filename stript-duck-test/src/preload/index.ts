@@ -1,5 +1,5 @@
-import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
@@ -7,18 +7,62 @@ const api = {
   setIgnoreMouseEvents: (ignore: boolean, options?: { forward: boolean }) =>
     ipcRenderer.send('set-ignore-mouse-events', ignore, options),
 
-  // Subscribe to new messages (for real-time updates)
-  onNewMessage: (callback: (message: string) => void): (() => void) => {
-    const newMessageListener = (_event: Electron.IpcRendererEvent, message: string): void => {
-      callback(message)
-    }
+  // Take a screenshot using the main process
+  takeScreenshot: async (): Promise<string> => {
+    return await ipcRenderer.invoke('take-screenshot')
+  },
 
-    ipcRenderer.on('new-duck-message', newMessageListener)
+  // AI tools functions
+  getOpenedApps: async (): Promise<string[]> => {
+    return await ipcRenderer.invoke('get-opened-apps')
+  },
 
-    // Return a function to remove the listener
-    return () => {
-      ipcRenderer.removeListener('new-duck-message', newMessageListener)
-    }
+  quitApp: async (app: string): Promise<boolean> => {
+    return await ipcRenderer.invoke('quit-app', app)
+  },
+
+  maximizeApp: async (app: string): Promise<boolean> => {
+    return await ipcRenderer.invoke('maximize-app', app)
+  },
+
+  getFocusedApp: async (): Promise<string | undefined> => {
+    return await ipcRenderer.invoke('get-focused-app')
+  },
+
+  getCodeEditor: async (): Promise<string | undefined> => {
+    return await ipcRenderer.invoke('get-code-editor')
+  },
+
+  // Lock screen function
+  lockScreen: async (): Promise<boolean> => {
+    return await ipcRenderer.invoke('lock-screen')
+  },
+
+  // Shutdown computer function
+  shutdownComputer: async (): Promise<boolean> => {
+    return await ipcRenderer.invoke('shutdown-computer')
+  },
+
+  // Split screen function
+  splitScreen: async (
+    app: string,
+    direction: 'left' | 'right' | 'top' | 'bottom'
+  ): Promise<boolean> => {
+    return await ipcRenderer.invoke('split-screen', app, direction)
+  },
+
+  // Shell command execution
+  executeShellCommand: async (command: string): Promise<{ stdout: string; stderr: string }> => {
+    return await ipcRenderer.invoke('execute-shell-command', command)
+  },
+
+  executeAppleScript: async (script: string): Promise<{ stdout: string; stderr: string }> => {
+    return await ipcRenderer.invoke('execute-apple-script', script)
+  },
+
+  // Environment variables
+  getEnv: async (key: string): Promise<string | null> => {
+    return await ipcRenderer.invoke('get-env', key)
   }
 }
 

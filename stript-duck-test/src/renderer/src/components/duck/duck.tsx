@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
-import './duck.css'
+import { useEffect, useRef, useState } from 'react'
 import Message from '../message/message'
+import './duck.css'
 
+import { getTemporaryMessage } from '@renderer/ai/main'
 import duckGif from '../../assets/duck.gif'
 import stopedDuck from '../../assets/stoped-duck.png'
-import { createMessageScheduler } from './messageService'
 
 declare global {
   interface Window {
@@ -20,41 +20,49 @@ const Duck: React.FC = () => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
   const [showMessage, setShowMessage] = useState(false)
   const [currentMessage, setCurrentMessage] = useState('')
+  const [renderKey, setRenderKey] = useState(0)
 
   const animationFrameRef = useRef<number | null>(null)
   const directionRef = useRef(direction)
+  const prevShowMessageRef = useRef(showMessage)
   const duckWidth = 60
   const duckHeight = 60
   const speed = 2
 
-  // Effect to set up message handling
   useEffect(() => {
-    // Subscribe to direct messages from the main process
-    const unsubscribe = window.api.onNewMessage((message) => {
-      setCurrentMessage(message)
-      setShowMessage(true)
-    })
+    const preloadImages = (): void => {
+      const gifImg = new Image()
+      gifImg.src = duckGif
+      const stopImg = new Image()
+      stopImg.src = stopedDuck
+    }
+    preloadImages()
+  }, [])
 
-    // Set up the message scheduler that will periodically show messages
-    const cleanupScheduler = createMessageScheduler(
-      // Only show random messages when not already showing a message
-      () => !showMessage,
-      // Handler for when a message should be shown
-      (message) => {
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const message = await getTemporaryMessage()
         setCurrentMessage(message)
         setShowMessage(true)
+      } catch (error) {
+        console.log('Error getting message from AI:', error)
       }
-    )
+    }, 20 * 1000)
 
-    return () => {
-      unsubscribe()
-      cleanupScheduler()
-    }
-  }, [showMessage])
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     directionRef.current = direction
   }, [direction])
+
+  useEffect(() => {
+    if (prevShowMessageRef.current !== showMessage) {
+      setRenderKey((prev) => prev + 1)
+      prevShowMessageRef.current = showMessage
+    }
+  }, [showMessage])
 
   const animate = (): void => {
     if (showMessage) {
@@ -105,16 +113,11 @@ const Duck: React.FC = () => {
     }
   }, [showMessage])
 
-  // Resume animation when message closes
-  useEffect(() => {
-    if (!showMessage && !animationFrameRef.current) {
-      animationFrameRef.current = requestAnimationFrame(animate)
-    }
-  }, [showMessage])
-
   const handleCloseMessage = (): void => {
     setShowMessage(false)
   }
+
+  const currentImage = showMessage ? stopedDuck : duckGif
 
   return (
     <>
@@ -126,11 +129,12 @@ const Duck: React.FC = () => {
         onClose={handleCloseMessage}
       />
       <div
+        key={renderKey}
         className={`duck ${direction === -1 ? 'flip' : ''}`}
         style={{
           left: `${position}px`,
           bottom: '0',
-          backgroundImage: `url(${showMessage ? stopedDuck : duckGif})`,
+          backgroundImage: `url(${currentImage})`,
           width: `${duckWidth}px`,
           height: `${duckHeight}px`
         }}

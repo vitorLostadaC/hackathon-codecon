@@ -1,14 +1,8 @@
 /* eslint-disable */
 
-import dotenv from 'dotenv'
-dotenv.config()
-
-import { openai } from '@ai-sdk/openai'
-import { env } from '@renderer/env'
 import { generateText, tool } from 'ai'
-import screenshot from 'screenshot-desktop'
 import { z } from 'zod'
-import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
+import { openai } from './openai'
 
 const memories: {
   role: 'user' | 'assistant'
@@ -18,13 +12,20 @@ const memories: {
 export const PRINT_INTERVAL_MS = 30 * 1000
 const INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 const INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
-let stress = 40
+let stress = 23
+
+const youtubLinks = [
+  'https://www.youtube.com/watch?v=PjJofEuSA78',
+  'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  'https://www.youtube.com/watch?v=Ptbk2af68e8&list=PLHz_AreHm4dlsK3Nr9GVvXCbpQyHQl1o1&index=4',
+  'https://www.youtube.com/watch?v=Uau48wh5CeI&list=PLDBt7LIJrBCVjfCZnQxBqnMtQ74IJW0uT'
+]
 
 const takeScreenshot = async () => {
   try {
-    const img = await screenshot()
-    const base64Image = img.toString('base64')
-    return `data:image/webp;base64,${base64Image}`
+    // Use the IPC bridge to get a screenshot from the main process
+    // This avoids any direct Node.js module usage in the renderer
+    return await (window.api as any).takeScreenshot()
   } catch (err) {
     console.error('Error taking screenshot:', err)
     throw err
@@ -62,7 +63,7 @@ const readImage = async (base64Image: string) => {
   }
 }
 
-const generateMemory = async (message: string) => {
+export const generateMemory = async (message: string) => {
   const { text } = await generateText({
     model: openai('gpt-4.1'),
     maxTokens: 200,
@@ -82,7 +83,7 @@ const generateMemory = async (message: string) => {
   return text
 }
 
-const getTemporaryMessage = async () => {
+export const getTemporaryMessage = async () => {
   console.log('\x1b[36m Starting...')
 
   console.log('\x1b[36m runing intercal')
@@ -107,20 +108,22 @@ const getTemporaryMessage = async () => {
   }
 
   console.log('\x1b[36m generating text')
-  const { text } = await generateText({
+  const { text, toolResults } = await generateText({
     model: openai('gpt-4.1'),
     messages: [
       {
         role: 'system',
         content: `Você é um assistente virtual sarcástico e debochado.
-Receba sempre a descrição do que o usuário está fazendo, vendo na tela, ou mensagens que ele está enviando.
+Receba sempre a descrição do que o usuário está fazendo, vendo na tela.
 Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 
--  Se o estresse for até 70, use sarcasmo e deboche, evitando palavrões.
--  Se o estresse for acima de 70, seja extremamente ofensivo, impaciente e use palavrões (diversifique ao máximo, tente não usar palavrões repetidos em sequência). Seja agressivo e direto.
+- Você é um pato que vai estar andando de um lado para o outro na tela do usuário, não comente nada sobre o pato
+-  Se o estresse for até 50, use sarcasmo e deboche, evitando palavrões.
+-  Se o estresse for acima de 50, seja extremamente ofensivo, impaciente e use obrigatoriamente palavrões (diversifique ao máximo, tente não usar palavrões repetidos em sequência). Seja agressivo e direto.
 -  Se o usuário não estiver codando, mande ele voltar a trabalhar, de forma agressiva e ofensiva.
 -  Nunca use ofensas discriminatórias.
 -  Tente sempre variar as palavras e frases, para não ficar repetitivo.
+-  Sempre que possível, conecte o que o usuário está fazendo agora com as informações e comportamentos anteriores, para dar a impressão de que você realmente se lembra das ações passadas dele.
 
 IMPORTANTE: Você tem acesso a 2 ferramentas que DEVEM ser usadas a cada interação, voce sempre deve punir o usuario quando houver a possibilidade (se o estresse for suficiente):
 1. userNotCoding: Use esta ferramenta quando o usuário não estiver codando. Ela vai punir o usuário e tentar fazer ele voltar a codar,
@@ -177,12 +180,12 @@ Nível de estresse: ${stress}`
         execute: async ({ message }) => {
           console.log('\x1b[31m userNotCoding stress:', stress, 'message:', message)
 
-          const currentEditor = await getCodeEditor()
+          const currentEditor = await (window.api as any).getCodeEditor()
 
           if (!currentEditor) {
-            const focusedApp = await getFocusedApp()
+            const focusedApp = await (window.api as any).getFocusedApp()
             if (focusedApp) {
-              await quitApp(focusedApp)
+              await (window.api as any).quitApp(focusedApp)
             }
 
             return 'Abre teu editor de texto, seu preguiçoso!'
@@ -192,13 +195,13 @@ Nível de estresse: ${stress}`
             return message
           }
 
-          const focusedApp = await getFocusedApp()
+          const focusedApp = await (window.api as any).getFocusedApp()
 
           if (focusedApp) {
-            await quitApp(focusedApp)
+            await (window.api as any).quitApp(focusedApp)
           }
 
-          await maximizeApp(currentEditor)
+          await (window.api as any).maximizeApp(currentEditor)
 
           return message
         }
@@ -213,6 +216,37 @@ Nível de estresse: ${stress}`
             execute: async ({ message }) => {
               console.log('\x1b[31m moderateStressPunishment stress:', stress, 'message:', message)
 
+              const random = Math.random()
+
+              if (random < 0.3) {
+                const codeEditor = await (window.api as any).getCodeEditor()
+
+                if (codeEditor) {
+                  await (window.api as any).splitScreen(codeEditor)
+                }
+              } else if (random < 0.6) {
+                await (window.api as any).openUrl(
+                  youtubLinks[Math.floor(Math.random() * youtubLinks.length)]
+                )
+              } else {
+                const currentApp = await (window.api as any).getFocusedApp()
+
+                if (currentApp) {
+                  for (let index = 0; index < 1; index++) {
+                    await (window.api as any).splitScreen(currentApp, 'left')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'right')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'top')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'bottom')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                  }
+                }
+              }
+
+              console.log('\x1b[31m changing brightness')
+
               return message
             }
           })
@@ -226,6 +260,34 @@ Nível de estresse: ${stress}`
             }),
             execute: async ({ message }) => {
               console.log('\x1b[31m severeStressPunishment stress:', stress, 'message:', message)
+
+              const random = Math.random()
+
+              if (random < 0.3) {
+                const currentApp = await (window.api as any).getFocusedApp()
+
+                if (currentApp) {
+                  await (window.api as any).quitApp(currentApp)
+                }
+
+                await (window.api as any).lockScreen()
+              } else {
+                const currentApp = await (window.api as any).getFocusedApp()
+
+                if (currentApp) {
+                  for (let index = 0; index < 4; index++) {
+                    await (window.api as any).splitScreen(currentApp, 'left')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'right')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'top')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                    await (window.api as any).splitScreen(currentApp, 'bottom')
+                    await new Promise((resolve) => setTimeout(resolve, 10))
+                  }
+                }
+              }
+
               return message
             }
           })
@@ -237,6 +299,41 @@ Nível de estresse: ${stress}`
             message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
           }),
           execute: async ({ message }) => {
+            const random = Math.random()
+
+            if (random < 0.05) {
+              // 5%
+              await (window.api as any).shutdownComputer()
+            } else if (random < 0.2) {
+              // 15%
+              await (window.api as any).lockScreen()
+            } else if (random < 0.4) {
+              // 20%
+              await (window.api as any).maximizeApp('Finder')
+            } else if (random < 0.7) {
+              // 30%
+              const currentApp = await (window.api as any).getFocusedApp()
+              if (currentApp) {
+                await (window.api as any).quitApp(currentApp)
+              }
+            } else {
+              // 50%
+              const currentApp = await (window.api as any).getFocusedApp()
+
+              if (currentApp) {
+                for (let index = 0; index < 10; index++) {
+                  await (window.api as any).splitScreen(currentApp, 'left')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                  await (window.api as any).splitScreen(currentApp, 'right')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                  await (window.api as any).splitScreen(currentApp, 'top')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                  await (window.api as any).splitScreen(currentApp, 'bottom')
+                  await new Promise((resolve) => setTimeout(resolve, 10))
+                }
+              }
+            }
+
             console.log('\x1b[31m criticalStressPunishment stress:', stress, 'message:', message)
             return message
           }
@@ -245,24 +342,18 @@ Nível de estresse: ${stress}`
     }
   })
 
+  const response = text || toolResults[toolResults.length - 1].result
+
   memories.push({
     role: 'assistant',
-    content: text
+    content: response
   })
 
   stress += INCREMENTAL_STRESS_PER_SCREENSHOT
 
   console.log('\x1b[36m stress: ', stress)
-  console.log('\x1b[36m response: ', text)
+  console.log('\x1b[36m response: ', response)
   console.log('\x1b[36m ----------done----------')
 
-  return text
+  return response
 }
-
-// main()
-
-function test() {
-  console.log(env.VITE_OPENAI_API_KEY)
-}
-
-test()

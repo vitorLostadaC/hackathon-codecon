@@ -1,7 +1,8 @@
 import { z } from 'zod'
+//pegar as variaiveis do VITE
 
 const envSchema = z.object({
-  OPENAI_API_KEY: z.string()
+  VITE_OPENAI_API_KEY: z.string()
 })
 
-export const env = envSchema.parse(process.env)
+export const env = envSchema.parse(import.meta.env)
