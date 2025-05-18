@@ -113,12 +113,6 @@ const Duck: React.FC = () => {
     }
   }, [showMessage])
 
-  useEffect(() => {
-    if (!showMessage && !animationFrameRef.current) {
-      animationFrameRef.current = requestAnimationFrame(animate)
-    }
-  }, [showMessage])
-
   const handleCloseMessage = (): void => {
     setShowMessage(false)
   }

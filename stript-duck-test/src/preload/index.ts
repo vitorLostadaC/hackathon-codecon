@@ -7,20 +7,6 @@ const api = {
   setIgnoreMouseEvents: (ignore: boolean, options?: { forward: boolean }) =>
     ipcRenderer.send('set-ignore-mouse-events', ignore, options),
 
-  // Subscribe to new messages (for real-time updates)
-  onNewMessage: (callback: (message: string) => void): (() => void) => {
-    const newMessageListener = (_event: Electron.IpcRendererEvent, message: string): void => {
-      callback(message)
-    }
-
-    ipcRenderer.on('new-duck-message', newMessageListener)
-
-    // Return a function to remove the listener
-    return () => {
-      ipcRenderer.removeListener('new-duck-message', newMessageListener)
-    }
-  },
-
   // Take a screenshot using the main process
   takeScreenshot: async (): Promise<string> => {
     return await ipcRenderer.invoke('take-screenshot')
