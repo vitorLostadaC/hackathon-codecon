@@ -16,11 +16,7 @@ const memories: {
 
 let INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 let INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
-let INCREMENTAL_STRESS_PER_USER_NOT_CODING = 10
-let MULTIPLIER_STRESS = 2
-let stress = 90
-
-const lofiURl = 'https://www.youtube.com/watch?v=lS0ux_9gH8o'
+let stress = 40
 
 const takeScreenshot = async () => {
   try {
@@ -124,6 +120,24 @@ Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 -  Nunca use ofensas discriminatórias.
 -  Tente sempre variar as palavras e frases, para não ficar repetitivo.
 
+IMPORTANTE: Você tem acesso a 2 ferramentas que DEVEM ser usadas a cada interação, voce sempre deve punir o usuario quando houver a possibilidade (se o estresse for suficiente):
+1. userNotCoding: Use esta ferramenta quando o usuário não estiver codando. Ela vai punir o usuário e tentar fazer ele voltar a codar, 
+${
+  stress >= 20 &&
+  stress < 50 &&
+  '2. moderateStressPunishment: Use esta ferramenta para punir o usuário de forma moderada.'
+}
+${
+  stress >= 50 &&
+  stress < 80 &&
+  '2. severeStressPunishment: Use esta ferramenta para punir o usuário de forma severa.'
+}
+${
+  stress >= 80 &&
+  '2. criticalStressPunishment: Use esta ferramenta quando o estresse estiver acima de 90 para punir o usuário de forma crítica.'
+}
+
+
 Exemplos:
 Estresse 50:
 -  npm? Parou de estudar em 2020, né?
@@ -149,7 +163,8 @@ Nível de estresse: ${stress}`
       ],
       tools: {
         userNotCoding: tool({
-          description: 'Pune o usuario por nao estar codando',
+          description:
+            'Pune o usuário por não estar trabalhando ou codando. Só utilize esta ferramenta se o usuário não estiver com janelas relacionadas ao trabalho abertas. Não use se ele estiver com o editor de código ou ferramentas de trabalho em foco.',
           parameters: z.object({
             message: z
               .string()
@@ -190,6 +205,67 @@ Nível de estresse: ${stress}`
 
             return message
           }
+        }),
+        ...(stress >= 20 &&
+          stress < 50 && {
+            moderateStressPunishment: tool({
+              description:
+                'Pune o usuário quando o estresse está entre 20 e 40',
+              parameters: z.object({
+                message: z
+                  .string()
+                  .describe('Uma mensagem no mesmo estilo do assistente')
+              }),
+              execute: async ({ message }) => {
+                console.log(
+                  '\x1b[31m moderateStressPunishment stress:',
+                  stress,
+                  'message:',
+                  message
+                )
+
+                return message
+              }
+            })
+          }),
+        ...(stress >= 50 &&
+          stress < 80 && {
+            severeStressPunishment: tool({
+              description: 'Pune o usuário quando o estresse está acima de 80',
+              parameters: z.object({
+                message: z
+                  .string()
+                  .describe('Uma mensagem no mesmo estilo do assistente')
+              }),
+              execute: async ({ message }) => {
+                console.log(
+                  '\x1b[31m severeStressPunishment stress:',
+                  stress,
+                  'message:',
+                  message
+                )
+                return message
+              }
+            })
+          }),
+        ...(stress >= 80 && {
+          criticalStressPunishment: tool({
+            description: 'Pune o usuário quando o estresse está acima de 80',
+            parameters: z.object({
+              message: z
+                .string()
+                .describe('Uma mensagem no mesmo estilo do assistente')
+            }),
+            execute: async ({ message }) => {
+              console.log(
+                '\x1b[31m criticalStressPunishment stress:',
+                stress,
+                'message:',
+                message
+              )
+              return message
+            }
+          })
         })
       }
     })
