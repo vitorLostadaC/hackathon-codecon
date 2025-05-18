@@ -27,16 +27,7 @@ const Duck: React.FC = () => {
   // Message state
   const [showMessage, setShowMessage] = useState(false)
   const [currentMessage, setCurrentMessage] = useState('')
-  const [duckMessages, setDuckMessages] = useState<string[]>([
-    'Quack! Need help with your code?',
-    'Did you remember to commit your changes?',
-    "Take a break! You've been coding for a while.",
-    'Have you tried turning it off and on again?',
-    'Remember to stay hydrated while coding!',
-    "Quack! Don't forget to write tests for your code.",
-    "Maybe it's time to refactor this function?",
-    'Quack quack! Your code looks great today!'
-  ])
+  const [duckMessages, setDuckMessages] = useState<string[]>([])
 
   const animationFrameRef = useRef<number | null>(null)
   const directionRef = useRef(direction)
@@ -47,7 +38,7 @@ const Duck: React.FC = () => {
   // Effect to fetch messages from API if available
   useEffect(() => {
     if (window.api.getDuckMessages) {
-      // Try to get messages from the API
+      // Get messages from the main process
       window.api
         .getDuckMessages()
         .then((messages) => {
@@ -122,12 +113,12 @@ const Duck: React.FC = () => {
     // Periodically show duck messages
     const messageInterval = setInterval(() => {
       // Only show messages when duck is visible and not being dragged
-      if (!isDragging && !showMessage && Math.random() > 0.7) {
+      if (!isDragging && !showMessage && Math.random() > 0.3 && duckMessages.length > 0) {
         const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
         setCurrentMessage(randomMessage)
         setShowMessage(true)
       }
-    }, 10000) // Check every 10 seconds with 30% chance to show a message
+    }, 12000) // Show messages every 12 seconds with 70% chance
 
     return () => {
       window.removeEventListener('resize', updateScreenWidth)
@@ -206,7 +197,7 @@ const Duck: React.FC = () => {
   // Handle duck click to show a message
   const handleDuckClick = (): void => {
     // Only show message on click if not already showing and not dragging
-    if (!showMessage && !isDragging) {
+    if (!showMessage && !isDragging && duckMessages.length > 0) {
       const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
       setCurrentMessage(randomMessage)
       setShowMessage(true)

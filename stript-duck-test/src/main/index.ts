@@ -8,14 +8,7 @@ let chatWindow: BrowserWindow | null = null
 
 // Sample duck messages - in a real app, these would come from an API
 const duckMessages = [
-  'Quack! Need help with your code?',
-  'Did you remember to commit your changes?',
-  "Take a break! You've been coding for a while.",
-  'Have you tried turning it off and on again?',
-  'Remember to stay hydrated while coding!',
-  "Quack! Don't forget to write tests for your code.",
-  "Maybe it's time to refactor this function?",
-  'Quack quack! Your code looks great today!'
+  'Oii Anderson! Lembra de mim? Seu patinho, seremos amigos... para sempre.....'
 ]
 
 // This would be the actual API integration in a real app
@@ -168,14 +161,12 @@ app.whenReady().then(() => {
   // In a real app, you might set up polling or a websocket to get new messages
   // This is just a simulation of receiving new messages periodically
   if (mainWindow) {
-    // Simulate receiving new messages every 30-60 seconds
     setInterval(() => {
-      if (mainWindow && Math.random() > 0.7 && !chatWindow) {
-        // 30% chance to send a message, but only if chat window is not open
+      if (mainWindow && Math.random() > 0.1 && !chatWindow) {
         const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
         mainWindow.webContents.send('new-duck-message', randomMessage)
       }
-    }, 30000)
+    }, 7000)
   }
 
   app.on('activate', function () {

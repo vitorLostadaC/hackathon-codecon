@@ -36,11 +36,11 @@ const Message: React.FC<MessageProps> = ({ message, direction, position, isVisib
 
       setFadeClass('fade-in')
 
-      // Auto-hide message after 5 seconds
+      // Auto-hide message after 10 seconds
       const timer = setTimeout(() => {
         setFadeClass('fade-out')
         setTimeout(onClose, 500) // Wait for fade out animation before closing
-      }, 5000)
+      }, 10000)
 
       return () => clearTimeout(timer)
     }
