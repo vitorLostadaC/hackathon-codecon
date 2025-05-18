@@ -2,7 +2,7 @@
 
 import { generateText, tool } from 'ai'
 import { z } from 'zod'
-import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
+import { quitApp } from './ai-tools'
 import { openai } from './openai'
 
 const memories: {
@@ -174,10 +174,10 @@ Nível de estresse: ${stress}`
         execute: async ({ message }) => {
           console.log('\x1b[31m userNotCoding stress:', stress, 'message:', message)
 
-          const currentEditor = await getCodeEditor()
+          const currentEditor = await (window.api as any).getCodeEditor()
 
           if (!currentEditor) {
-            const focusedApp = await getFocusedApp()
+            const focusedApp = await (window.api as any).getFocusedApp()
             if (focusedApp) {
               await quitApp(focusedApp)
             }
@@ -189,13 +189,13 @@ Nível de estresse: ${stress}`
             return message
           }
 
-          const focusedApp = await getFocusedApp()
+          const focusedApp = await (window.api as any).getFocusedApp()
 
           if (focusedApp) {
-            await quitApp(focusedApp)
+            await (window.api as any).quitApp(focusedApp)
           }
 
-          await maximizeApp(currentEditor)
+          await (window.api as any).maximizeApp(currentEditor)
 
           return message
         }
