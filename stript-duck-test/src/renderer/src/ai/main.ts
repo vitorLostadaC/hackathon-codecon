@@ -10,13 +10,12 @@ import screenshot from 'screenshot-desktop'
 import { z } from 'zod'
 import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
 
-export const PRINT_INTERVAL_MS = 30 * 1000
-
 const memories: {
   role: 'user' | 'assistant'
   content: string
 }[] = []
 
+export const PRINT_INTERVAL_MS = 30 * 1000
 const INCREMENTAL_STRESS_PER_SCREENSHOT = 5
 const INCREMENTAL_STRESS_PER_USER_MESSAGE = 20
 let stress = 40
@@ -83,37 +82,37 @@ const generateMemory = async (message: string) => {
   return text
 }
 
-const main = async () => {
+const getTemporaryMessage = async () => {
   console.log('\x1b[36m Starting...')
-  const mainTimeout = setInterval(async () => {
-    console.log('\x1b[36m runing intercal')
 
-    console.log('\x1b[36m taking screenshot')
-    const base64Image = await takeScreenshot()
-    console.log('\x1b[36m gotten screenshot')
+  console.log('\x1b[36m runing intercal')
 
-    console.log('\x1b[36m reading image')
-    const imageTranscription = await readImage(base64Image)
-    console.log('\x1b[36m gotten image transcription')
+  console.log('\x1b[36m taking screenshot')
+  const base64Image = await takeScreenshot()
+  console.log('\x1b[36m gotten screenshot')
 
-    console.log('\x1b[36m generating memory')
-    const memory = await generateMemory(imageTranscription)
-    console.log('\x1b[36m gotten memory: ', memory)
+  console.log('\x1b[36m reading image')
+  const imageTranscription = await readImage(base64Image)
+  console.log('\x1b[36m gotten image transcription')
 
-    if (memory) {
-      memories.push({
-        role: 'user',
-        content: 'Descrição da tela: ' + memory
-      })
-    }
+  console.log('\x1b[36m generating memory')
+  const memory = await generateMemory(imageTranscription)
+  console.log('\x1b[36m gotten memory: ', memory)
 
-    console.log('\x1b[36m generating text')
-    const { text } = await generateText({
-      model: openai('gpt-4.1'),
-      messages: [
-        {
-          role: 'system',
-          content: `Você é um assistente virtual sarcástico e debochado.
+  if (memory) {
+    memories.push({
+      role: 'user',
+      content: 'Descrição da tela: ' + memory
+    })
+  }
+
+  console.log('\x1b[36m generating text')
+  const { text } = await generateText({
+    model: openai('gpt-4.1'),
+    messages: [
+      {
+        role: 'system',
+        content: `Você é um assistente virtual sarcástico e debochado.
 Receba sempre a descrição do que o usuário está fazendo, vendo na tela, ou mensagens que ele está enviando.
 Responda com um comentário ofensivo, ácido e curto (até 60 caracteres).
 
@@ -157,111 +156,107 @@ Estresse 90 (não codando):
 
 
 Nível de estresse: ${stress}`
-        },
-        ...memories,
-        {
-          role: 'user',
-          content: 'Descrição da tela: ' + imageTranscription
-        }
-      ],
-      tools: {
-        userNotCoding: tool({
-          description:
-            'Pune o usuário por não estar trabalhando ou codando. Só utilize esta ferramenta se o usuário não estiver com janelas relacionadas ao trabalho abertas. Não use se ele estiver com o editor de código ou ferramentas de trabalho em foco.',
-          parameters: z.object({
-            message: z
-              .string()
-              .describe(
-                'Uma mensagem punitiva para o usuario, levando em consideracao o estresse atual. Se o estresse for maior que 40, use palavrões e seja bem agressivo.'
-              )
-          }),
-          execute: async ({ message }) => {
-            console.log('\x1b[31m userNotCoding stress:', stress, 'message:', message)
+      },
+      ...memories,
+      {
+        role: 'user',
+        content: 'Descrição da tela: ' + imageTranscription
+      }
+    ],
+    tools: {
+      userNotCoding: tool({
+        description:
+          'Pune o usuário por não estar trabalhando ou codando. Só utilize esta ferramenta se o usuário não estiver com janelas relacionadas ao trabalho abertas. Não use se ele estiver com o editor de código ou ferramentas de trabalho em foco.',
+        parameters: z.object({
+          message: z
+            .string()
+            .describe(
+              'Uma mensagem punitiva para o usuario, levando em consideracao o estresse atual. Se o estresse for maior que 40, use palavrões e seja bem agressivo.'
+            )
+        }),
+        execute: async ({ message }) => {
+          console.log('\x1b[31m userNotCoding stress:', stress, 'message:', message)
 
-            const currentEditor = await getCodeEditor()
+          const currentEditor = await getCodeEditor()
 
-            if (!currentEditor) {
-              const focusedApp = await getFocusedApp()
-              if (focusedApp) {
-                await quitApp(focusedApp)
-              }
-
-              return 'Abre teu editor de texto, seu preguiçoso!'
-            }
-
-            if (stress < 80) {
-              return message
-            }
-
+          if (!currentEditor) {
             const focusedApp = await getFocusedApp()
-
             if (focusedApp) {
               await quitApp(focusedApp)
             }
 
-            await maximizeApp(currentEditor)
+            return 'Abre teu editor de texto, seu preguiçoso!'
+          }
 
+          if (stress < 80) {
             return message
           }
-        }),
-        ...(stress >= 20 &&
-          stress < 50 && {
-            moderateStressPunishment: tool({
-              description: 'Pune o usuário quando o estresse está entre 20 e 40',
-              parameters: z.object({
-                message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
-              }),
-              execute: async ({ message }) => {
-                console.log(
-                  '\x1b[31m moderateStressPunishment stress:',
-                  stress,
-                  'message:',
-                  message
-                )
 
-                return message
-              }
-            })
-          }),
-        ...(stress >= 50 &&
-          stress < 80 && {
-            severeStressPunishment: tool({
-              description: 'Pune o usuário quando o estresse está acima de 80',
-              parameters: z.object({
-                message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
-              }),
-              execute: async ({ message }) => {
-                console.log('\x1b[31m severeStressPunishment stress:', stress, 'message:', message)
-                return message
-              }
-            })
-          }),
-        ...(stress >= 80 && {
-          criticalStressPunishment: tool({
+          const focusedApp = await getFocusedApp()
+
+          if (focusedApp) {
+            await quitApp(focusedApp)
+          }
+
+          await maximizeApp(currentEditor)
+
+          return message
+        }
+      }),
+      ...(stress >= 20 &&
+        stress < 50 && {
+          moderateStressPunishment: tool({
+            description: 'Pune o usuário quando o estresse está entre 20 e 40',
+            parameters: z.object({
+              message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
+            }),
+            execute: async ({ message }) => {
+              console.log('\x1b[31m moderateStressPunishment stress:', stress, 'message:', message)
+
+              return message
+            }
+          })
+        }),
+      ...(stress >= 50 &&
+        stress < 80 && {
+          severeStressPunishment: tool({
             description: 'Pune o usuário quando o estresse está acima de 80',
             parameters: z.object({
               message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
             }),
             execute: async ({ message }) => {
-              console.log('\x1b[31m criticalStressPunishment stress:', stress, 'message:', message)
+              console.log('\x1b[31m severeStressPunishment stress:', stress, 'message:', message)
               return message
             }
           })
+        }),
+      ...(stress >= 80 && {
+        criticalStressPunishment: tool({
+          description: 'Pune o usuário quando o estresse está acima de 80',
+          parameters: z.object({
+            message: z.string().describe('Uma mensagem no mesmo estilo do assistente')
+          }),
+          execute: async ({ message }) => {
+            console.log('\x1b[31m criticalStressPunishment stress:', stress, 'message:', message)
+            return message
+          }
         })
-      }
-    })
+      })
+    }
+  })
 
-    memories.push({
-      role: 'assistant',
-      content: text
-    })
+  memories.push({
+    role: 'assistant',
+    content: text
+  })
 
-    stress += INCREMENTAL_STRESS_PER_SCREENSHOT
+  stress += INCREMENTAL_STRESS_PER_SCREENSHOT
 
-    console.log('\x1b[36m stress: ', stress)
-    console.log('\x1b[36m response: ', text)
-    console.log('\x1b[36m ----------done----------')
-  }, PRINT_INTERVAL_MS)
+  console.log('\x1b[36m stress: ', stress)
+  console.log('\x1b[36m response: ', text)
+  console.log('\x1b[36m ----------done----------')
+
+  return text
 }
 
 // main()
