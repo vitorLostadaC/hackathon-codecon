@@ -22,15 +22,9 @@ function App(): React.JSX.Element {
     return () => window.removeEventListener('hashchange', checkIfChatMode)
   }, [])
 
-  // Handler for sending messages from chat to the main process
-  const handleSendMessage = (message: string): void => {
-    // Send the message to the main process to forward to the duck window
-    window.electron.ipcRenderer.send('send-message-to-duck', message)
-  }
-
   // Render either the chat interface or the duck based on the mode
   return isChat ? (
-    <Chat onSendMessage={handleSendMessage} />
+    <Chat />
   ) : (
     <div className="app-container">
       <Duck />

@@ -163,13 +163,6 @@ app.whenReady().then(() => {
     }
   })
 
-  // Handle messages sent to the duck from the chat window
-  ipcMain.on('send-message-to-duck', (_, message) => {
-    if (mainWindow) {
-      mainWindow.webContents.send('new-duck-message', message)
-    }
-  })
-
   createWindow()
 
   // In a real app, you might set up polling or a websocket to get new messages
