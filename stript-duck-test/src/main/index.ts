@@ -167,7 +167,7 @@ app.whenReady().then(() => {
         const randomMessage = duckMessages[Math.floor(Math.random() * duckMessages.length)]
         mainWindow.webContents.send('new-duck-message', randomMessage)
       }
-    }, 7000)
+    }, 10000)
   }
 
   app.on('activate', function () {
