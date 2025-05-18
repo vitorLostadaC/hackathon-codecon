@@ -77,7 +77,7 @@ export const generateMemory = async (message: string) => {
   return text
 }
 
-const getTemporaryMessage = async () => {
+export const getTemporaryMessage = async () => {
   console.log('\x1b[36m Starting...')
 
   console.log('\x1b[36m runing intercal')
