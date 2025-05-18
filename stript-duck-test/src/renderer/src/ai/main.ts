@@ -1,29 +1,9 @@
 /* eslint-disable */
 
-// Remove dotenv imports and config since we handle this in the main process now
-// import dotenv from 'dotenv'
-// dotenv.config()
-
 import { generateText, tool } from 'ai'
 import { z } from 'zod'
 import { getCodeEditor, getFocusedApp, maximizeApp, quitApp } from './ai-tools'
 import { openai } from './openai'
-
-// Create an async function to set up our OpenAI API key from the main process
-async function initializeEnv() {
-  // Get OPENAI_API_KEY from the main process via IPC
-  const apiKey = await (window.api as any).getEnv('OPENAI_API_KEY')
-  if (apiKey) {
-    // Set it in the Vite environment
-    // @ts-ignore - Adding a property to import.meta.env
-    import.meta.env.VITE_OPENAI_API_KEY = apiKey
-  } else {
-    console.error('OpenAI API key not found in environment variables')
-  }
-}
-
-// Initialize environment variables
-initializeEnv()
 
 const memories: {
   role: 'user' | 'assistant'
