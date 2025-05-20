@@ -21,13 +21,6 @@
   --ev-button-alt-hover-border: transparent;
   --ev-button-alt-hover-text: var(--ev-c-text-1);
   --ev-button-alt-hover-bg: var(--ev-c-gray-2);
-  
-  /* Scrollbar customization */
-  --scrollbar-width: 8px;
-  --scrollbar-track: transparent;
-  --scrollbar-thumb: var(--ev-c-gray-3);
-  --scrollbar-thumb-hover: var(--ev-c-gray-2);
-
 }
 
 :root {
@@ -53,7 +46,7 @@ ul {
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: transparent;
+  background: var(--color-background);
   line-height: 1.6;
   font-family:
     Inter,
@@ -71,29 +64,4 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Scrollbar styling for WebKit browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-  height: var(--scrollbar-width);
-}
-
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-
-/* Firefox scrollbar styling */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }

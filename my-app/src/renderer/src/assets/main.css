@@ -5,7 +5,8 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: transparent;
+  background-image: url('./wavy-lines.svg');
+  background-size: cover;
   user-select: none;
 }
 
@@ -167,20 +168,4 @@ code {
   .actions {
     display: none;
   }
-}
-
-.app-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: transparent;
-  pointer-events: none; /* Make container click-through */
-}
-
-/* Only the duck will receive mouse events */
-.app-container > * {
-  pointer-events: auto;
 }
