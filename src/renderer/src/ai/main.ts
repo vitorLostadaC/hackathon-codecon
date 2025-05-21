@@ -2,7 +2,7 @@
 
 import { generateText, tool } from 'ai'
 import { z } from 'zod'
-import { openai } from './openai'
+import { openai } from '../services/openai'
 
 const memories: {
   role: 'user' | 'assistant'
