@@ -1,0 +1,27 @@
+.duck {
+  position: absolute;
+  bottom: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed; /* Helps with ghost image issues */
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s, background-image 0s; /* Remove transition on background-image */
+  z-index: 9999; /* Make sure duck is on top of anything else */
+  will-change: transform, background-image; /* Optimize for GPU rendering */
+}
+
+/* Flip the duck when moving left */
+.duck.flip {
+  transform: scaleX(-1);
+}
+
+/* Visual feedback when hovering over duck */
+.duck.hovered {
+  filter: brightness(1.2);
+}
+
+.duck.dragging {
+  cursor: grabbing;
+  filter: brightness(1.1);
+} 
