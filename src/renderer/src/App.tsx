@@ -1,11 +1,9 @@
-import Versions from './components/Versions'
+import { Pet } from './components/pet'
 
 export default function App(): React.JSX.Element {
   return (
     <>
-      <div className="bg-red-500">test</div>
-
-      <Versions></Versions>
+      <Pet />
     </>
   )
 }
