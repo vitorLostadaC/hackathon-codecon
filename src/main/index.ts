@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -10,12 +10,23 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
+
+  // Permite clicar através da janela
+  mainWindow.setIgnoreMouseEvents(true)
+
+  // Position window on primary display
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width, height } = primaryDisplay.workAreaSize
+  mainWindow.setPosition(Math.floor((width - 900) / 2), Math.floor((height - 670) / 2))
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
