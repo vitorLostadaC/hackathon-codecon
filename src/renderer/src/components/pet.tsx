@@ -1,19 +1,33 @@
-import { useState } from 'react'
 import duck from '../assets/animals/duck/duck.gif'
+import stopedDuck from '../assets/animals/duck/stopped-duck.png'
 
-export const Pet = (): React.JSX.Element => {
-  const [direction, setDirection] = useState<'left' | 'right'>('right')
+interface PetProps {
+  isWalking: boolean
+}
 
-  const handleDirection = (): void => {
-    setDirection(direction === 'left' ? 'right' : 'left')
-  }
-
+export const Pet = ({ isWalking }: PetProps): React.JSX.Element => {
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="relative h-screen overflow-hidden">
+      <style>
+        {`
+          @keyframes walkLeftRight {
+            0% { left: 0; transform: scaleX(1); }
+            49.9% { transform: scaleX(1); }
+            50% { left: calc(100% - 64px); transform: scaleX(-1); }
+            99.9% { transform: scaleX(-1); }
+            100% { left: 0; transform: scaleX(1); }
+          }
+          
+          .pet {
+            animation: walkLeftRight 20s linear infinite;
+            animation-play-state: ${isWalking ? 'running' : 'paused'};
+          }
+        `}
+      </style>
       <img
-        src={duck}
+        src={isWalking ? duck : stopedDuck}
         alt="pet"
-        className={`w-20 h-20 ${direction === 'left' ? 'rotate-180' : ''}`}
+        className="pet w-16 h-16 absolute bottom-0"
       />
     </div>
   )

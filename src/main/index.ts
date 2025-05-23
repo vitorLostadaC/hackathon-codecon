@@ -1,35 +1,51 @@
 import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
-    frame: false,
+    width: screenWidth,
+    height: screenHeight,
+    x: 0,
+    y: 20,
     transparent: true,
+    frame: false,
     alwaysOnTop: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    skipTaskbar: true,
+    resizable: false,
+    movable: false,
+    minimizable: false,
+    maximizable: false,
+    focusable: false,
+    show: false,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: false,
+      contextIsolation: true
     }
   })
 
   // Permite clicar através da janela
-  mainWindow.setIgnoreMouseEvents(true)
+  mainWindow.setIgnoreMouseEvents(true, { forward: true })
 
-  // Position window on primary display
-  const primaryDisplay = screen.getPrimaryDisplay()
-  const { width, height } = primaryDisplay.workAreaSize
-  mainWindow.setPosition(Math.floor((width - 900) / 2), Math.floor((height - 670) / 2))
+  // Configurar sempre no topo baseado na plataforma
+  const setAlwaysOnTopByPlatform = (): void => {
+    if (process.platform === 'win32') {
+      mainWindow.setAlwaysOnTop(true, 'screen-saver', 1)
+    } else if (process.platform === 'darwin') {
+      mainWindow.setAlwaysOnTop(true, 'floating', 1)
+    } else {
+      mainWindow.setAlwaysOnTop(true, 'screen-saver', 1)
+    }
+  }
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.once('ready-to-show', () => {
     mainWindow.show()
+    setAlwaysOnTopByPlatform()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
