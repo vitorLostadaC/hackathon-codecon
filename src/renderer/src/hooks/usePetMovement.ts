@@ -1,19 +1,24 @@
 import { PET_WIDTH, MOVEMENT_SPEED } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
 
+export enum Direction {
+  LEFT = -1,
+  RIGHT = 1
+}
+
 export const usePetMovement = (): {
   position: number
-  direction: number
-  chatDirection: number
+  direction: Direction
+  chatDirection: Direction
   stopMovement: () => void
   resumeMovement: () => void
 } => {
   const [position, setPosition] = useState(0)
-  const [direction, setDirection] = useState(1)
-  const [chatDirection, setChatDirection] = useState(1)
+  const [direction, setDirection] = useState(Direction.RIGHT)
+  const [chatDirection, setChatDirection] = useState(Direction.RIGHT)
 
   const animationFrameRef = useRef<number | null>(null)
-  const directionRef = useRef(1)
+  const directionRef = useRef(Direction.RIGHT)
 
   const updatePosition = (): void => {
     setPosition((prev) => {
@@ -21,21 +26,21 @@ export const usePetMovement = (): {
       const maxPos = window.innerWidth - PET_WIDTH
 
       if (nextPos <= 0) {
-        directionRef.current = 1
-        setDirection(1)
+        directionRef.current = Direction.RIGHT
+        setDirection(Direction.RIGHT)
         return 0
       }
 
       if (nextPos >= maxPos) {
-        directionRef.current = -1
-        setDirection(-1)
+        directionRef.current = Direction.LEFT
+        setDirection(Direction.LEFT)
         return maxPos
       }
 
       if (nextPos <= 220) {
-        setChatDirection(1)
+        setChatDirection(Direction.RIGHT)
       } else if (nextPos >= window.innerWidth - 244 - 30) {
-        setChatDirection(-1)
+        setChatDirection(Direction.LEFT)
       }
 
       return nextPos
