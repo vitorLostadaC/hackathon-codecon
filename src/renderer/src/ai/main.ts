@@ -13,17 +13,6 @@ const memories: {
 // const INCREMENTAL_STRESS = 5
 // let stress = 0
 
-const takeScreenshot = async () => {
-  try {
-    // Use the IPC bridge to get a screenshot from the main process
-    // This avoids any direct Node.js module usage in the renderer
-    return await (window.api as any).takeScreenshot()
-  } catch (err) {
-    console.error('Error taking screenshot:', err)
-    throw err
-  }
-}
-
 const readImage = async (base64Image: string) => {
   try {
     const { text } = await generateText({
@@ -81,7 +70,7 @@ export const getTemporaryMessage = async () => {
   console.debug('\x1b[36m runing intercal')
 
   console.debug('\x1b[36m taking screenshot')
-  const base64Image = await takeScreenshot()
+  const base64Image = await window.api.takeScreenshot()
   console.debug('\x1b[36m gotten screenshot')
 
   console.debug('\x1b[36m reading image')
@@ -100,7 +89,7 @@ export const getTemporaryMessage = async () => {
   }
 
   console.debug('\x1b[36m generating text')
-  const { text, toolResults } = await generateText({
+  const { text } = await generateText({
     model: openai('gpt-4.1'),
     messages: [
       {
