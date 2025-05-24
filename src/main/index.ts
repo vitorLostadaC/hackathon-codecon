@@ -29,14 +29,10 @@ function createWindow(): void {
     }
   })
 
-  // Permite clicar através da janela
   mainWindow.setIgnoreMouseEvents(true, { forward: true })
 
-  // Configurar sempre no topo baseado na plataforma
   const setAlwaysOnTopByPlatform = (): void => {
-    if (process.platform === 'win32') {
-      mainWindow.setAlwaysOnTop(true, 'screen-saver', 1)
-    } else if (process.platform === 'darwin') {
+    if (process.platform === 'darwin') {
       mainWindow.setAlwaysOnTop(true, 'floating', 1)
     } else {
       mainWindow.setAlwaysOnTop(true, 'screen-saver', 1)
