@@ -1,13 +1,6 @@
-import { Direction } from '@renderer/hooks/usePetMovement'
+import { Direction, ChatProps } from '@renderer/constants'
 import { cn } from '@renderer/lib/utils'
 import React from 'react'
-
-interface ChatProps {
-  message?: string
-  isVisible: boolean
-  direction?: Direction
-  style?: React.CSSProperties
-}
 
 export const Chat = ({
   message,

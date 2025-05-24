@@ -4,12 +4,7 @@ import duckStopped from '../assets/animals/duck/stopped-duck.png'
 import { Chat } from './chat'
 import { usePetMovement } from '../hooks/usePetMovement'
 import { usePetChat } from '../hooks/usePetChat'
-
-enum PetState {
-  WALKING = 'walking',
-  PRINTING = 'printing',
-  STOPPED = 'stopped'
-}
+import { PetState, PET_DIMENSIONS, ANIMATION } from '../constants'
 
 export const Pet = (): React.JSX.Element => {
   const currentStateRef = useRef<PetState>(PetState.WALKING)
@@ -40,8 +35,15 @@ export const Pet = (): React.JSX.Element => {
         </div>
       )}
       <div
-        className="w-16 h-16 absolute bottom-0 transition-transform duration-100"
-        style={duckStyle}
+        style={{
+          ...duckStyle,
+          width: PET_DIMENSIONS.width,
+          height: PET_DIMENSIONS.height,
+          position: 'absolute',
+          bottom: 0,
+          transitionProperty: 'transform',
+          transitionDuration: `${ANIMATION.transformDuration}ms`
+        }}
       >
         <img
           src={currentStateRef.current === PetState.WALKING ? duckWalking : duckStopped}

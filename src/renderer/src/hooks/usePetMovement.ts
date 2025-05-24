@@ -1,10 +1,5 @@
-import { PET_WIDTH, MOVEMENT_SPEED } from '@renderer/constants'
+import { PET_WIDTH, MOVEMENT_SPEED, Direction, CHAT_POSITION } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
-
-export enum Direction {
-  LEFT = -1,
-  RIGHT = 1
-}
 
 export const usePetMovement = (): {
   position: number
@@ -37,9 +32,9 @@ export const usePetMovement = (): {
         return maxPos
       }
 
-      if (nextPos <= 220) {
+      if (nextPos <= CHAT_POSITION.RIGHT_THRESHOLD) {
         setChatDirection(Direction.RIGHT)
-      } else if (nextPos >= window.innerWidth - 244 - 30) {
+      } else if (nextPos >= window.innerWidth - CHAT_POSITION.LEFT_THRESHOLD) {
         setChatDirection(Direction.LEFT)
       }
 
