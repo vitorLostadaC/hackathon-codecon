@@ -1,7 +1,5 @@
+import { PET_WIDTH, MOVEMENT_SPEED } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
-
-const PET_WIDTH = 64
-const MOVEMENT_SPEED = 2
 
 export const usePetMovement = (): {
   position: number

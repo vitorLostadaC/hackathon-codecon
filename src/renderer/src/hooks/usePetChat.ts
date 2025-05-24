@@ -1,16 +1,5 @@
+import { MESSAGE_DURATION, MESSAGE_INTERVAL, MESSAGES } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
-
-const MESSAGE_DURATION = 5000
-const MESSAGE_INTERVAL = 10000
-
-const MESSAGES = [
-  'Oi! Eu sou um pato!',
-  'Você viu meu pão?',
-  'Quack quack!',
-  'Andando por aí...',
-  'Preciso de férias!',
-  'Você tem milho?'
-]
 
 export const usePetChat = (
   onStartChat: () => void,

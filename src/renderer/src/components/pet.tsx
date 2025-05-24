@@ -5,18 +5,24 @@ import { Chat } from './chat'
 import { usePetMovement } from '../hooks/usePetMovement'
 import { usePetChat } from '../hooks/usePetChat'
 
+enum PetState {
+  WALKING = 'walking',
+  PRINTING = 'printing',
+  STOPPED = 'stopped'
+}
+
 export const Pet = (): React.JSX.Element => {
-  const isChattingRef = useRef(false)
+  const currentStateRef = useRef<PetState>(PetState.WALKING)
 
   const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement()
 
   const { message, isVisible } = usePetChat(
     () => {
-      isChattingRef.current = true
+      currentStateRef.current = PetState.STOPPED
       stopMovement()
     },
     () => {
-      isChattingRef.current = false
+      currentStateRef.current = PetState.WALKING
       resumeMovement()
     }
   )
@@ -38,7 +44,7 @@ export const Pet = (): React.JSX.Element => {
         style={duckStyle}
       >
         <img
-          src={!isChattingRef.current ? duckWalking : duckStopped}
+          src={currentStateRef.current === PetState.WALKING ? duckWalking : duckStopped}
           alt="Duck"
           className="w-full h-full object-contain"
         />
@@ -46,5 +52,3 @@ export const Pet = (): React.JSX.Element => {
     </div>
   )
 }
-
-export default Pet
