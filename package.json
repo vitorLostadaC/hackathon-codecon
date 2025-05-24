@@ -23,7 +23,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "electron-updater": "^6.3.9"
+    "clsx": "^2.1.1",
+    "electron-updater": "^6.3.9",
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
@@ -54,5 +56,6 @@
       "electron",
       "esbuild"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.8.0"
 }

@@ -1,24 +1,47 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: screenWidth,
+    height: screenHeight,
+    x: 0,
+    y: 20,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    resizable: false,
+    movable: false,
+    minimizable: false,
+    maximizable: false,
+    focusable: false,
     show: false,
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: false,
+      contextIsolation: true
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.setIgnoreMouseEvents(true, { forward: true })
+
+  const setAlwaysOnTopByPlatform = (): void => {
+    if (process.platform === 'darwin') {
+      mainWindow.setAlwaysOnTop(true, 'floating', 1)
+    } else {
+      mainWindow.setAlwaysOnTop(true, 'screen-saver', 1)
+    }
+  }
+
+  mainWindow.once('ready-to-show', () => {
     mainWindow.show()
+    setAlwaysOnTopByPlatform()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
