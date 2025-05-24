@@ -4,7 +4,13 @@ import duckStopped from '../assets/animals/duck/stopped-duck.png'
 import { Chat } from './chat'
 import { usePetMovement } from '../hooks/usePetMovement'
 import { usePetChat } from '../hooks/usePetChat'
-import { PetState, PET_DIMENSIONS, ANIMATION } from '../constants'
+import { PET_DIMENSIONS, ANIMATION } from '../constants'
+
+enum PetState {
+  WALKING = 'walking',
+  PRINTING = 'printing',
+  STOPPED = 'stopped'
+}
 
 export const Pet = (): React.JSX.Element => {
   const currentStateRef = useRef<PetState>(PetState.WALKING)
