@@ -16,16 +16,16 @@ export const Pet = (): React.JSX.Element => {
 
   const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement()
 
-  const { message, isVisible } = usePetChat(
-    () => {
+  const { message, isVisible } = usePetChat({
+    onMessageShow: () => {
       currentStateRef.current = PetState.STOPPED
       stopMovement()
     },
-    () => {
+    onMessageHide: () => {
       currentStateRef.current = PetState.WALKING
       resumeMovement()
     }
-  )
+  })
 
   const duckStyle = {
     left: `${position}px`,

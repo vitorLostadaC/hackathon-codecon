@@ -1,10 +1,15 @@
 import { MESSAGE_DURATION, MESSAGE_INTERVAL, MESSAGES } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
 
-export const usePetChat = (
-  onStartChat: () => void,
-  onEndChat: () => void
-): {
+interface PetChatCallbacks {
+  onMessageShow: () => void
+  onMessageHide: () => void
+}
+
+export const usePetChat = ({
+  onMessageShow,
+  onMessageHide
+}: PetChatCallbacks): {
   message: string
   isVisible: boolean
 } => {
@@ -15,14 +20,14 @@ export const usePetChat = (
   const messageIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const showMessage = (): void => {
-    onStartChat()
+    onMessageShow()
     const randomMessage = MESSAGES[Math.floor(Math.random() * MESSAGES.length)]
     setMessage(randomMessage)
     setIsVisible(true)
 
     chatTimerRef.current = setTimeout(() => {
       setIsVisible(false)
-      onEndChat()
+      onMessageHide()
       scheduleNextMessage()
     }, MESSAGE_DURATION)
   }
