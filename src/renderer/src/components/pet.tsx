@@ -1,34 +1,50 @@
-import duck from '../assets/animals/duck/duck.gif'
-import stopedDuck from '../assets/animals/duck/stopped-duck.png'
+import { useRef } from 'react'
+import duckWalking from '../assets/animals/duck/duck.gif'
+import duckStopped from '../assets/animals/duck/stopped-duck.png'
+import { Chat } from './chat'
+import { usePetMovement } from '../hooks/usePetMovement'
+import { usePetChat } from '../hooks/usePetChat'
 
-interface PetProps {
-  isWalking: boolean
-}
+export const Pet = (): React.JSX.Element => {
+  const isChattingRef = useRef(false)
 
-export const Pet = ({ isWalking }: PetProps): React.JSX.Element => {
+  const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement()
+
+  const { message, isVisible } = usePetChat(
+    () => {
+      isChattingRef.current = true
+      stopMovement()
+    },
+    () => {
+      isChattingRef.current = false
+      resumeMovement()
+    }
+  )
+
+  const duckStyle = {
+    left: `${position}px`,
+    transform: `scaleX(${direction})`
+  }
+
   return (
     <div className="relative h-screen overflow-hidden">
-      <style>
-        {`
-          @keyframes walkLeftRight {
-            0% { left: 0; transform: scaleX(1); }
-            49.9% { transform: scaleX(1); }
-            50% { left: calc(100% - 64px); transform: scaleX(-1); }
-            99.9% { transform: scaleX(-1); }
-            100% { left: 0; transform: scaleX(1); }
-          }
-          
-          .pet {
-            animation: walkLeftRight 20s linear infinite;
-            animation-play-state: ${isWalking ? 'running' : 'paused'};
-          }
-        `}
-      </style>
-      <img
-        src={isWalking ? duck : stopedDuck}
-        alt="pet"
-        className="pet w-16 h-16 absolute bottom-0"
-      />
+      {isVisible && (
+        <div className="absolute bottom-0" style={{ left: `${position}px` }}>
+          <Chat message={message} isVisible direction={chatDirection} />
+        </div>
+      )}
+      <div
+        className="w-16 h-16 absolute bottom-0 transition-transform duration-100"
+        style={duckStyle}
+      >
+        <img
+          src={!isChattingRef.current ? duckWalking : duckStopped}
+          alt="Duck"
+          className="w-full h-full object-contain"
+        />
+      </div>
     </div>
   )
 }
+
+export default Pet
