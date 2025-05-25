@@ -1,5 +1,10 @@
-import { MESSAGE_DURATION, MESSAGE_INTERVAL, MESSAGES, PetChatCallbacks } from '@renderer/constants'
+import { MESSAGE_DURATION, MESSAGE_INTERVAL, MESSAGES } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
+
+interface PetChatCallbacks {
+  onMessageShow: () => void
+  onMessageHide: () => void
+}
 
 export const usePetChat = ({
   onMessageShow,

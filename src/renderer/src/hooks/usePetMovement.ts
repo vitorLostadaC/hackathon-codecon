@@ -1,5 +1,8 @@
-import { PET_WIDTH, MOVEMENT_SPEED, Direction, CHAT_POSITION } from '@renderer/constants'
+import { MOVEMENT_SPEED, Direction, PET_DIMENSIONS } from '@renderer/constants'
 import { useEffect, useRef, useState } from 'react'
+
+const RIGHT_THRESHOLD = 220
+const LEFT_THRESHOLD = 274
 
 export const usePetMovement = (): {
   position: number
@@ -18,7 +21,7 @@ export const usePetMovement = (): {
   const updatePosition = (): void => {
     setPosition((prev) => {
       const nextPos = prev + directionRef.current * MOVEMENT_SPEED
-      const maxPos = window.innerWidth - PET_WIDTH
+      const maxPos = window.innerWidth - PET_DIMENSIONS.width
 
       if (nextPos <= 0) {
         directionRef.current = Direction.RIGHT
@@ -32,9 +35,9 @@ export const usePetMovement = (): {
         return maxPos
       }
 
-      if (nextPos <= CHAT_POSITION.RIGHT_THRESHOLD) {
+      if (nextPos <= RIGHT_THRESHOLD) {
         setChatDirection(Direction.RIGHT)
-      } else if (nextPos >= window.innerWidth - CHAT_POSITION.LEFT_THRESHOLD) {
+      } else if (nextPos >= LEFT_THRESHOLD) {
         setChatDirection(Direction.LEFT)
       }
 
