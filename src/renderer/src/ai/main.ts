@@ -8,6 +8,7 @@ const safeMode = false
 const memories: {
   role: 'user' | 'assistant'
   content: string
+  date: string
 }[] = []
 
 // Stress system
@@ -17,7 +18,7 @@ const memories: {
 
 const readImage = async (base64Image: string) => {
   try {
-    const { text } = await generateText({
+    const { text, usage } = await generateText({
       model: openai('gpt-4.1-nano'),
       messages: [
         {
@@ -39,7 +40,10 @@ const readImage = async (base64Image: string) => {
       ]
     })
 
-    return text
+    return {
+      tokens: usage.totalTokens,
+      response: text
+    }
   } catch (err) {
     console.error('Error reading image:', err)
     throw err
@@ -47,7 +51,7 @@ const readImage = async (base64Image: string) => {
 }
 
 export const generateMemory = async (message: string) => {
-  const { text } = await generateText({
+  const { text, usage } = await generateText({
     model: openai('gpt-4.1-nano'),
     maxTokens: 200,
     messages: [
@@ -62,8 +66,12 @@ export const generateMemory = async (message: string) => {
       }
     ]
   })
+  console.log('usage', usage)
 
-  return text
+  return {
+    tokens: usage?.totalTokens ?? 0,
+    response: text
+  }
 }
 
 export const getTemporaryMessage = async () => {
@@ -72,23 +80,24 @@ export const getTemporaryMessage = async () => {
   const base64Image = await window.api.takeScreenshot()
 
   console.log('\x1b[36m reading image')
-  const imageTranscription = await readImage(base64Image)
-  console.log('\x1b[33m image transcription: ', imageTranscription)
+  const imageTranscriptionResult = await readImage(base64Image)
+  console.log('\x1b[33m image transcription: ', imageTranscriptionResult.response)
 
   console.log('\x1b[36m generating memory')
-  const memory = await generateMemory(imageTranscription)
+  const memoryResult = await generateMemory(imageTranscriptionResult.response)
 
-  console.log('\x1b[33m gotten memory: ', memory)
+  console.log('\x1b[33m gotten memory: ', memoryResult.response)
 
-  if (memory) {
+  if (memoryResult.response) {
     memories.push({
       role: 'user',
-      content: `Data: ${new Date().toLocaleString()}\nDescrição da tela: ${memory}`
+      content: `Descrição da tela: ${memoryResult.response}`,
+      date: new Date().toISOString()
     })
   }
 
   console.log('\x1b[36m generating text')
-  const response = await generateText({
+  const responseResult = await generateText({
     model: openai('gpt-4.1'),
     maxTokens: 50,
     temperature: 0.6,
@@ -135,20 +144,37 @@ ${
       },
       {
         role: 'user',
-        content: `Descrição da tela: ${imageTranscription}`
+        content: `Descrição da tela: ${imageTranscriptionResult.response}`
       },
       ...memories
     ]
   })
 
+  const responseTokens = responseResult.usage?.totalTokens ?? 0
+  const responseText = responseResult.text
+
   memories.push({
     role: 'assistant',
-    content: `Data: ${new Date().toLocaleString()}\n${response.text}`
+    content: responseText,
+    date: new Date().toISOString()
   })
 
-  console.log('\x1b[33m response: ', response)
-  console.log('\x1b[33m result: ', response.text)
+  console.log('\x1b[33m response: ', responseResult)
+  console.log('\x1b[33m result: ', responseText)
   console.log('\x1b[36m ----------done----------')
 
-  return response.text
+  console.log({
+    tokens: {
+      'gpt-4.1-nano': imageTranscriptionResult.tokens + memoryResult.tokens,
+      'gpt-4.1': responseTokens
+    }
+  })
+
+  return {
+    tokens: {
+      'gpt-4.1-nano': imageTranscriptionResult.tokens + memoryResult.tokens,
+      'gpt-4.1': responseTokens
+    },
+    response: responseText
+  }
 }
