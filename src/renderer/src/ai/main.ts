@@ -16,14 +16,14 @@ const memories: {
 const readImage = async (base64Image: string) => {
   try {
     const { text } = await generateText({
-      model: openai('gpt-4o'),
+      model: openai('gpt-4.1-nano'),
       messages: [
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: 'O que você vê nesta imagem? Por favor, descreva em detalhes.'
+              text: `Analise esta captura de tela e identifique: quais aplicações estão abertas e qual está em foco, que tipo de conteúdo está sendo visualizado ou editado incluindo textos relevantes e dados em exibição, e qual atividade o usuário está realizando no momento incluindo a etapa do processo ou workflow atual. Seja conciso e objetivo, priorizando informações essenciais para entender o contexto de trabalho do usuário.`
             },
             {
               type: 'image',
@@ -65,21 +65,23 @@ export const generateMemory = async (message: string) => {
 }
 
 export const getTemporaryMessage = async () => {
-  console.debug('\x1b[36m Starting...')
+  console.log('\x1b[36m Starting...')
 
-  console.debug('\x1b[36m runing intercal')
+  console.log('\x1b[36m runing intercal')
 
-  console.debug('\x1b[36m taking screenshot')
+  console.log('\x1b[36m taking screenshot')
   const base64Image = await window.api.takeScreenshot()
-  console.debug('\x1b[36m gotten screenshot')
+  console.log('\x1b[36m gotten screenshot')
 
-  console.debug('\x1b[36m reading image')
+  console.log('\x1b[36m reading image')
   const imageTranscription = await readImage(base64Image)
-  console.debug('\x1b[36m gotten image transcription')
+  console.log('\x1b[36m gotten image transcription')
 
-  console.debug('\x1b[36m generating memory')
+  console.log('\x1b[36m image transcription: ', imageTranscription)
+
+  console.log('\x1b[36m generating memory')
   const memory = await generateMemory(imageTranscription)
-  console.debug('\x1b[36m gotten memory: ', memory)
+  console.log('\x1b[36m gotten memory: ', memory)
 
   if (memory) {
     memories.push({
@@ -88,7 +90,7 @@ export const getTemporaryMessage = async () => {
     })
   }
 
-  console.debug('\x1b[36m generating text')
+  console.log('\x1b[36m generating text')
   const { text } = await generateText({
     model: openai('gpt-4.1'),
     messages: [
@@ -138,8 +140,8 @@ Estresse 85 (codando):
     content: response
   })
 
-  console.debug('\x1b[36m response: ', response)
-  console.debug('\x1b[36m ----------done----------')
+  console.log('\x1b[36m response: ', response)
+  console.log('\x1b[36m ----------done----------')
 
   return response
 }
