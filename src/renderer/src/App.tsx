@@ -7,8 +7,7 @@ export default function App(): React.JSX.Element {
       <button
         className="bg-red-500"
         onClick={async () => {
-          const message = await getTemporaryMessage()
-          console.log(message)
+          await getTemporaryMessage()
         }}
       >
         take screenshot
