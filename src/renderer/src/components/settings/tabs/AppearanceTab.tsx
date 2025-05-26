@@ -1,0 +1,36 @@
+import React from 'react'
+import { Button } from '../components/Button'
+
+interface AppearanceTabProps {
+  selectedTheme: number
+  onThemeChange: (themeIndex: number) => void
+}
+
+export function AppearanceTab({
+  selectedTheme,
+  onThemeChange
+}: AppearanceTabProps): React.JSX.Element {
+  const themes = [
+    { id: 1, preview: 'theme1.png' },
+    { id: 2, preview: 'theme2.png' },
+    { id: 3, preview: 'theme3.png' }
+  ]
+
+  return (
+    <div className="space-y-8 mx-8 mt-6">
+      <h2 className="text-primary text-lg">Aparencia</h2>
+      <div className="flex gap-9">
+        {themes.map((theme) => (
+          <button
+            key={theme.id}
+            onClick={() => onThemeChange(theme.id)}
+            className={`w-[109px] h-[102px] rounded-md border ${
+              selectedTheme === theme.id ? 'border-border-primary' : 'border-border-secondary'
+            } bg-[#D9D9D9] transition-colors hover:border-border-primary`}
+          />
+        ))}
+      </div>
+      <Button>Escolher</Button>
+    </div>
+  )
+}

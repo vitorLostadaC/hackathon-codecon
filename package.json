@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "clsx": "^2.1.1",
     "electron-updater": "^6.3.9",
+    "lucide-react": "^0.511.0",
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
