@@ -1,7 +1,6 @@
 /* eslint-disable */
 
-import { generateObject, generateText } from 'ai'
-import z from 'zod'
+import { generateText } from 'ai'
 import { openai } from '../services/openai'
 
 const safeMode = false
@@ -20,7 +19,7 @@ interface AiResponse<Response> {
   response: Response
 }
 
-const shortTimeMemories: Memory[] = []
+let shortTimeMemories: Memory[] = []
 
 const longTimeMemories: Memory[] = []
 
@@ -88,29 +87,40 @@ export const generateShortMemory = async (message: string): Promise<AiResponse<s
 
 export const generateLongMemory = async (
   shortTimeMemory: Memory[]
-): Promise<AiResponse<Memory[]>> => {
-  const { object: response, usage } = await generateObject({
+): Promise<AiResponse<string>> => {
+  const { text, usage } = await generateText({
     model: openai('gpt-4.1-nano'),
+    maxTokens: 150,
     messages: [
       {
         role: 'system',
-        content:
-          'Act as a memory assistant. You have all short memory and you need create a long memory based on it. Create a long term of memories that you think is the most important for the user. You can change the memory to combine with others memories.'
-      },
-      ...shortTimeMemory
-    ],
-    schema: z.array(
-      z.object({
-        role: z.enum(['user', 'assistant']),
-        content: z.string(),
-        date: z.string()
-      })
-    )
-  })
+        content: `Você é um assistente de memória. Sua tarefa é ler uma lista de memórias de curto prazo e criar um resumo curto e claro, destacando apenas os fatos mais importantes e únicos. Ignore detalhes repetidos ou irrelevantes. Resuma tudo em uma frase. Responda apenas em português. Não inclua exemplos na resposta, apenas o resumo.
 
+Exemplo:
+
+Entrada:
+
+O usuário adicionou um novo contato chamado João na lista de contatos.
+O usuário abriu a página de configurações do aplicativo.
+O usuário tentou adicionar um contato, mas esqueceu de preencher o telefone.
+O usuário adicionou um novo contato chamado João na lista de contatos.
+
+Saída:
+O usuário adicionou o contato João e abriu a página de configurações.
+`
+      },
+      {
+        role: 'user',
+        content: shortTimeMemory
+          .filter((memory) => memory.role === 'user')
+          .map((memory) => memory.content)
+          .join('\n')
+      }
+    ]
+  })
   return {
     usage,
-    response
+    response: text
   }
 }
 
@@ -175,6 +185,7 @@ ${
     response: text
   }
 }
+
 export const getTemporaryMessage = async () => {
   console.log('\x1b[36m taking screenshot')
 
@@ -186,10 +197,24 @@ export const getTemporaryMessage = async () => {
 
   console.log('\x1b[36m generating memory and text')
 
-  const [memoryResult, responseResult] = await Promise.all([
+  const [memoryResult, responseResult, longMemoryResult] = await Promise.all([
     generateShortMemory(imageTranscriptionResult.response),
-    generateSwearingText(imageTranscriptionResult.response)
+    generateSwearingText(imageTranscriptionResult.response),
+    ...(shortTimeMemories.length === 10 ? [generateLongMemory(shortTimeMemories)] : [])
   ])
+
+  if (longMemoryResult) {
+    if (longTimeMemories.length === 6) {
+      longTimeMemories.shift()
+    }
+
+    longTimeMemories.push({
+      role: 'user',
+      content: longMemoryResult.response,
+      date: new Date().toISOString()
+    })
+    shortTimeMemories = shortTimeMemories.slice(0, 10)
+  }
 
   if (memoryResult.response) {
     shortTimeMemories.push({
@@ -213,8 +238,14 @@ export const getTemporaryMessage = async () => {
 
   const tokens = {
     'gpt-4.1-nano': {
-      input: imageTranscriptionResult.usage.promptTokens + memoryResult.usage.promptTokens,
-      output: responseResult.usage.completionTokens + memoryResult.usage.completionTokens
+      input:
+        imageTranscriptionResult.usage.promptTokens +
+        memoryResult.usage.promptTokens +
+        longMemoryResult.usage.promptTokens,
+      output:
+        responseResult.usage.completionTokens +
+        memoryResult.usage.completionTokens +
+        longMemoryResult.usage.completionTokens
     },
     'gpt-4.1': {
       input: responseResult.usage.promptTokens,
@@ -224,8 +255,6 @@ export const getTemporaryMessage = async () => {
 
   console.log(tokens)
   console.log(shortTimeMemories)
-
-  // TODO: implement memory
 
   return {
     tokens,
