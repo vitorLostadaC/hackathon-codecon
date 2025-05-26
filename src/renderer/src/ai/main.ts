@@ -41,7 +41,7 @@ const readImage = async (base64Image: string) => {
     })
 
     return {
-      tokens: usage.totalTokens,
+      usage,
       response: text
     }
   } catch (err) {
@@ -66,10 +66,9 @@ export const generateMemory = async (message: string) => {
       }
     ]
   })
-  console.log('usage', usage)
 
   return {
-    tokens: usage?.totalTokens ?? 0,
+    usage,
     response: text
   }
 }
@@ -150,7 +149,6 @@ ${
     ]
   })
 
-  const responseTokens = responseResult.usage?.totalTokens ?? 0
   const responseText = responseResult.text
 
   memories.push({
@@ -163,18 +161,21 @@ ${
   console.log('\x1b[33m result: ', responseText)
   console.log('\x1b[36m ----------done----------')
 
-  console.log({
-    tokens: {
-      'gpt-4.1-nano': imageTranscriptionResult.tokens + memoryResult.tokens,
-      'gpt-4.1': responseTokens
+  const tokens = {
+    'gpt-4.1-nano': {
+      input: imageTranscriptionResult.usage.promptTokens + memoryResult.usage.promptTokens,
+      output: responseResult.usage.completionTokens + memoryResult.usage.completionTokens
+    },
+    'gpt-4.1': {
+      input: responseResult.usage.promptTokens,
+      output: responseResult.usage.completionTokens
     }
-  })
+  }
+
+  console.log(tokens)
 
   return {
-    tokens: {
-      'gpt-4.1-nano': imageTranscriptionResult.tokens + memoryResult.tokens,
-      'gpt-4.1': responseTokens
-    },
+    tokens,
     response: responseText
   }
 }
