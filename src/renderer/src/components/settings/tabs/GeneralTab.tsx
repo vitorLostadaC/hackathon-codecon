@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Toggle } from '../components/Toggle'
+import { ChevronUp, ChevronDown } from 'lucide-react'
 
 interface GeneralTabProps {
   printInterval: number
@@ -14,29 +15,59 @@ export function GeneralTab({
   familyFriendly,
   onFamilyFriendlyChange
 }: GeneralTabProps): React.JSX.Element {
+  const interval = useRef<NodeJS.Timeout | null>(null)
+  const incrementRef = useRef(1)
+
+  const handleMouseDown = (direction: 'up' | 'down'): void => {
+    let current = printInterval
+
+    const adjust = (): void => {
+      incrementRef.current = Math.min(incrementRef.current * 1) // limitar crescimento
+      const delta = incrementRef.current
+      const newValue = direction === 'up' ? current + delta : Math.max(1, current - delta)
+
+      current = newValue
+      onPrintIntervalChange(newValue)
+    }
+
+    incrementRef.current = 1
+    adjust()
+    interval.current = setInterval(adjust, 200)
+  }
+
+  const handleMouseUp = (): void => {
+    if (interval.current) clearInterval(interval.current)
+    incrementRef.current = 1
+  }
+
   return (
     <div className="space-y-8 mx-8 mt-6">
       <div className="flex justify-between items-center">
         <span className="text-primary text-lg">Intervalo de print</span>
         <div className="flex items-center gap-4">
-          <div className="bg-background-input rounded-md px-3 py-2 flex justify-between items-center w-[70px]">
-            <span className="text-primary text-base">{printInterval}</span>
-            <div className="flex flex-col gap-1.5">
+          <div className="bg-background-input rounded-md px-3 py-2 flex justify-between items-center w-[100px]">
+            <input
+              type="number"
+              value={printInterval}
+              min={1}
+              className="bg-transparent text-primary text-base w-10 outline-none text-center no-spinner"
+            />
+            <div className="flex flex-col text-primary">
               <button
-                onClick={() => onPrintIntervalChange(printInterval + 1)}
-                className="focus:outline-none"
+                onMouseDown={() => handleMouseDown('up')}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                className="h-3 flex items-center"
               >
-                <svg width="8" height="4" viewBox="0 0 8 4" fill="none">
-                  <path d="M4 0L8 4H0L4 0Z" fill="#E8E5E5" />
-                </svg>
+                <ChevronUp size={16} />
               </button>
               <button
-                onClick={() => onPrintIntervalChange(Math.max(1, printInterval - 1))}
-                className="focus:outline-none"
+                onMouseDown={() => handleMouseDown('down')}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                className="h-3 flex items-center"
               >
-                <svg width="8" height="4" viewBox="0 0 8 4" fill="none">
-                  <path d="M4 4L0 0H8L4 4Z" fill="#E8E5E5" />
-                </svg>
+                <ChevronDown size={16} />
               </button>
             </div>
           </div>
@@ -49,7 +80,7 @@ export function GeneralTab({
           <span className="text-primary text-lg">Family Friend</span>
           <Toggle checked={familyFriendly} onChange={onFamilyFriendlyChange} />
         </div>
-        <p className="text-tertiary text-base">Seu pato nao ficara falando palavroes</p>
+        <p className="text-tertiary text-base">Seu pato não ficará falando palavrões</p>
       </div>
     </div>
   )

@@ -18,6 +18,7 @@ interface PricingTabProps {
 }
 
 export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): React.JSX.Element {
+  console.log(selectedPlan)
   const plans: PricingPlan[] = [
     {
       id: 1,
@@ -92,7 +93,7 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
             fullWidth
             className="mt-7"
           >
-            {selectedPlan === plan.id ? 'Selecionado' : 'Escolher'}
+            Escolher
           </Button>
         </div>
       ))}
