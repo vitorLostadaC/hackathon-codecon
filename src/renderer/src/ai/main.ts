@@ -1,22 +1,35 @@
 /* eslint-disable */
 
-import { generateText } from 'ai'
+import { generateObject, generateText } from 'ai'
+import z from 'zod'
 import { openai } from '../services/openai'
 
 const safeMode = false
 
-const memories: {
+interface Memory {
   role: 'user' | 'assistant'
   content: string
   date: string
-}[] = []
+}
+
+interface AiResponse<Response> {
+  usage: {
+    promptTokens: number
+    completionTokens: number
+  }
+  response: Response
+}
+
+const shortTimeMemories: Memory[] = []
+
+const longTimeMemories: Memory[] = []
 
 // Stress system
 // TODO: Implement stress system
 // const INCREMENTAL_STRESS = 5
 // let stress = 0
 
-const readImage = async (base64Image: string) => {
+const readImage = async (base64Image: string): Promise<AiResponse<string>> => {
   try {
     const { text, usage } = await generateText({
       model: openai('gpt-4.1-nano'),
@@ -50,7 +63,7 @@ const readImage = async (base64Image: string) => {
   }
 }
 
-export const generateMemory = async (message: string) => {
+export const generateShortMemory = async (message: string): Promise<AiResponse<string>> => {
   const { text, usage } = await generateText({
     model: openai('gpt-4.1-nano'),
     maxTokens: 200,
@@ -73,30 +86,38 @@ export const generateMemory = async (message: string) => {
   }
 }
 
-export const getTemporaryMessage = async () => {
-  console.log('\x1b[36m taking screenshot')
+export const generateLongMemory = async (
+  shortTimeMemory: Memory[]
+): Promise<AiResponse<Memory[]>> => {
+  const { object: response, usage } = await generateObject({
+    model: openai('gpt-4.1-nano'),
+    messages: [
+      {
+        role: 'system',
+        content:
+          'Act as a memory assistant. You have all short memory and you need create a long memory based on it. Create a long term of memories that you think is the most important for the user. You can change the memory to combine with others memories.'
+      },
+      ...shortTimeMemory
+    ],
+    schema: z.array(
+      z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string(),
+        date: z.string()
+      })
+    )
+  })
 
-  const base64Image = await window.api.takeScreenshot()
-
-  console.log('\x1b[36m reading image')
-  const imageTranscriptionResult = await readImage(base64Image)
-  console.log('\x1b[33m image transcription: ', imageTranscriptionResult.response)
-
-  console.log('\x1b[36m generating memory')
-  const memoryResult = await generateMemory(imageTranscriptionResult.response)
-
-  console.log('\x1b[33m gotten memory: ', memoryResult.response)
-
-  if (memoryResult.response) {
-    memories.push({
-      role: 'user',
-      content: `Descrição da tela: ${memoryResult.response}`,
-      date: new Date().toISOString()
-    })
+  return {
+    usage,
+    response
   }
+}
 
-  console.log('\x1b[36m generating text')
-  const responseResult = await generateText({
+export const generateSwearingText = async (
+  imageTranscription: string
+): Promise<AiResponse<string>> => {
+  const { text, usage } = await generateText({
     model: openai('gpt-4.1'),
     maxTokens: 50,
     temperature: 0.6,
@@ -143,15 +164,44 @@ ${
       },
       {
         role: 'user',
-        content: `Descrição da tela: ${imageTranscriptionResult.response}`
+        content: `Descrição da tela: ${imageTranscription}`
       },
-      ...memories
+      ...shortTimeMemories
     ]
   })
 
-  const responseText = responseResult.text
+  return {
+    usage,
+    response: text
+  }
+}
+export const getTemporaryMessage = async () => {
+  console.log('\x1b[36m taking screenshot')
 
-  memories.push({
+  const base64Image = await window.api.takeScreenshot()
+
+  console.log('\x1b[36m reading image')
+  const imageTranscriptionResult = await readImage(base64Image)
+  console.log('\x1b[33m image transcription: ', imageTranscriptionResult.response)
+
+  console.log('\x1b[36m generating memory and text')
+
+  const [memoryResult, responseResult] = await Promise.all([
+    generateShortMemory(imageTranscriptionResult.response),
+    generateSwearingText(imageTranscriptionResult.response)
+  ])
+
+  if (memoryResult.response) {
+    shortTimeMemories.push({
+      role: 'user',
+      content: `Descrição da tela: ${memoryResult.response}`,
+      date: new Date().toISOString()
+    })
+  }
+
+  const responseText = responseResult.response
+
+  shortTimeMemories.push({
     role: 'assistant',
     content: responseText,
     date: new Date().toISOString()
@@ -173,6 +223,9 @@ ${
   }
 
   console.log(tokens)
+  console.log(shortTimeMemories)
+
+  // TODO: implement memory
 
   return {
     tokens,
