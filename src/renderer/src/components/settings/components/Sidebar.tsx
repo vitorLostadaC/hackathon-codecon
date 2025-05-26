@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tab } from '../types'
 import { TabButton } from './TabButton'
-import { CreditCard, PaintRoller, Settings } from 'lucide-react'
+import { CreditCard, Angry, Settings } from 'lucide-react'
 import { UserProfile } from './UserProfile'
 
 interface SidebarProps {
@@ -11,7 +11,7 @@ interface SidebarProps {
 
 const tabIcons = {
   general: <Settings size={14} />,
-  appearance: <PaintRoller size={14} />,
+  appearance: <Angry size={14} />,
   pricing: <CreditCard size={14} />
 }
 

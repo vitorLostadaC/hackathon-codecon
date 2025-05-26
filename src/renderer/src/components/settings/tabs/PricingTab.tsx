@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '../components/Button'
 import { cn } from '@renderer/lib/utils'
+import { HandCoins, Mail } from 'lucide-react'
 
 interface PricingPlan {
   id: number
@@ -72,30 +73,14 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
                 {plan.price}
               </span>
               <div className="flex justify-between">
-                <div className="flex items-center gap-1.5">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M2.5 9.167h10v5H2.5v-5z" stroke="#D8CDCD" strokeWidth="0.833" />
-                    <path
-                      d="M5.833 8.286h12.522v9.214H5.833V8.286z"
-                      stroke="#D8CDCD"
-                      strokeWidth="0.833"
-                    />
-                    <path d="M1.667 13.333h5v5h-5v-5z" stroke="#D8CDCD" strokeWidth="0.833" />
-                    <path
-                      d="M10.917 5.083h4.833v4.833h-4.833V5.083z"
-                      stroke="#D8CDCD"
-                      strokeWidth="0.833"
-                    />
-                    <path d="M2.5 1.667h5v5h-5v-5z" stroke="#D8CDCD" strokeWidth="0.833" />
-                  </svg>
-                  <span className="text-secondary text-sm">{plan.credits} créditos</span>
+                <div className="flex items-center gap-1.5 text-secondary">
+                  <HandCoins size={16} />
+                  <span className="text-sm">{plan.credits} créditos</span>
                 </div>
                 {plan.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-1.5">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path d="M2 3.75L18 16.25M2 16.25L18 3.75" stroke="#D8CDCD" />
-                    </svg>
-                    <span className="text-secondary text-sm">{feature}</span>
+                  <div key={index} className="flex items-center text-secondary gap-1.5">
+                    <Mail size={16} />
+                    <span className="text-sm">{feature}</span>
                   </div>
                 ))}
               </div>
