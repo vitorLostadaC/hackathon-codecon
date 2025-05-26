@@ -1,4 +1,4 @@
-import { MOVEMENT_SPEED, Direction, PET_DIMENSIONS } from '@renderer/constants'
+import { MOVEMENT_SPEED, Direction, PET_DIMENSIONS } from '@renderer/components/pet/constants'
 import { useEffect, useRef, useState } from 'react'
 
 const RIGHT_THRESHOLD = 220

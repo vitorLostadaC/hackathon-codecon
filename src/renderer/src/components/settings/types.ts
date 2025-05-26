@@ -1,4 +1,4 @@
-export type Tab = 'general' | 'appearance' | 'pricing'
+export type Tab = 'general' | 'appearance' | 'pricing' | 'home'
 
 export interface SettingsState {
   printInterval: number

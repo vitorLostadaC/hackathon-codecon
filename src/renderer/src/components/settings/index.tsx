@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { GeneralTab } from './tabs/GeneralTab'
-import { AppearanceTab } from './tabs/AppearanceTab'
-import { PricingTab } from './tabs/PricingTab'
+import { GeneralTab } from './tabs/generalTab'
+import { AppearanceTab } from './tabs/appearanceTab'
+import { PricingTab } from './tabs/pricingTab'
 import { Sidebar } from './components/Sidebar'
-import { SettingsProvider } from './context/SettingsContext'
+import { SettingsProvider } from './context/settingsContext'
 import { useSettings } from './hooks/useSettings'
 import { Tab } from './types'
+import { HomeTab } from './tabs/homeTab'
 
 function SettingsContent(): React.JSX.Element {
-  const [activeTab, setActiveTab] = useState<Tab>('general')
+  const [activeTab, setActiveTab] = useState<Tab>('home')
   const settings = useSettings()
 
   const renderTab = (): React.JSX.Element => {
@@ -36,6 +37,8 @@ function SettingsContent(): React.JSX.Element {
             onPlanSelect={(value) => settings.updateSettings('selectedPlan', value)}
           />
         )
+      case 'home':
+        return <HomeTab />
     }
   }
 

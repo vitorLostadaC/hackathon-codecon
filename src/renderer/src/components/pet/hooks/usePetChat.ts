@@ -1,4 +1,4 @@
-import { MESSAGE_DURATION, MESSAGE_INTERVAL, MESSAGES } from '@renderer/constants'
+import { MESSAGE_DURATION, MESSAGE_INTERVAL, MESSAGES } from '@renderer/components/pet/constants'
 import { useEffect, useRef, useState } from 'react'
 
 interface PetChatCallbacks {

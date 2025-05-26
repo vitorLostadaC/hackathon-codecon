@@ -1,4 +1,4 @@
-import { Direction } from '@renderer/constants'
+import { Direction } from '@renderer/components/pet/constants'
 import { cn } from '@renderer/lib/utils'
 import React from 'react'
 

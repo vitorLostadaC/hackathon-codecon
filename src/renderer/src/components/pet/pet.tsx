@@ -1,10 +1,10 @@
 import { useRef } from 'react'
-import duckWalking from '../assets/animals/duck/duck.gif'
-import duckStopped from '../assets/animals/duck/stopped-duck.png'
+import duckWalking from '../../assets/animals/duck/duck.gif'
+import duckStopped from '../../assets/animals/duck/stopped-duck.png'
 import { Chat } from './chat'
-import { usePetMovement } from '../hooks/usePetMovement'
-import { usePetChat } from '../hooks/usePetChat'
-import { PET_DIMENSIONS } from '../constants'
+import { usePetMovement } from './hooks/usePetMovement'
+import { usePetChat } from './hooks/usePetChat'
+import { PET_DIMENSIONS } from './constants'
 
 enum PetState {
   WALKING = 'walking',
