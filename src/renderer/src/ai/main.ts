@@ -1,5 +1,4 @@
-/* eslint-disable */
-
+import { catchError } from '@renderer/lib/utils'
 import { generateText } from 'ai'
 import { openai } from '../services/openai'
 
@@ -186,22 +185,50 @@ ${
   }
 }
 
-export const getTemporaryMessage = async () => {
+export const getTemporaryMessage = async (): Promise<{
+  tokens: {
+    'gpt-4.1-nano': {
+      input: number
+      output: number
+    }
+    'gpt-4.1': {
+      input: number
+      output: number
+    }
+  }
+  response: string
+} | null> => {
   console.log('\x1b[36m taking screenshot')
 
-  const base64Image = await window.api.takeScreenshot()
+  const [base64ImageError, base64Image] = await catchError(window.api.takeScreenshot())
+
+  if (base64ImageError) {
+    console.error('Error taking screenshot:', base64ImageError)
+    return null // TODO: replate this with a better error handling when implement the api
+  }
 
   console.log('\x1b[36m reading image')
-  const imageTranscriptionResult = await readImage(base64Image)
+  const [imageTranscriptionError, imageTranscriptionResult] = await catchError(
+    readImage(base64Image)
+  )
+
+  if (imageTranscriptionError) {
+    console.error('Error reading image:', imageTranscriptionError)
+    return null // TODO: replate this with a better error handling when implement the api
+  }
+
   console.log('\x1b[33m image transcription: ', imageTranscriptionResult.response)
 
   console.log('\x1b[36m generating memory and text')
 
-  const [memoryResult, responseResult, longMemoryResult] = await Promise.all([
-    generateShortMemory(imageTranscriptionResult.response),
-    generateSwearingText(imageTranscriptionResult.response),
-    ...(shortTimeMemories.length === 10 ? [generateLongMemory(shortTimeMemories)] : [])
-  ])
+  const [[, memoryResult], [responseResultError, responseResult], [, longMemoryResult]] =
+    await Promise.all([
+      catchError(generateShortMemory(imageTranscriptionResult.response)),
+      catchError(generateSwearingText(imageTranscriptionResult.response)),
+      ...(shortTimeMemories.length === 10
+        ? [catchError(generateLongMemory(shortTimeMemories))]
+        : [])
+    ])
 
   if (longMemoryResult) {
     if (longTimeMemories.length === 6) {
@@ -216,7 +243,7 @@ export const getTemporaryMessage = async () => {
     shortTimeMemories = shortTimeMemories.slice(0, 10)
   }
 
-  if (memoryResult.response) {
+  if (memoryResult?.response) {
     shortTimeMemories.push({
       role: 'user',
       content: `Descrição da tela: ${memoryResult.response}`,
@@ -224,7 +251,9 @@ export const getTemporaryMessage = async () => {
     })
   }
 
-  const responseText = responseResult.response
+  const responseText = responseResultError
+    ? 'puta que pariu, deu ruim aqui (500). Aparentemente o dev que fez essa IA não sabe programar tb.'
+    : responseResult?.response
 
   shortTimeMemories.push({
     role: 'assistant',
@@ -240,16 +269,16 @@ export const getTemporaryMessage = async () => {
     'gpt-4.1-nano': {
       input:
         imageTranscriptionResult.usage.promptTokens +
-        memoryResult.usage.promptTokens +
-        longMemoryResult.usage.promptTokens,
+        (memoryResult?.usage.promptTokens ?? 0) +
+        (longMemoryResult?.usage.promptTokens ?? 0),
       output:
-        responseResult.usage.completionTokens +
-        memoryResult.usage.completionTokens +
-        longMemoryResult.usage.completionTokens
+        (responseResult?.usage.completionTokens ?? 0) +
+        (memoryResult?.usage.completionTokens ?? 0) +
+        (longMemoryResult?.usage.completionTokens ?? 0)
     },
     'gpt-4.1': {
-      input: responseResult.usage.promptTokens,
-      output: responseResult.usage.completionTokens
+      input: responseResult?.usage.promptTokens ?? 0,
+      output: responseResult?.usage.completionTokens ?? 0
     }
   }
 
