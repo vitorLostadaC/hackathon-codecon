@@ -1,11 +1,11 @@
 import { catchError } from '@renderer/lib/utils'
+import { MAX_LONG_MEMORY_LENGTH, MAX_SHORT_MEMORY_LENGTH } from './constants/memory'
 import { cursingGenerate } from './services/cursing-generate'
 import { imageAnalyze } from './services/image-analyzer'
 import { generateLongMemory, generateShortMemory } from './services/memory-manager'
 import type { GetScreenContextReplyResponse, Memory } from './types/ai'
 
 let shortTimeMemories: Memory[] = []
-
 const longTimeMemories: Memory[] = []
 
 // Stress system
@@ -43,13 +43,13 @@ export const getScreenContextReply = async (): Promise<GetScreenContextReplyResp
       catchError(
         cursingGenerate(imageTranscriptionResult.response, shortTimeMemories, longTimeMemories)
       ),
-      ...(shortTimeMemories.length === 10
+      ...(shortTimeMemories.length === MAX_SHORT_MEMORY_LENGTH
         ? [catchError(generateLongMemory(shortTimeMemories))]
         : [])
     ])
 
   if (longMemoryResult) {
-    if (longTimeMemories.length === 6) {
+    if (longTimeMemories.length === MAX_LONG_MEMORY_LENGTH) {
       longTimeMemories.shift()
     }
 
@@ -58,7 +58,7 @@ export const getScreenContextReply = async (): Promise<GetScreenContextReplyResp
       content: longMemoryResult.response,
       date: new Date().toISOString()
     })
-    shortTimeMemories = shortTimeMemories.slice(0, 10)
+    shortTimeMemories = []
   }
 
   if (memoryResult?.response) {
