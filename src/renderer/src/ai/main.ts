@@ -1,22 +1,9 @@
 import { catchError } from '@renderer/lib/utils'
 import { generateText } from 'ai'
 import { openai } from '../services/openai'
+import type { AiResponse, GetScreenContextReplyResponse, Memory } from './types/ai'
 
 const safeMode = false
-
-interface Memory {
-  role: 'user' | 'assistant'
-  content: string
-  date: string
-}
-
-interface AiResponse<Response> {
-  usage: {
-    promptTokens: number
-    completionTokens: number
-  }
-  response: Response
-}
 
 let shortTimeMemories: Memory[] = []
 
@@ -185,19 +172,7 @@ ${
   }
 }
 
-export const getScreenContextReply = async (): Promise<{
-  tokens: {
-    'gpt-4.1-nano': {
-      input: number
-      output: number
-    }
-    'gpt-4.1': {
-      input: number
-      output: number
-    }
-  }
-  response: string
-} | null> => {
+export const getScreenContextReply = async (): Promise<GetScreenContextReplyResponse | null> => {
   console.log('\x1b[36m taking screenshot')
 
   const [base64ImageError, base64Image] = await catchError(window.api.takeScreenshot())
