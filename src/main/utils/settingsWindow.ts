@@ -17,11 +17,12 @@ export function createSettingsWindow(): void {
   settingsWindow = new BrowserWindow({
     width: 774,
     height: 484,
-    resizable: true,
+    resizable: false,
     title: 'Configurações',
     show: false,
     autoHideMenuBar: true,
     frame: true,
+    roundedCorners: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
