@@ -185,7 +185,7 @@ ${
   }
 }
 
-export const getTemporaryMessage = async (): Promise<{
+export const getScreenContextReply = async (): Promise<{
   tokens: {
     'gpt-4.1-nano': {
       input: number

@@ -1,4 +1,4 @@
-import { getTemporaryMessage } from './ai/main'
+import { getScreenContextReply } from './ai/main'
 import Versions from './components/Versions'
 
 export default function App(): React.JSX.Element {
@@ -7,7 +7,7 @@ export default function App(): React.JSX.Element {
       <button
         className="bg-red-500"
         onClick={async () => {
-          await getTemporaryMessage()
+          await getScreenContextReply()
         }}
       >
         take screenshot
