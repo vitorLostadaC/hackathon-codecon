@@ -22,7 +22,7 @@ export function GeneralTab({
     let current = printInterval
 
     const adjust = (): void => {
-      incrementRef.current = Math.min(incrementRef.current * 1) // limitar crescimento
+      incrementRef.current = Math.min(incrementRef.current * 1) // size limit
       const delta = incrementRef.current
       const newValue = direction === 'up' ? current + delta : Math.max(1, current - delta)
 
@@ -41,16 +41,16 @@ export function GeneralTab({
   }
 
   return (
-    <div className="space-y-8 mx-8 mt-6">
+    <div className="space-y-8 mx-8 pt-4">
       <div className="flex justify-between items-center">
-        <span className="text-primary text-lg">Intervalo de print</span>
+        <span className="text-primary text-lg leading-[1.0]">Intervalo de print</span>
         <div className="flex items-center gap-4">
-          <div className="bg-background-input rounded-md px-3 py-2 flex justify-between items-center w-[100px]">
+          <div className="bg-background-input rounded-md px-2 py-2 space-x-3 flex justify-between items-center w-fit">
             <input
               type="number"
               value={printInterval}
               min={1}
-              className="bg-transparent text-primary text-base w-10 outline-none text-center no-spinner"
+              className="bg-transparent text-primary text-base w-5 outline-none text-center no-spinner"
             />
             <div className="flex flex-col text-primary">
               <button

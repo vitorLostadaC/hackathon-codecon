@@ -23,7 +23,8 @@ module.exports = {
         },
         accent: {
           primary: '#FF6900',
-          secondary: '#FF8904'
+          secondary: '#FF8904',
+          tertiary: '#FDA830'
         }
       },
       gradientColorStops: {

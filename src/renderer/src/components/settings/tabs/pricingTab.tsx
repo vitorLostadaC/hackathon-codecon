@@ -63,11 +63,11 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
         >
           {plan.isHighlighted && (
             <>
-              <div className="absolute z-0 -top-5 -left-14 w-[100px] h-[20px] rotate-[45deg] rounded-full bg-accent-secondary opacity-80 blur-[6px]" />
-              <div className="absolute z-0 -top-6 -left-16 w-[140px] h-[40px] rotate-[50deg] rounded-full bg-accent-secondary opacity-35 blur-[10px]" />
+              <div className="absolute -top-3 left-0.5 w-[17px] h-[37px] rotate-[-47deg] bg-accent-tertiary opacity-95 blur-[6.7px]" />
+              <div className="absolute -top-5 left-4 w-[17px] h-[86px] rotate-[-47deg] bg-accent-tertiary blur-[16px]" />
             </>
           )}
-          <div className="space-y-[22px] relative z-10">
+          <div className="space-y-[22px]">
             <h3 className="text-primary leading-[1.0] text-xl">{plan.name}</h3>
             <div className="space-y-5">
               <span className="text-primary text-2xl leading-[1.0] font-semibold block">

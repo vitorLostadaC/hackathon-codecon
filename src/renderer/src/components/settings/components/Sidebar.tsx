@@ -23,7 +23,7 @@ const tabLabels: Record<SidebarTab, string> = {
 
 export function Sidebar({ activeTab, onTabChange }: SidebarProps): React.JSX.Element {
   return (
-    <div className="space-y-2 flex flex-col justify-between px-4 pb-6 pt-10 w-fit">
+    <div className="space-y-2 flex flex-col justify-between px-4 pb-6 pt-7 w-fit">
       <div className="flex flex-col gap-2">
         {(Object.keys(tabLabels) as SidebarTab[]).map((tab) => (
           <TabButton

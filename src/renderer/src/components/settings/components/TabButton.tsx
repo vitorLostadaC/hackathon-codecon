@@ -17,6 +17,7 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
         <>
           <div className="absolute z-0 -right-6 w-[80px] h-[20px] rounded-full bg-gradient-to-l from-accent-secondary to-accent-secondary/60 blur-[12px]" />
           <div className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-accent-secondary" />
+          <div className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-accent-secondary blur-[2.5px]" />
         </>
       )}
       <div className="w-[18px] h-[18px] flex items-center justify-center relative z-10">{icon}</div>
