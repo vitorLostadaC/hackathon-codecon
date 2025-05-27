@@ -14,14 +14,15 @@ const windowType = (): 'toolbar' | 'desktop' | 'dock' => {
 }
 
 export function createGearWindow(): BrowserWindow {
-  const display = screen.getPrimaryDisplay()
-  const { width: screenWidth } = display.workAreaSize
+  const primaryDisplay = screen.getPrimaryDisplay()
+  const { width: screenWidth } = primaryDisplay.workAreaSize
+  const { x: screenX, y: screenY } = primaryDisplay.bounds
 
   const gearWindow = new BrowserWindow({
     width: 48,
     height: 48,
-    x: screenWidth - 68, // 20px from right edge
-    y: 20, // 20px from top
+    x: screenX + screenWidth - 68, // Posição absoluta: coordenada X do display + largura - offset
+    y: screenY + 20, // Posição absoluta: coordenada Y do display + offset do topo
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -46,12 +47,22 @@ export function createGearWindow(): BrowserWindow {
     gearWindow.loadFile(join(__dirname, '../renderer/gear.html'))
   }
 
-  // Make sure window stays in the correct position
-  gearWindow.setAlwaysOnTop(true, 'floating')
+  // Platform-specific z-index handling (igual ao overlay)
+  const setAlwaysOnTopByPlatform = (): void => {
+    if (process.platform === 'darwin') {
+      gearWindow.setAlwaysOnTop(true, 'floating', 1)
+    } else {
+      gearWindow.setAlwaysOnTop(true, 'screen-saver', 1)
+    }
+  }
 
   // Show window after it's fully loaded and configured
   gearWindow.once('ready-to-show', () => {
     gearWindow.show()
+    setAlwaysOnTopByPlatform()
+
+    // Garantir posicionamento correto após mostrar
+    gearWindow.setPosition(screenX + screenWidth - 68, screenY + 20)
   })
 
   // Prevent the window from being shown in Mission Control

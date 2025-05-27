@@ -2,8 +2,7 @@ import { BrowserWindow, screen } from 'electron'
 import { join } from 'path'
 
 export function configureInvisibleOverlayWindow(): BrowserWindow {
-  const displays = screen.getAllDisplays()
-  const primaryDisplay = displays[0]
+  const primaryDisplay = screen.getPrimaryDisplay()
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
 
   // Determine window type based on platform
@@ -61,6 +60,15 @@ export function configureInvisibleOverlayWindow(): BrowserWindow {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
     setAlwaysOnTopByPlatform()
+  })
+
+  // Set the window to the primary display bounds
+  const bounds = primaryDisplay.bounds
+  mainWindow.setBounds({
+    x: bounds.x,
+    y: bounds.y,
+    width: bounds.width,
+    height: bounds.height
   })
 
   return mainWindow
