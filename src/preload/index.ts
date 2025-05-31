@@ -1,12 +1,16 @@
-import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
+const takeScreenshot = (): Promise<string> => {
+  return ipcRenderer.invoke('take-screenshot')
+}
 const openSettings = (): void => {
   ipcRenderer.invoke('open-settings-window')
 }
 const api = {
-  openSettings
+  openSettings,
+  takeScreenshot
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
