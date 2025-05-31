@@ -28,8 +28,6 @@ app.whenReady().then(() => {
 
   ipcMain.handle('take-screenshot', takeScreenshot)
 
-  ipcMain.handle('take-screenshot', takeScreenshot)
-
   ipcMain.handle('open-settings-window', () => {
     createSettingsWindow()
   })
