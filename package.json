@@ -4,9 +4,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "check-types": "turbo run check-types",
     "lint": "turbo run lint",
-    "format": "biome format --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "lint:fix": "turbo run lint:fix"
   },
   "devDependencies": {
     "turbo": "^2.5.3",
