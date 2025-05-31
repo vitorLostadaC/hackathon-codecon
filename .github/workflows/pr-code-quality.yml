@@ -27,5 +27,5 @@ jobs:
       - name: Run Lint + Formater
         run: pnpm lint
 
-      - name: Run Typecheck
-        run: pnpm typecheck
+      - name: Run Check Types
+        run: pnpm check-types
