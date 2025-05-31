@@ -26,6 +26,9 @@ importers:
       fastify:
         specifier: ^5.3.3
         version: 5.3.3
+      fastify-type-provider-zod:
+        specifier: ^4.0.2
+        version: 4.0.2(fastify@5.3.3)(zod@3.25.42)
       pino-pretty:
         specifier: ^13.0.0
         version: 13.0.0
@@ -1407,6 +1410,12 @@ packages:
 
   fast-uri@3.0.6:
     resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
+
+  fastify-type-provider-zod@4.0.2:
+    resolution: {integrity: sha512-FDRzSL3ZuoZ+4YDevR1YOinmDKkxOdy3QB9dDR845sK+bQvDroPKhHAXLEAOObDxL7SMA0OZN/A4osrNBTdDTQ==}
+    peerDependencies:
+      fastify: ^5.0.0
+      zod: ^3.14.2
 
   fastify@5.3.3:
     resolution: {integrity: sha512-nCBiBCw9q6jPx+JJNVgO8JVnTXeUyrGcyTKPQikRkA/PanrFcOIo4R+ZnLeOLPZPGgzjomqfVarzE0kYx7qWiQ==}
@@ -4217,6 +4226,13 @@ snapshots:
   fast-safe-stringify@2.1.1: {}
 
   fast-uri@3.0.6: {}
+
+  fastify-type-provider-zod@4.0.2(fastify@5.3.3)(zod@3.25.42):
+    dependencies:
+      '@fastify/error': 4.1.0
+      fastify: 5.3.3
+      zod: 3.25.42
+      zod-to-json-schema: 3.24.5(zod@3.25.42)
 
   fastify@5.3.3:
     dependencies:

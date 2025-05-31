@@ -2,6 +2,11 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import Fastify from 'fastify'
+import {
+	type ZodTypeProvider,
+	serializerCompiler,
+	validatorCompiler
+} from 'fastify-type-provider-zod'
 import { routes } from './route'
 
 const fastify = Fastify({
@@ -16,7 +21,10 @@ const fastify = Fastify({
 		}
 	},
 	disableRequestLogging: true
-})
+}).withTypeProvider<ZodTypeProvider>()
+
+fastify.setValidatorCompiler(validatorCompiler)
+fastify.setSerializerCompiler(serializerCompiler)
 
 fastify.register(routes)
 

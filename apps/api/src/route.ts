@@ -1,6 +1,6 @@
-import type { FastifyInstance } from 'fastify'
-import { curseRoutes } from './modules/curse.route'
+import { curseRoutes } from './modules/curse.controller'
+import type { FastifyTypedInstance } from './types/fastify'
 
-export async function routes(app: FastifyInstance) {
+export async function routes(app: FastifyTypedInstance) {
 	app.register(curseRoutes, { prefix: '/curse' })
 }
