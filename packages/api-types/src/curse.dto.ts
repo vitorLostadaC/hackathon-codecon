@@ -5,7 +5,7 @@ export const curseScreenshotRequestSchema = z.object({
 })
 
 export const curseScreenshotResponseSchema = z.object({
-	imageBase64: z.string()
+	message: z.string()
 })
 
 export type CurseScreenshotRequest = z.infer<typeof curseScreenshotRequestSchema>

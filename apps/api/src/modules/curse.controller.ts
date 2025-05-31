@@ -1,5 +1,5 @@
-import type { CurseScreenshotRequest } from '@repo/api-dto/curse.dto'
-import { curseScreenshotRequestSchema } from '@repo/api-dto/curse.dto'
+import type { CurseScreenshotRequest } from '@repo/api-types/curse.dto'
+import { curseScreenshotRequestSchema } from '@repo/api-types/curse.dto'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import type { FastifyTypedInstance } from '../types/fastify'
 import { CurseService } from './curse.service'

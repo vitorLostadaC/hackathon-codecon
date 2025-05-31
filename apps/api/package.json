@@ -15,7 +15,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
-    "@repo/api-dto": "workspace:*",
+    "@repo/api-types": "workspace:*",
     "dotenv": "^16.5.0",
     "fastify": "^5.3.3",
     "fastify-type-provider-zod": "^4.0.2",

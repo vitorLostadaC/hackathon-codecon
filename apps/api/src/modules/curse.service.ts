@@ -1,7 +1,7 @@
-import type { CurseScreenshotRequest, CurseScreenshotResponse } from '@repo/api-dto/curse.dto'
+import type { CurseScreenshotRequest, CurseScreenshotResponse } from '@repo/api-types/curse.dto'
 
 export class CurseService {
 	async curseScreenshot({ imageBase64 }: CurseScreenshotRequest): Promise<CurseScreenshotResponse> {
-		return { imageBase64 }
+		return { message: 'Hello, world!' }
 	}
 }
