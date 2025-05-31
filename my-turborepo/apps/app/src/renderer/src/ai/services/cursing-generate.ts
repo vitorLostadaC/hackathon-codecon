@@ -4,18 +4,18 @@ import { SAFE_MODE } from '../constants/config'
 import type { AiResponse, Memory } from '../types/ai'
 
 export const cursingGenerate = async (
-  imageTranscription: string,
-  shortTimeMemories: Memory[],
-  longTimeMemories: Memory[]
+	imageTranscription: string,
+	shortTimeMemories: Memory[],
+	longTimeMemories: Memory[]
 ): Promise<AiResponse<string>> => {
-  const { text, usage } = await generateText({
-    model: openai('gpt-4.1'),
-    maxTokens: 50,
-    temperature: 0.6,
-    messages: [
-      {
-        role: 'system',
-        content: `Você é um assistente virtual sarcástico e debochado.
+	const { text, usage } = await generateText({
+		model: openai('gpt-4.1'),
+		maxTokens: 50,
+		temperature: 0.6,
+		messages: [
+			{
+				role: 'system',
+				content: `Você é um assistente virtual sarcástico e debochado.
 Sempre receba uma descrição do que o usuário está fazendo ou vendo na tela.
 Responda apenas com um comentário ofensivo, ácido e curto (máximo de 60 caracteres).
 
@@ -29,8 +29,8 @@ Responda apenas com um comentário ofensivo, ácido e curto (máximo de 60 carac
 Exemplos:
 
 ${
-  SAFE_MODE
-    ? `
+	SAFE_MODE
+		? `
 - Esse resumo ai e muito bom, me lembra minha vó (ela e analfabeta)
 - Ver foto de ferrari nao vai te fazer ganhar dinheiro
 - Como tu consegue ser tao ruim, que cara inutil
@@ -40,7 +40,7 @@ ${
 - Se precisa usar ia e porque nao tem cerebro
 - Use varias telas so pra fingir que ta trabalhando
 `
-    : `
+		: `
 - npm? Parou de estudar em 2020, né?
 - Que código horrível, sério.
 - Que merda é essa? Nem pra copiar direito você serve.
@@ -52,18 +52,18 @@ ${
 `
 }
 `
-      },
-      {
-        role: 'user',
-        content: `Descrição da tela: ${imageTranscription}`
-      },
-      ...shortTimeMemories,
-      ...longTimeMemories
-    ]
-  })
+			},
+			{
+				role: 'user',
+				content: `Descrição da tela: ${imageTranscription}`
+			},
+			...shortTimeMemories,
+			...longTimeMemories
+		]
+	})
 
-  return {
-    usage,
-    response: text
-  }
+	return {
+		usage,
+		response: text
+	}
 }
