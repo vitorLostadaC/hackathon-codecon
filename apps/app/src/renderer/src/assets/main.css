@@ -5,11 +5,11 @@
 /* Oculta as setas no Chrome, Safari, Edge */
 input.no-spinner::-webkit-outer-spin-button,
 input.no-spinner::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Oculta as setas no Firefox */
 input.no-spinner {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }

@@ -1,11 +1,11 @@
-import type { ElectronAPI } from "@electron-toolkit/preload";
+import type { ElectronAPI } from '@electron-toolkit/preload'
 
 declare global {
-  interface Window {
-    electron: ElectronAPI;
-    api: {
-      takeScreenshot: () => Promise<string>;
-      openSettings: () => void;
-    };
-  }
+	interface Window {
+		electron: ElectronAPI
+		api: {
+			takeScreenshot: () => Promise<string>
+			openSettings: () => void
+		}
+	}
 }
