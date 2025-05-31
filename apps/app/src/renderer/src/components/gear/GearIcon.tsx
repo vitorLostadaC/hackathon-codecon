@@ -11,11 +11,14 @@ export function GearIcon(): React.JSX.Element {
 
 	return (
 		<button
+			type="button"
 			onClick={handleClick}
 			className="w-12 h-12 rounded-full bg-white shadow-lg hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center"
 			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 		>
 			<svg
+				aria-label="Gear icon"
+				role="img"
 				className="w-6 h-6 text-gray-700"
 				fill="none"
 				stroke="currentColor"

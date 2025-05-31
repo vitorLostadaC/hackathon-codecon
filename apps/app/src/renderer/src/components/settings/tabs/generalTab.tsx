@@ -55,6 +55,7 @@ export function GeneralTab({
 						/>
 						<div className="flex flex-col text-primary">
 							<button
+								type="button"
 								onMouseDown={() => handleMouseDown('up')}
 								onMouseUp={handleMouseUp}
 								onMouseLeave={handleMouseUp}
@@ -63,6 +64,7 @@ export function GeneralTab({
 								<ChevronUp size={16} />
 							</button>
 							<button
+								type="button"
 								onMouseDown={() => handleMouseDown('down')}
 								onMouseUp={handleMouseUp}
 								onMouseLeave={handleMouseUp}

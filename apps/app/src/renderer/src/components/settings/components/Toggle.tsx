@@ -9,6 +9,7 @@ interface ToggleProps {
 export function Toggle({ checked, onChange, className = '' }: ToggleProps): React.JSX.Element {
 	return (
 		<button
+			type="button"
 			onClick={() => onChange(!checked)}
 			className={`w-11 h-[22px] rounded-full p-0.5 transition-colors ${
 				checked ? 'bg-accent-secondary' : 'bg-background-toggle'

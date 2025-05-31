@@ -5,6 +5,7 @@ import type { TabButtonProps } from '../types'
 export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): React.JSX.Element {
 	return (
 		<button
+			type="button"
 			onClick={onClick}
 			className={cn(
 				'w-[133px] flex items-center gap-1.5 p-1 px-2 rounded-lg hover:bg-background-secondary relative overflow-hidden',

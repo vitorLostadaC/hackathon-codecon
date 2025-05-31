@@ -23,6 +23,7 @@ export function AppearanceTab({
 				<div className="flex gap-9">
 					{themes.map((theme) => (
 						<button
+							type="button"
 							key={theme.id}
 							onClick={() => onThemeChange(theme.id)}
 							className={`w-[109px] h-[102px] rounded-md border ${

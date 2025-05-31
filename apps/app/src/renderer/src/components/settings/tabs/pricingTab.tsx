@@ -79,7 +79,10 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
 									<span className="text-sm">{plan.credits} créditos</span>
 								</div>
 								{plan.features.map((feature, index) => (
-									<div key={index} className="flex items-center text-secondary gap-1.5">
+									<div
+										key={`${feature}-${index}`}
+										className="flex items-center text-secondary gap-1.5"
+									>
 										<Mail size={16} />
 										<span className="text-sm">{feature}</span>
 									</div>
@@ -90,8 +93,7 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
 					<Button
 						variant={plan.isHighlighted ? 'primary' : 'secondary'}
 						onClick={() => onPlanSelect(plan.id)}
-						fullWidth
-						className="mt-7"
+						className="mt-7 w-full"
 					>
 						Escolher
 					</Button>
