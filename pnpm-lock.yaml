@@ -27,6 +27,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.17.57
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(jiti@1.21.7)(postcss@8.5.4)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.8.0)
@@ -720,6 +723,9 @@ packages:
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
+
+  '@types/node@20.17.57':
+    resolution: {integrity: sha512-f3T4y6VU4fVQDKVqJV4Uppy8c1p/sVvS3peyqxyWnzkqXFJLRU7Y1Bl7rMS1Qe9z0v4M6McY0Fp9yBsgHJUsWQ==}
 
   '@types/node@22.15.3':
     resolution: {integrity: sha512-lX7HFZeHf4QG/J7tBZqrCAXwz9J5RD56Y6MpP0eJkka8p+K0RY/yBTW7CYFJ4VGCclxqOLKmiGP5juQc6MKgcw==}
@@ -2466,6 +2472,9 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
@@ -3196,6 +3205,10 @@ snapshots:
       '@types/node': 22.15.3
 
   '@types/ms@2.1.0': {}
+
+  '@types/node@20.17.57':
+    dependencies:
+      undici-types: 6.19.8
 
   '@types/node@22.15.3':
     dependencies:
@@ -5148,6 +5161,8 @@ snapshots:
   typescript@5.8.3: {}
 
   ufo@1.6.1: {}
+
+  undici-types@6.19.8: {}
 
   undici-types@6.21.0: {}
 
