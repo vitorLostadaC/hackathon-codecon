@@ -7,12 +7,21 @@
     "moduleResolution": "Bundler",
     "moduleDetection": "force",
     "allowJs": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "declaration": false,
     "sourceMap": true,
+    "composite": true,
     "noEmit": true,
-    "plugins": [{ "name": "next" }]
+    "baseUrl": ".",
+    "paths": {
+      "@renderer/*": ["src/renderer/src/*"]
+    }
   },
-  "include": ["src/**/*", "next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", ".next", "out", "**/*.test.*", "**/*.spec.*"]
+  "include": [
+    "src/renderer/src/env.d.ts",
+    "src/renderer/src/**/*",
+    "src/renderer/src/**/*.tsx",
+    "src/preload/*.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "build", "out"]
 }

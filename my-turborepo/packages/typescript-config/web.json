@@ -7,20 +7,10 @@
     "moduleResolution": "Bundler",
     "moduleDetection": "force",
     "allowJs": true,
-    "jsx": "react-jsx",
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
     "sourceMap": true,
-    "outDir": "dist",
-    "noEmit": false
+    "noEmit": true
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "**/*.test.*",
-    "**/*.spec.*",
-    "**/*.stories.*"
-  ]
+  "exclude": ["node_modules", "dist", "build", "**/*.test.*", "**/*.spec.*"]
 }
