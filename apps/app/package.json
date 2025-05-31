@@ -25,7 +25,10 @@
     "@electron-toolkit/utils": "^4.0.0",
     "ai": "^4.3.16",
     "electron-updater": "^6.3.9",
-    "zod": "^3.25.20"
+    "zod": "^3.25.20",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",

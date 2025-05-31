@@ -5,6 +5,7 @@ declare global {
 		electron: ElectronAPI
 		api: {
 			takeScreenshot: () => Promise<string>
+			openSettings: () => void
 		}
 	}
 }

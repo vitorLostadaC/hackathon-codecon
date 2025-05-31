@@ -1,0 +1,2 @@
+export const MESSAGE_DURATION = 5000
+export const MESSAGE_INTERVAL = 10000
