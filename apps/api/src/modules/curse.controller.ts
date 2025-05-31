@@ -1,4 +1,6 @@
-import { z } from 'zod'
+import type { CurseScreenshotRequest } from '@repo/api-dto/curse.dto'
+import { curseScreenshotRequestSchema } from '@repo/api-dto/curse.dto'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import type { FastifyTypedInstance } from '../types/fastify'
 import { CurseService } from './curse.service'
 
@@ -9,13 +11,11 @@ export async function curseRoutes(fastify: FastifyTypedInstance) {
 		'/screenshot',
 		{
 			schema: {
-				body: z.object({
-					imageBase64: z.string()
-				})
+				body: curseScreenshotRequestSchema
 			}
 		},
-		async (request, reply) => {
-			const { imageBase64 } = request.body
+		async (request: FastifyRequest, reply: FastifyReply) => {
+			const { imageBase64 } = request.body as CurseScreenshotRequest
 
 			const result = await curseService.curseScreenshot({ imageBase64 })
 

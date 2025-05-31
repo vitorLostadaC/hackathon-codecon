@@ -1,0 +1,23 @@
+{
+  "name": "@repo/api-dto",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./*": [
+      "./src/*.ts",
+      "./src/*.tsx"
+    ]
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "biome check src",
+    "lint:fix": "biome check --fix --unsafe ./src"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.8.3"
+  }
+}
