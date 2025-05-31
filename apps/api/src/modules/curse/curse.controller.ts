@@ -1,7 +1,7 @@
 import type { CurseScreenshotRequest } from '@repo/api-types/curse.dto'
 import { curseScreenshotRequestSchema } from '@repo/api-types/curse.dto'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import type { FastifyTypedInstance } from '../types/fastify'
+import type { FastifyTypedInstance } from '../../types/fastify'
 import { CurseService } from './curse.service'
 
 const curseService = new CurseService()
