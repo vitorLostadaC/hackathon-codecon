@@ -3,10 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": [
-      "./src/*.ts",
-      "./src/*.tsx"
-    ]
+    "./*": "./src/*.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
