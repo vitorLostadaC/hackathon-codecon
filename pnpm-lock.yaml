@@ -20,9 +20,15 @@ importers:
 
   apps/api:
     dependencies:
+      '@ai-sdk/openai':
+        specifier: ^1.3.22
+        version: 1.3.22(zod@3.25.42)
       '@repo/api-types':
         specifier: workspace:*
         version: link:../../packages/api-types
+      ai:
+        specifier: ^4.3.16
+        version: 4.3.16(react@19.1.0)(zod@3.25.42)
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
