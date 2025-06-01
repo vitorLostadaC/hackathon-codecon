@@ -1,5 +1,8 @@
 import { catchError } from '@renderer/lib/utils'
-import { MAX_LONG_MEMORY_LENGTH, MAX_SHORT_MEMORY_LENGTH } from './constants/memory'
+import {
+	MAX_LONG_MEMORY_LENGTH,
+	MAX_SHORT_MEMORY_LENGTH
+} from '../../../../../api/src/constants/memory'
 import { cursingGenerate } from './services/cursing-generate'
 import { imageAnalyze } from './services/image-analyzer'
 import { generateLongMemory, generateShortMemory } from './services/memory-manager'
@@ -20,7 +23,7 @@ export const getScreenContextReply = async (): Promise<GetScreenContextReplyResp
 
 	if (base64ImageError) {
 		console.error('Error taking screenshot:', base64ImageError)
-		return null // TODO: replate this with a better error handling when implement the api
+		return new AppError('Error taking screenshot', 'Error taking screenshot', 500)
 	}
 
 	console.log('\x1b[36m reading image')
