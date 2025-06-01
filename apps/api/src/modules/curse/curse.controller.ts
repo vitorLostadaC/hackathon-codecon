@@ -15,9 +15,12 @@ export async function curseRoutes(fastify: FastifyTypedInstance) {
 			}
 		},
 		async (request: FastifyRequest, reply: FastifyReply) => {
-			const { imageBase64 } = request.body as CurseScreenshotRequest
+			const { imageBase64, config } = request.body as CurseScreenshotRequest
 
-			const result = await curseService.curseScreenshot({ imageBase64 })
+			const result = await curseService.curseScreenshot({
+				imageBase64,
+				config
+			})
 
 			return reply.status(200).send(result)
 		}

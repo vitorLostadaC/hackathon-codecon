@@ -1,4 +1,5 @@
-export function catchError<T>(promise: Promise<T>): Promise<[undefined, T] | [Error]> {
+// TODO: move this to a shared package
+export async function catchError<T>(promise: Promise<T>): Promise<[undefined, T] | [Error]> {
 	return promise
 		.then((data) => {
 			return [undefined, data] as [undefined, T]

@@ -1,7 +1,10 @@
 import { z } from 'zod'
 
 export const curseScreenshotRequestSchema = z.object({
-	imageBase64: z.string()
+	imageBase64: z.string(),
+	config: z.object({
+		safeMode: z.boolean()
+	})
 })
 
 export const curseScreenshotResponseSchema = z.object({
