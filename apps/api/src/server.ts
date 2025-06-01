@@ -7,6 +7,7 @@ import {
 	serializerCompiler,
 	validatorCompiler
 } from 'fastify-type-provider-zod'
+import { errorHandler } from './lib/error-handler'
 import { routes } from './route'
 
 const fastify = Fastify({
@@ -27,6 +28,8 @@ fastify.setValidatorCompiler(validatorCompiler)
 fastify.setSerializerCompiler(serializerCompiler)
 
 fastify.register(routes)
+
+fastify.setErrorHandler(errorHandler)
 
 fastify.listen({ port: 3333 }, (err) => {
 	if (err) {
