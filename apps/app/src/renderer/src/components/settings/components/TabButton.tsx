@@ -2,7 +2,7 @@ import { cn } from "@renderer/lib/utils";
 import type React from "react";
 import type { TabButtonProps } from "../types";
 import { useState } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 export function TabButton({
   icon,
@@ -11,9 +11,6 @@ export function TabButton({
   onClick,
 }: TabButtonProps): React.JSX.Element {
   const [isHovered, setIsHovered] = useState(false);
-
-  const opacity = useMotionValue(0);
-  const blur = useTransform(opacity, [0, 1], [2, 17]); // progressive blur de 2px a 17px
 
   return (
     <motion.button
@@ -28,7 +25,7 @@ export function TabButton({
           : "bg-background-primary text-secondary hover:text-tertiary"
       )}
     >
-      {/* Luz principal com animação mais complexa */}
+      {/* Principal light animation */}
       <motion.div
         className="absolute z-0 -right-[10px] w-[65px] h-[15px] rounded-full bg-accent-secondary"
         style={{ transformOrigin: "right" }}
@@ -90,7 +87,7 @@ export function TabButton({
         }}
       />
 
-      {/* Bordas com stagger (animação em sequência) */}
+      {/* Borders with stagger (sequential animation) */}
       <motion.div
         className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-accent-secondary"
         initial={{ opacity: 0.1, scaleY: 0.6 }}
@@ -101,7 +98,7 @@ export function TabButton({
         }
         transition={{
           duration: isActive ? 0.7 : 0.3,
-          delay: 0.1, // Pequeno delay para efeito stagger
+          delay: 0.1,
           ease: "easeOut",
         }}
       />
@@ -115,12 +112,12 @@ export function TabButton({
         }
         transition={{
           duration: isActive ? 0.7 : 0.3,
-          delay: 0.15, // Delay ligeiramente maior para efeito em camadas
+          delay: 0.15,
           ease: "easeOut",
         }}
       />
 
-      {/* Conteúdo com micro-animação */}
+      {/* Content with micro-animation */}
       <motion.div
         className="w-[18px] h-[18px] flex items-center justify-center relative z-10"
         animate={isActive ? { scale: 1.05 } : { scale: 1 }}
