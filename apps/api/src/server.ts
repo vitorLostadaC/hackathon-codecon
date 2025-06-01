@@ -21,6 +21,7 @@ const fastify = Fastify({
 			}
 		}
 	},
+	bodyLimit: 1024 * 1024 * 10, // 10MB
 	disableRequestLogging: true
 }).withTypeProvider<ZodTypeProvider>()
 
