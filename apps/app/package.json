@@ -24,11 +24,12 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "ai": "^4.3.16",
-    "electron-updater": "^6.3.9",
-    "zod": "^3.25.20",
     "clsx": "^2.1.1",
+    "electron-updater": "^6.3.9",
+    "framer-motion": "^12.15.0",
     "lucide-react": "^0.511.0",
-    "tailwind-merge": "^3.3.0"
+    "tailwind-merge": "^3.3.0",
+    "zod": "^3.25.20"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
