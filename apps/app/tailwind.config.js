@@ -36,6 +36,15 @@ module.exports = {
         "accent-from": "#FF6900",
         "accent-to": "#FF8904",
       },
+      keyframes: {
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        }
+      },
+      animation: {
+        'shimmer': 'shimmer 2s infinite'
+      }
     },
   },
   plugins: [],
