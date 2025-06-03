@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai'
 import { generateText } from 'ai'
-import type { AiServiceResponse, Memory } from '../../types/ai'
+import type { AiServiceResponse } from '../../types/ai'
+import type { Memory } from '../../types/memory'
 
 const model = openai('gpt-4.1')
 
@@ -61,8 +62,14 @@ ${
 				role: 'user',
 				content: `Descrição da tela: ${imageTranscription}`
 			},
-			...shortTimeMemories,
-			...longTimeMemories
+			...shortTimeMemories.map((memory) => ({
+				role: memory.role,
+				content: memory.content
+			})),
+			...longTimeMemories.map((memory) => ({
+				role: memory.role,
+				content: memory.content
+			}))
 		]
 	})
 

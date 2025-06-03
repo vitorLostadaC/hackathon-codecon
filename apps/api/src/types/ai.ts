@@ -1,9 +1,3 @@
-export interface Memory {
-	role: 'user' | 'assistant'
-	content: string
-	date: string
-}
-
 export interface TokensUsage {
 	input: number
 	output: number
