@@ -1,21 +1,20 @@
 import type { CurseScreenshotRequest, CurseScreenshotResponse } from '@repo/api-types/curse.dto'
 import { MAX_LONG_MEMORY_LENGTH, MAX_SHORT_MEMORY_LENGTH } from '../../constants/memory'
-import { Collections } from '../../constants/mongo'
 import { aggregateTokens } from '../../helpers/agregate-tokens'
 import { catchError } from '../../helpers/catch-error'
 import { consoleDebug } from '../../helpers/console-debug'
 import { AppError } from '../../helpers/error-handler'
-import { getDb } from '../../lib/mongo'
 import { cursingGenerate } from '../../services/ai/cursing-generate'
 import { imageAnalyze } from '../../services/ai/image-analyzer'
 import { generateLongMemory, generateShortMemory } from '../../services/ai/memory-manager'
+import { createCurse } from '../../services/mongo/cursing'
 import {
 	createMemory,
 	expireMemories,
 	expireMemory,
 	getMemories
 } from '../../services/mongo/memories'
-import type { Memory } from '../../types/memory'
+import type { AiServiceResponse } from '../../types/ai'
 
 const userId = '123'
 
@@ -24,10 +23,6 @@ export class CurseService {
 		imageBase64,
 		config
 	}: CurseScreenshotRequest): Promise<CurseScreenshotResponse> {
-		const db = await getDb()
-
-		const memoriesCollection = db.collection<Memory>(Collections.Memories)
-
 		consoleDebug('reading image')
 
 		const [
@@ -114,14 +109,23 @@ export class CurseService {
 		consoleDebug(`result: ${responseText}`, 'yellow')
 		consoleDebug('----------done----------', 'green')
 
-		const tokens = aggregateTokens([
-			imageTranscriptionResult?.tokens,
-			memoryResult?.tokens,
-			longMemoryResult?.tokens,
-			responseResult?.tokens
-		])
+		const allSteps: AiServiceResponse[] = [
+			imageTranscriptionResult,
+			memoryResult,
+			longMemoryResult,
+			responseResult
+		].filter((step): step is AiServiceResponse => step !== undefined)
 
-		console.log(tokens)
+		const totalTokens = aggregateTokens(allSteps.map((step) => step?.tokens))
+		const totalDuration = allSteps.reduce((acc, step) => acc + step.duration, 0)
+
+		await createCurse({
+			userId,
+			response: responseText,
+			totalTokens,
+			totalDuration,
+			allSteps
+		})
 
 		return { message: responseText }
 	}

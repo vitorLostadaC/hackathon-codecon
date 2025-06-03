@@ -1,10 +1,12 @@
 import { openai } from '@ai-sdk/openai'
 import { generateText } from 'ai'
+import { getDurationInSeconds } from '../../helpers/get-duration-in-seconds'
 import type { AiServiceResponse } from '../../types/ai'
 
 const model = openai('gpt-4.1-nano')
 
 export const imageAnalyze = async (base64Image: string): Promise<AiServiceResponse> => {
+	const startTime = Date.now()
 	const { text, usage } = await generateText({
 		model,
 		messages: [
@@ -26,8 +28,7 @@ export const imageAnalyze = async (base64Image: string): Promise<AiServiceRespon
 			}
 		]
 	})
-
-	console.log(text)
+	const endTime = Date.now()
 
 	return {
 		tokens: {
@@ -36,6 +37,8 @@ export const imageAnalyze = async (base64Image: string): Promise<AiServiceRespon
 				output: usage.completionTokens
 			}
 		},
-		response: text
+		stepName: 'imageTranscription',
+		response: text,
+		duration: getDurationInSeconds(startTime, endTime)
 	}
 }

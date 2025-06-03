@@ -1,5 +1,6 @@
 import { openai } from '@ai-sdk/openai'
 import { generateText } from 'ai'
+import { getDurationInSeconds } from '../../helpers/get-duration-in-seconds'
 import type { AiServiceResponse } from '../../types/ai'
 import type { Memory } from '../../types/memory'
 
@@ -13,6 +14,7 @@ export const cursingGenerate = async (
 		safeMode: boolean
 	}
 ): Promise<AiServiceResponse> => {
+	const startTime = Date.now()
 	const { text, usage } = await generateText({
 		model,
 		maxTokens: 50,
@@ -72,6 +74,7 @@ ${
 			}))
 		]
 	})
+	const endTime = Date.now()
 
 	return {
 		tokens: {
@@ -80,6 +83,8 @@ ${
 				output: usage.completionTokens
 			}
 		},
-		response: text
+		stepName: 'cursingGenerate',
+		response: text,
+		duration: getDurationInSeconds(startTime, endTime)
 	}
 }
