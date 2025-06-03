@@ -7,7 +7,7 @@ import {
 	serializerCompiler,
 	validatorCompiler
 } from 'fastify-type-provider-zod'
-import { errorHandler } from './lib/error-handler'
+import { errorHandler } from './helpers/error-handler'
 import { routes } from './route'
 
 const fastify = Fastify({

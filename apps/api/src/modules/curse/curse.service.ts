@@ -3,7 +3,7 @@ import { MAX_LONG_MEMORY_LENGTH, MAX_SHORT_MEMORY_LENGTH } from '../../constants
 import { aggregateTokens } from '../../helpers/agregate-tokens'
 import { catchError } from '../../helpers/catch-error'
 import { consoleDebug } from '../../helpers/console-debug'
-import { AppError } from '../../lib/error-handler'
+import { AppError } from '../../helpers/error-handler'
 import { cursingGenerate } from '../../services/ai/cursing-generate'
 import { imageAnalyze } from '../../services/ai/image-analyzer'
 import { generateLongMemory, generateShortMemory } from '../../services/ai/memory-manager'

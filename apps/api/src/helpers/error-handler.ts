@@ -18,7 +18,6 @@ export class AppError extends Error {
 }
 
 export const errorHandler = (err: AppError, request: FastifyRequest, reply: FastifyReply) => {
-	console.log(err)
 	return reply.code(err.statusCode ?? 500).send({
 		error: err.error ?? STATUS_CODES[err.statusCode],
 		message: err.message
