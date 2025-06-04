@@ -1,5 +1,5 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { STATUS_CODES } from 'node:http'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export class AppError extends Error {
 	error: string
