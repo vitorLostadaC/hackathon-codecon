@@ -31,14 +31,25 @@ function SettingItem({
   );
 }
 
-type Setting = {
+type IntervalSetting = {
   id: string;
   label: string;
   description?: string;
-  type: "interval" | "toggle";
-  value: number | boolean;
-  onChange: (value: any) => void;
+  type: "interval";
+  value: number;
+  onChange: (value: number) => void;
 };
+
+type ToggleSetting = {
+  id: string;
+  label: string;
+  description?: string;
+  type: "toggle";
+  value: boolean;
+  onChange: (value: boolean) => void;
+};
+
+type Setting = IntervalSetting | ToggleSetting;
 
 export function GeneralTab({
   printInterval,
