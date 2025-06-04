@@ -1,5 +1,5 @@
 import { Direction, MOVEMENT_SPEED, PET_DIMENSIONS } from '@renderer/components/pet/constants'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const RIGHT_THRESHOLD = 220
 const LEFT_THRESHOLD = 274
@@ -18,7 +18,7 @@ export const usePetMovement = (): {
 	const animationFrameRef = useRef<number | null>(null)
 	const directionRef = useRef(Direction.RIGHT)
 
-	const updatePosition = (): void => {
+	const updatePosition = useCallback(() => {
 		setPosition((prev) => {
 			const nextPos = prev + directionRef.current * MOVEMENT_SPEED
 			const maxPos = window.innerWidth - PET_DIMENSIONS.width
@@ -45,7 +45,7 @@ export const usePetMovement = (): {
 		})
 
 		animationFrameRef.current = requestAnimationFrame(updatePosition)
-	}
+	}, [])
 
 	useEffect(() => {
 		animationFrameRef.current = requestAnimationFrame(updatePosition)
@@ -53,7 +53,7 @@ export const usePetMovement = (): {
 		return () => {
 			if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
 		}
-	}, [])
+	}, [updatePosition])
 
 	const stopMovement = (): void => {
 		if (animationFrameRef.current) {

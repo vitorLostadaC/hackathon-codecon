@@ -1,11 +1,11 @@
-import { Pet } from "./components/pet/pet";
+import { Pet } from './components/pet/pet'
 // import Versions from "./components/Versions";
 // import { getScreenContextReply } from "./ai/main";
 
 export default function App(): React.JSX.Element {
-  return (
-    <>
-      {/* <div className="min-h-screen bg-black/30">
+	return (
+		<>
+			{/* <div className="min-h-screen bg-black/30">
         <div className="fixed bottom-4 right-4">
           <button
             type="button"
@@ -20,7 +20,7 @@ export default function App(): React.JSX.Element {
 
         <Versions />
       </div> */}
-      <Pet />
-    </>
-  );
+			<Pet />
+		</>
+	)
 }
