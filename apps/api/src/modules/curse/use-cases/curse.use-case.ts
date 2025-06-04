@@ -35,12 +35,16 @@ interface GenerationResults {
 	longMemoryResult?: AiServiceResponse
 }
 
-export class CurseScreenshot {
+interface CurseScreenshotUseCaseRequest extends CurseScreenshotRequest {
+	userId: string
+}
+
+export class CurseScreenshotUseCase {
 	async execute({
 		imageBase64,
 		config,
 		userId
-	}: CurseScreenshotRequest & { userId: string }): Promise<CurseScreenshotResponse> {
+	}: CurseScreenshotUseCaseRequest): Promise<CurseScreenshotResponse> {
 		await this.validateUserAndCharge(userId)
 
 		consoleDebug('reading image')

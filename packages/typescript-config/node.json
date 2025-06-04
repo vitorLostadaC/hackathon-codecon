@@ -3,8 +3,8 @@
   "extends": "./base.json",
   "compilerOptions": {
     "lib": ["ES2023"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "moduleDetection": "force",
     "allowJs": true,
     "declaration": true,

@@ -2,8 +2,10 @@
   "name": "@repo/api-types",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "exports": {
-    "./*": "./src/*.ts"
+    "./curse.dto": "./src/curse.dto.ts",
+    "./payment.dto": "./src/payment.dto.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",

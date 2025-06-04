@@ -5,7 +5,8 @@ export const envSchema = z.object({
 	OPENAI_API_KEY: z.string(),
 	DEBUG: z.string().default('false').transform(Boolean),
 	MONGO_URI: z.string(),
-	FRONTEND_URL: z.string()
+	FRONTEND_URL: z.string(),
+	ABACATEPAY_API_KEY: z.string()
 })
 
 export const env = envSchema.parse(process.env)
