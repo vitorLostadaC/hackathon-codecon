@@ -1,4 +1,9 @@
-import type { CurseScreenshotRequest, CurseScreenshotResponse } from '@repo/api-types/curse.dto'
+import type {
+	CurseConfig,
+	CurseScreenshotRequest,
+	CurseScreenshotResponse
+} from '@repo/api-types/curse.dto'
+import type { WithId } from 'mongodb'
 import { MAX_LONG_MEMORY_LENGTH, MAX_SHORT_MEMORY_LENGTH } from '../../constants/memory'
 import { aggregateTokens } from '../../helpers/agregate-tokens'
 import { catchError } from '../../helpers/catch-error'
@@ -16,6 +21,19 @@ import {
 } from '../../services/mongo/memories'
 import { chargeUser, getUser, refundUser } from '../../services/mongo/user'
 import type { AiServiceResponse } from '../../types/ai'
+import type { Memory } from '../../types/memory'
+import type { User } from '../../types/user'
+
+interface Memories {
+	shortTermMemories: WithId<Memory>[]
+	longTermMemories: WithId<Memory>[]
+}
+
+interface GenerationResults {
+	responseResult: AiServiceResponse
+	memoryResult: AiServiceResponse
+	longMemoryResult?: AiServiceResponse
+}
 
 const userId = '123'
 
@@ -24,129 +42,199 @@ export class CurseService {
 		imageBase64,
 		config
 	}: CurseScreenshotRequest): Promise<CurseScreenshotResponse> {
-		const [userError, user] = await catchError(getUser(userId))
-
-		if (userError || !user) {
-			throw new AppError('User not found', 'Check your account', 404)
-		}
-
-		if (user?.credits <= 0) {
-			throw new AppError('Insufficient credits', 'User has no credits', 401)
-		}
-
-		const [chargeUserError] = await catchError(chargeUser(userId))
-
-		if (chargeUserError) {
-			throw new AppError('Charge User Failed', chargeUserError.message, 400)
-		}
+		await validateUserAndCharge(userId)
 
 		consoleDebug('reading image')
-		const [
-			[imageTranscriptionError, imageTranscriptionResult],
-			[shortTermMemoriesError, shortTermMemories],
-			[longTermMemoriesError, longTermMemories]
-		] = await Promise.all([
-			catchError(imageAnalyze(imageBase64)),
-			catchError(getMemories({ userId, type: 'short' })),
-			catchError(getMemories({ userId, type: 'long' }))
+
+		const [imageTranscriptionResult, memories] = await Promise.all([
+			analyzeImage(userId, imageBase64),
+			fetchMemories(userId)
 		])
-
-		if (shortTermMemoriesError) {
-			await refundUser(userId)
-			throw new AppError('Short Time Memories Failed', shortTermMemoriesError.message, 400)
-		}
-
-		if (longTermMemoriesError) {
-			await refundUser(userId)
-			throw new AppError('Long Time Memories Failed', longTermMemoriesError.message, 400)
-		}
-
-		if (imageTranscriptionError) {
-			await refundUser(userId)
-			throw new AppError('Image Transcription Failed', imageTranscriptionError.message, 400)
-		}
 
 		consoleDebug(`image transcription: ${imageTranscriptionResult.response}`, 'yellow')
 
 		consoleDebug('generating memory and text')
 
-		const [[responseResultError, responseResult], [, memoryResult], [, longMemoryResult]] =
-			await Promise.all([
-				catchError(
-					cursingGenerate(imageTranscriptionResult.response, shortTermMemories, longTermMemories, {
-						safeMode: config.safeMode
-					})
-				),
-				catchError(generateShortMemory(imageTranscriptionResult.response)),
-				shortTermMemories.length === MAX_SHORT_MEMORY_LENGTH
-					? catchError(generateLongMemory(shortTermMemories))
-					: Promise.resolve([undefined, undefined])
-			])
+		const [curseResult, generatedMemories] = await Promise.all([
+			generateCurse(imageTranscriptionResult, memories, config, userId),
+			generateMemories(imageTranscriptionResult, memories, userId)
+		])
 
-		if (responseResultError) {
-			await refundUser(userId)
-			throw new AppError('Curse Generation Failed', responseResultError.message, 400)
+		const generationResults: GenerationResults = {
+			responseResult: curseResult,
+			...generatedMemories
 		}
 
-		const parallelTasks: Promise<void>[] = []
+		await Promise.all([
+			updateMemoriesByLongMemoryResult(userId, memories, generationResults),
+			saveAssistantResponse(userId, curseResult.response)
+		])
 
-		if (longMemoryResult) {
-			if (longTermMemories.length === MAX_LONG_MEMORY_LENGTH) {
-				const oldestMemory = longTermMemories.shift()
-				if (oldestMemory) {
-					parallelTasks.push(expireMemory({ userId, memoryId: oldestMemory._id }))
-				}
-			}
-
-			parallelTasks.push(
-				createMemory({ userId, type: 'long', role: 'user', content: longMemoryResult.response }),
-				expireMemories({ userId, memoryIds: shortTermMemories.map((mem) => mem._id) })
-			)
-		}
-
-		if (memoryResult?.response)
-			parallelTasks.push(
-				createMemory({
-					userId,
-					type: 'short',
-					role: 'user',
-					content: `Descrição da tela: ${memoryResult.response}`
-				})
-			)
-
-		await Promise.all(parallelTasks)
-
-		const responseText = responseResult.response
-
-		await createMemory({
-			userId,
-			type: 'short',
-			role: 'assistant',
-			content: responseText
-		})
-
-		consoleDebug(`response: ${responseResult}`, 'yellow')
-		consoleDebug(`result: ${responseText}`, 'yellow')
+		consoleDebug(`response: ${curseResult.response}`, 'yellow')
 		consoleDebug('----------done----------', 'green')
 
-		const allSteps: AiServiceResponse[] = [
-			imageTranscriptionResult,
-			memoryResult,
-			longMemoryResult,
-			responseResult
-		].filter((step): step is AiServiceResponse => step !== undefined)
+		await saveCurseRecord(userId, generationResults, imageTranscriptionResult)
 
-		const totalTokens = aggregateTokens(allSteps.map((step) => step?.tokens))
-		const totalDuration = allSteps.reduce((acc, step) => acc + step.duration, 0)
-
-		await createCurse({
-			userId,
-			response: responseText,
-			totalTokens,
-			totalDuration,
-			allSteps
-		})
-
-		return { message: responseText }
+		return { message: curseResult.response }
 	}
+}
+
+async function validateUserAndCharge(userId: string): Promise<User> {
+	const [userError, user] = await catchError(getUser(userId))
+
+	if (userError || !user) {
+		throw new AppError('User not found', 'Check your account', 404)
+	}
+
+	if (user.credits <= 0) {
+		throw new AppError('Insufficient credits', 'User has no credits', 401)
+	}
+
+	const [chargeError] = await catchError(chargeUser(userId))
+
+	if (chargeError) {
+		throw new AppError('Charge User Failed', chargeError.message, 400)
+	}
+
+	return user
+}
+
+async function analyzeImage(userId: string, imageBase64: string) {
+	const [imageError, imageTranscriptionResult] = await catchError(imageAnalyze(imageBase64))
+	if (imageError) {
+		await refundUser(userId)
+		throw new AppError('Image Transcription Failed', imageError.message, 400)
+	}
+	return imageTranscriptionResult
+}
+
+async function fetchMemories(userId: string) {
+	const [[shortError, shortTermMemories], [longError, longTermMemories]] = await Promise.all([
+		catchError(getMemories({ userId, type: 'short' })),
+		catchError(getMemories({ userId, type: 'long' }))
+	])
+
+	if (shortError || longError) {
+		await refundUser(userId)
+		if (shortError) throw new AppError('Short Time Memories Failed', shortError.message, 400)
+		if (longError) throw new AppError('Long Time Memories Failed', longError.message, 400)
+	}
+
+	return { shortTermMemories, longTermMemories }
+}
+
+async function generateCurse(
+	imageTranscriptionResult: AiServiceResponse,
+	memories: Memories,
+	config: CurseConfig,
+	userId: string
+): Promise<AiServiceResponse> {
+	const { shortTermMemories, longTermMemories } = memories
+
+	const [responseError, responseResult] = await catchError(
+		cursingGenerate(imageTranscriptionResult.response, shortTermMemories, longTermMemories, {
+			safeMode: config.safeMode
+		})
+	)
+
+	if (responseError) {
+		await refundUser(userId)
+		throw new AppError('Curse Generation Failed', responseError.message, 400)
+	}
+
+	return responseResult
+}
+
+async function generateMemories(
+	imageTranscriptionResult: AiServiceResponse,
+	memories: Memories,
+	userId: string
+): Promise<{ memoryResult: AiServiceResponse; longMemoryResult?: AiServiceResponse }> {
+	const { shortTermMemories } = memories
+	const [[memoryError, memoryResult], [longMemoryError, longMemoryResult]] = await Promise.all([
+		catchError(generateShortMemory(imageTranscriptionResult.response)),
+		shortTermMemories.length === MAX_SHORT_MEMORY_LENGTH
+			? catchError(generateLongMemory(shortTermMemories))
+			: Promise.resolve([undefined, undefined])
+	])
+
+	if (memoryError || longMemoryError) {
+		await refundUser(userId)
+		if (memoryError) throw new AppError('Memory Generation Failed', memoryError.message, 400)
+		if (longMemoryError)
+			throw new AppError('Long Memory Generation Failed', longMemoryError.message, 400)
+	}
+
+	return {
+		memoryResult,
+		...(longMemoryResult !== undefined ? { longMemoryResult } : {})
+	}
+}
+
+async function updateMemoriesByLongMemoryResult(
+	userId: string,
+	memories: Memories,
+	generationResults: GenerationResults
+): Promise<void> {
+	const { longTermMemories, shortTermMemories } = memories
+	const { longMemoryResult } = generationResults
+
+	if (!longMemoryResult) return
+
+	const tasks: Promise<void>[] = []
+
+	if (longTermMemories.length >= MAX_LONG_MEMORY_LENGTH) {
+		const oldestMemory = longTermMemories.shift()
+		if (oldestMemory) tasks.push(expireMemory({ userId, memoryId: oldestMemory._id }))
+	}
+
+	tasks.push(
+		createMemory({
+			userId,
+			type: 'long',
+			role: 'user',
+			content: longMemoryResult.response
+		}),
+		expireMemories({
+			userId,
+			memoryIds: shortTermMemories.map((mem) => mem._id)
+		})
+	)
+
+	await Promise.all(tasks)
+}
+
+async function saveAssistantResponse(userId: string, response: string): Promise<void> {
+	await createMemory({
+		userId,
+		type: 'short',
+		role: 'assistant',
+		content: response
+	})
+}
+
+async function saveCurseRecord(
+	userId: string,
+	generationResults: GenerationResults,
+	imageTranscriptionResult: AiServiceResponse
+): Promise<void> {
+	const { responseResult, memoryResult, longMemoryResult } = generationResults
+
+	const allSteps: AiServiceResponse[] = [
+		imageTranscriptionResult,
+		memoryResult,
+		longMemoryResult,
+		responseResult
+	].filter((step): step is AiServiceResponse => step !== undefined)
+
+	const totalTokens = aggregateTokens(allSteps.map((step) => step?.tokens))
+	const totalDuration = allSteps.reduce((acc, step) => acc + step.duration, 0)
+
+	await createCurse({
+		userId,
+		response: responseResult.response,
+		totalTokens,
+		totalDuration,
+		allSteps
+	})
 }
