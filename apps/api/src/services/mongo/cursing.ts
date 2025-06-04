@@ -14,7 +14,7 @@ export const createCurse = async ({
 	allSteps
 }: CreateCurseProps) => {
 	const db = await getDb()
-	const curseCollection = db.collection<Curse>(Collections.Cursing)
+	const curseCollection = db.collection<Curse>(Collections.Cursings)
 	await curseCollection.insertOne({
 		userId,
 		response,

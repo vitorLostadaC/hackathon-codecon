@@ -14,6 +14,7 @@ import {
 	expireMemory,
 	getMemories
 } from '../../services/mongo/memories'
+import { chargeUser, getUser, refundUser } from '../../services/mongo/user'
 import type { AiServiceResponse } from '../../types/ai'
 
 const userId = '123'
@@ -23,8 +24,23 @@ export class CurseService {
 		imageBase64,
 		config
 	}: CurseScreenshotRequest): Promise<CurseScreenshotResponse> {
-		consoleDebug('reading image')
+		const [userError, user] = await catchError(getUser(userId))
 
+		if (userError || !user) {
+			throw new AppError('User not found', 'Check your account', 404)
+		}
+
+		if (user?.credits <= 0) {
+			throw new AppError('Insufficient credits', 'User has no credits', 401)
+		}
+
+		const [chargeUserError] = await catchError(chargeUser(userId))
+
+		if (chargeUserError) {
+			throw new AppError('Charge User Failed', chargeUserError.message, 400)
+		}
+
+		consoleDebug('reading image')
 		const [
 			[imageTranscriptionError, imageTranscriptionResult],
 			[shortTermMemoriesError, shortTermMemories],
@@ -36,14 +52,17 @@ export class CurseService {
 		])
 
 		if (shortTermMemoriesError) {
+			await refundUser(userId)
 			throw new AppError('Short Time Memories Failed', shortTermMemoriesError.message, 400)
 		}
 
 		if (longTermMemoriesError) {
+			await refundUser(userId)
 			throw new AppError('Long Time Memories Failed', longTermMemoriesError.message, 400)
 		}
 
 		if (imageTranscriptionError) {
+			await refundUser(userId)
 			throw new AppError('Image Transcription Failed', imageTranscriptionError.message, 400)
 		}
 
@@ -65,6 +84,7 @@ export class CurseService {
 			])
 
 		if (responseResultError) {
+			await refundUser(userId)
 			throw new AppError('Curse Generation Failed', responseResultError.message, 400)
 		}
 
