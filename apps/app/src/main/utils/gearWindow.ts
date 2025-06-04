@@ -41,8 +41,8 @@ export function createGearWindow(): BrowserWindow {
   });
 
   // Load the gear icon page
-  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    gearWindow.loadURL(`${process.env["ELECTRON_RENDERER_URL"]}/gear`);
+  if (is.dev && process.env.ELECTRON_RENDERER_URL) {
+    gearWindow.loadURL(`${process.env.ELECTRON_RENDERER_URL}/gear`);
   } else {
     gearWindow.loadFile(join(__dirname, "../renderer/gear.html"));
   }
