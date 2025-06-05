@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { SidebarTab, Tab } from '../types'
+import type { SidebarTab } from '../types'
 import { TabButton } from './tab-button'
 import { UserProfile } from './user-profile'
 
@@ -10,10 +10,11 @@ import SettingIcon from '@renderer/assets/icons/setting.svg'
 import SettingSolidIcon from '@renderer/assets/icons/setting_solid.svg'
 import TShirtIcon from '@renderer/assets/icons/t_shirt.svg'
 import TShirtSolidIcon from '@renderer/assets/icons/t_shirt_solid.svg'
+import { cn } from '@renderer/lib/utils'
 
 interface SidebarProps {
-	activeTab: Tab
-	onTabChange: (tab: Tab) => void
+	activeTab: SidebarTab
+	onTabChange: (tab: SidebarTab) => void
 }
 
 const tabIcons: Record<SidebarTab, { default: string; active: string }> = {
@@ -29,8 +30,15 @@ const tabLabels: Record<SidebarTab, string> = {
 }
 
 export function Sidebar({ activeTab, onTabChange }: SidebarProps): React.JSX.Element {
+	const isMacOS = process.platform === 'darwin'
+
 	return (
-		<div className="space-y-2 flex flex-col justify-between px-4 pb-6 pt-7 w-fit">
+		<div
+			className={cn(
+				'space-y-2 flex flex-col justify-between px-4 pb-6 pt-7 w-fit',
+				isMacOS && 'pt-12'
+			)}
+		>
 			<div className="flex flex-col gap-2">
 				{(Object.keys(tabLabels) as SidebarTab[]).map((tab) => (
 					<TabButton

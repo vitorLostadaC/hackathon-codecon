@@ -1,5 +1,4 @@
 export type SidebarTab = 'general' | 'appearance' | 'pricing'
-export type Tab = SidebarTab | 'home'
 
 export interface SettingsState {
 	printInterval: number

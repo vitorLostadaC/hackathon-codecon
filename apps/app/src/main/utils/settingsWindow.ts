@@ -20,6 +20,11 @@ export function createSettingsWindow(): void {
 		resizable: false,
 		title: 'Configurações',
 		show: false,
+		titleBarStyle: 'hiddenInset',
+		trafficLightPosition: {
+			x: 16,
+			y: 16
+		},
 		autoHideMenuBar: true,
 		frame: true,
 		roundedCorners: true,

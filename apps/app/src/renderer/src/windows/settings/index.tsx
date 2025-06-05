@@ -1,3 +1,4 @@
+import { cn } from '@renderer/lib/utils'
 import type React from 'react'
 import { useState } from 'react'
 import { Sidebar } from './components/sidebar'
@@ -5,13 +6,13 @@ import { SettingsProvider } from './context/settings-context'
 import { useSettings } from './hooks/use-settings'
 import { AppearanceTab } from './tabs/appearance-tab'
 import { GeneralTab } from './tabs/general-tab'
-import { HomeTab } from './tabs/home-tab'
 import { PricingTab } from './tabs/pricing-tab'
-import type { Tab } from './types'
+import type { SidebarTab } from './types'
 
 function SettingsContent(): React.JSX.Element {
-	const [activeTab, setActiveTab] = useState<Tab>('home')
+	const [activeTab, setActiveTab] = useState<SidebarTab>('general')
 	const settings = useSettings()
+	const isMacOS = process.platform === 'darwin'
 
 	const renderTab = (): React.JSX.Element => {
 		switch (activeTab) {
@@ -38,13 +39,12 @@ function SettingsContent(): React.JSX.Element {
 						onPlanSelect={(value) => settings.updateSettings('selectedPlan', value)}
 					/>
 				)
-			case 'home':
-				return <HomeTab />
 		}
 	}
 
 	return (
-		<div className="flex h-screen bg-background-primary">
+		<div className="flex h-screen bg-background-primary relative">
+			<div className={cn('h-8 w-full absolute region-drag', !isMacOS && 'hidden')} />
 			<Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
 			<div className="w-0.5 bg-background-secondary h-screen" />
 			<div className="flex-1 mx-4 my-4">{renderTab()}</div>
