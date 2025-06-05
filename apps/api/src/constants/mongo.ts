@@ -1,5 +1,6 @@
 export enum Collections {
 	Cursings = 'cursings',
 	Memories = 'memories',
-	Users = 'users'
+	Users = 'users',
+	Payments = 'payments'
 }
