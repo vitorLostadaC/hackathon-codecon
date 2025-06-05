@@ -1,5 +1,5 @@
 import { cn } from "@renderer/lib/utils";
-import { Direction } from "@renderer/windows/pet/constants";
+import { Direction } from "@renderer/windows/pet/constants/pet";
 import type React from "react";
 
 interface ChatProps {

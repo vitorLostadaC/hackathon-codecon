@@ -1,5 +1,6 @@
-import { MESSAGES, MESSAGE_DURATION, MESSAGE_INTERVAL } from '@renderer/windows/pet/constants'
+import { MESSAGES } from '@renderer/windows/pet/constants/messages'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { MESSAGE_DURATION, MESSAGE_INTERVAL } from '../constants/chat'
 
 interface PetChatCallbacks {
 	onMessageShow: () => void
