@@ -23,3 +23,11 @@ export const refundUser = async (userId: string) => {
 		.updateOne({ userId }, { $inc: { credits: 1 } })
 	return user
 }
+
+export const addCredits = async (userId: string, credits: number) => {
+	const db = await getDb()
+	const user = await db
+		.collection<User>(Collections.Users)
+		.updateOne({ userId }, { $inc: { credits } })
+	return user
+}

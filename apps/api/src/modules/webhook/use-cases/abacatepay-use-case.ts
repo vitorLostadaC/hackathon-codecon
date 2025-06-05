@@ -1,6 +1,8 @@
+import { plans } from '@repo/api-types/payment.dto'
 import { env } from '../../../env'
 import { AppError } from '../../../helpers/error-handler'
 import { getPaymentByGatewayId, paidPayment } from '../../../services/mongo/payment'
+import { addCredits } from '../../../services/mongo/user'
 import type { PaymentWebhookPayload } from '../../../types/payment'
 
 export class AbacatePayWebhook {
@@ -22,5 +24,6 @@ export class AbacatePayWebhook {
 		}
 
 		await paidPayment(gatewayId)
+		await addCredits(payment.userId, plans[payment.plan].credits)
 	}
 }
