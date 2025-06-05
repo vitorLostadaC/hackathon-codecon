@@ -1,11 +1,11 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { Settings } from './components/settings/index'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Settings } from "./windows/settings";
 
-createRoot(document.getElementById('root') as HTMLElement).render(
-	<StrictMode>
-		<Settings />
-	</StrictMode>
-)
+createRoot(document.getElementById("root") as HTMLElement).render(
+  <StrictMode>
+    <Settings />
+  </StrictMode>
+);
