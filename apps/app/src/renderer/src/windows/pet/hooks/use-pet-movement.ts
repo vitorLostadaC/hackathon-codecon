@@ -1,10 +1,13 @@
 import { Direction, MOVEMENT_SPEED, PET_DIMENSIONS } from '@renderer/windows/pet/constants/pet'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-const RIGHT_THRESHOLD = 220
-const LEFT_THRESHOLD = 274
+interface UsePetMovementProps {
+	chatRef: React.RefObject<HTMLDivElement | null>
+}
 
-export const usePetMovement = (): {
+export const usePetMovement = ({
+	chatRef
+}: UsePetMovementProps): {
 	position: number
 	direction: Direction
 	chatDirection: Direction
@@ -35,9 +38,12 @@ export const usePetMovement = (): {
 				return maxPos
 			}
 
-			if (nextPos <= RIGHT_THRESHOLD) {
+			const chatElement = chatRef.current
+			const chatWidth = chatElement ? chatElement.offsetWidth : 256
+
+			if (nextPos <= chatWidth - PET_DIMENSIONS.width) {
 				setChatDirection(Direction.RIGHT)
-			} else if (nextPos >= LEFT_THRESHOLD) {
+			} else if (nextPos + chatWidth >= window.innerWidth) {
 				setChatDirection(Direction.LEFT)
 			}
 

@@ -1,36 +1,31 @@
 import { cn } from '@renderer/lib/utils'
 import { Direction } from '@renderer/windows/pet/constants/pet'
-import type React from 'react'
+import { forwardRef } from 'react'
 
 interface ChatProps {
-	message?: string
-	isVisible: boolean
-	direction?: Direction
-	style?: React.CSSProperties
+	message: string
+	direction: Direction
 }
 
-export const Chat = ({
-	message,
-	isVisible,
-	direction = Direction.RIGHT,
-	style
-}: ChatProps): React.JSX.Element | null => {
-	if (!isVisible || !message) return null
+export const Chat = forwardRef<HTMLDivElement, ChatProps>(
+	({ message, direction }, ref): React.JSX.Element | null => {
+		if (!message) return null
 
-	const chatPosition = direction === Direction.RIGHT ? 'left-6' : '-right-10'
+		const isRight = direction === Direction.RIGHT
 
-	return (
-		<div className={cn('absolute bottom-16', chatPosition)} style={style}>
-			<div className="bg-white rounded-lg p-3 shadow-md min-w-56">
-				<p className="text-gray-800 text-sm break-words hyphens-auto leading-tight">{message}</p>
-				<div
-					className={cn(
-						'absolute top-full',
-						direction === Direction.RIGHT ? 'left-4' : 'right-4',
-						'w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-white'
-					)}
-				/>
+		return (
+			<div ref={ref} className={cn('absolute bottom-full', isRight ? 'left-0' : 'right-0')}>
+				<div className="bg-white rounded-lg p-3 shadow-md min-w-56">
+					<p className="text-gray-800 text-sm break-words hyphens-auto leading-tight">{message}</p>
+					<div
+						className={cn(
+							'absolute top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-white',
+							isRight ? 'left-7' : 'right-7'
+						)}
+					/>
+				</div>
 			</div>
-		</div>
-	)
-}
+		)
+	}
+)
+Chat.displayName = 'Chat'

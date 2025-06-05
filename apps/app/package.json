@@ -29,9 +29,11 @@
 		"@tsparticles/slim": "^3.8.1",
 		"ai": "^4.3.16",
 		"clsx": "^2.1.1",
+		"electron-router-dom": "^2.1.0",
 		"electron-updater": "^6.3.9",
 		"framer-motion": "^12.15.0",
 		"lucide-react": "^0.511.0",
+		"react-router-dom": "^7.6.2",
 		"tailwind-merge": "^3.3.0",
 		"zod": "^3.25.20"
 	},
@@ -55,6 +57,9 @@
 		"vite-plugin-svgr": "^4.3.0"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": ["electron", "esbuild"]
+		"onlyBuiltDependencies": [
+			"electron",
+			"esbuild"
+		]
 	}
 }

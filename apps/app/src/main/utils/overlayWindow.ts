@@ -1,9 +1,10 @@
-import { join } from 'node:path'
 import { BrowserWindow, screen } from 'electron'
+import { join } from 'node:path'
 
 export function configureInvisibleOverlayWindow(): BrowserWindow {
 	const primaryDisplay = screen.getPrimaryDisplay()
 	const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
+	const workArea = primaryDisplay.workArea
 
 	// Determine window type based on platform
 	const windowType = (): 'toolbar' | 'desktop' | 'dock' => {
@@ -20,8 +21,8 @@ export function configureInvisibleOverlayWindow(): BrowserWindow {
 	const mainWindow = new BrowserWindow({
 		width: screenWidth,
 		height: screenHeight,
-		x: 0,
-		y: 0,
+		x: workArea.x,
+		y: workArea.y,
 		frame: false,
 		transparent: true,
 		alwaysOnTop: true,
@@ -60,15 +61,6 @@ export function configureInvisibleOverlayWindow(): BrowserWindow {
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show()
 		setAlwaysOnTopByPlatform()
-	})
-
-	// Set the window to the primary display bounds
-	const bounds = primaryDisplay.bounds
-	mainWindow.setBounds({
-		x: bounds.x,
-		y: bounds.y,
-		width: bounds.width,
-		height: bounds.height
 	})
 
 	return mainWindow

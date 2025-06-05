@@ -12,40 +12,42 @@ export const usePetChat = ({
 	onMessageHide
 }: PetChatCallbacks): {
 	message: string
-	isVisible: boolean
 } => {
 	const [message, setMessage] = useState('')
-	const [isVisible, setIsVisible] = useState(false)
 
 	const chatTimerRef = useRef<NodeJS.Timeout | null>(null)
 	const messageIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-	const showMessage = useCallback(() => {
-		onMessageShow()
-		const randomMessage = MESSAGES[Math.floor(Math.random() * MESSAGES.length)]
-		setMessage(randomMessage)
-		setIsVisible(true)
+	const showMessage = useCallback(
+		(message: string) => {
+			onMessageShow()
+			setMessage(message)
 
-		chatTimerRef.current = setTimeout(() => {
-			setIsVisible(false)
-			onMessageHide()
-			scheduleNextMessage()
-		}, MESSAGE_DURATION)
-	}, [onMessageShow, onMessageHide])
+			chatTimerRef.current = setTimeout(() => {
+				onMessageHide()
+				setMessage('')
+				scheduleNextMessage()
+			}, MESSAGE_DURATION)
+		},
+		[onMessageShow, onMessageHide]
+	)
 
 	const scheduleNextMessage = useCallback(() => {
-		messageIntervalRef.current = setTimeout(() => {
-			showMessage()
+		messageIntervalRef.current = setTimeout(async () => {
+			const randomMessage = MESSAGES[Math.floor(Math.random() * MESSAGES.length)]
+			await new Promise((resolve) => setTimeout(resolve, 1000))
+			showMessage(randomMessage)
 		}, MESSAGE_INTERVAL)
 	}, [showMessage])
 
 	useEffect(() => {
 		scheduleNextMessage()
+
 		return () => {
 			if (chatTimerRef.current) clearTimeout(chatTimerRef.current)
 			if (messageIntervalRef.current) clearTimeout(messageIntervalRef.current)
 		}
-	}, [scheduleNextMessage])
+	}, [])
 
-	return { message, isVisible }
+	return { message }
 }

@@ -1,6 +1,6 @@
+import duckStopped from '@renderer/assets/animals/duck/duck-stopped.png'
+import duckWalking from '@renderer/assets/animals/duck/duck-walking.gif'
 import { useRef } from 'react'
-import duckWalking from '../../assets/animals/duck/duck.gif'
-import duckStopped from '../../assets/animals/duck/stopped-duck.png'
 import { Chat } from './chat'
 import { PET_DIMENSIONS } from './constants/pet'
 import { usePetChat } from './hooks/use-pet-chat'
@@ -14,10 +14,13 @@ enum PetState {
 
 export const Pet = (): React.JSX.Element => {
 	const currentStateRef = useRef<PetState>(PetState.WALKING)
+	const chatRef = useRef<HTMLDivElement>(null)
 
-	const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement()
+	const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement({
+		chatRef
+	})
 
-	const { message, isVisible } = usePetChat({
+	const { message } = usePetChat({
 		onMessageShow: () => {
 			currentStateRef.current = PetState.STOPPED
 			stopMovement()
@@ -28,30 +31,22 @@ export const Pet = (): React.JSX.Element => {
 		}
 	})
 
-	const duckStyle = {
-		left: `${position}px`,
-		transform: `scaleX(${direction})`
-	}
-
 	return (
-		<div className="relative h-screen overflow-hidden">
-			{isVisible && (
-				<div className="absolute bottom-0" style={{ left: `${position}px` }}>
-					<Chat message={message} isVisible direction={chatDirection} />
-				</div>
-			)}
+		<div>
 			<div
 				className="absolute bottom-0"
 				style={{
-					...duckStyle,
+					left: `${position}px`,
 					width: PET_DIMENSIONS.width,
 					height: PET_DIMENSIONS.height
 				}}
 			>
+				<Chat message={message} direction={chatDirection} ref={chatRef} />
 				<img
 					src={currentStateRef.current === PetState.WALKING ? duckWalking : duckStopped}
 					alt="Duck"
 					className="w-full h-full object-contain"
+					style={{ transform: `scaleX(${direction})` }}
 				/>
 			</div>
 		</div>
