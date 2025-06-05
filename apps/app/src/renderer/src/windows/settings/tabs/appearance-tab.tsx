@@ -1,7 +1,7 @@
 import { cn } from "@renderer/lib/utils";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Button } from "../components/Button";
+import { Button } from "../components/button";
 
 interface AppearanceTabProps {
   selectedTheme: number;

@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState } from "react";
-import { Sidebar } from "./components/Sidebar";
+import { Sidebar } from "./components/sidebar";
 import { SettingsProvider } from "./context/settings-context";
 import { useSettings } from "./hooks/use-settings";
 import { AppearanceTab } from "./tabs/appearance-tab";
