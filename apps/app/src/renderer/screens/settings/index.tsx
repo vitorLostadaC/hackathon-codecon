@@ -52,7 +52,7 @@ function SettingsContent(): React.JSX.Element {
 	)
 }
 
-export function Settings(): React.JSX.Element {
+export function SettingsScreen(): React.JSX.Element {
 	return (
 		<SettingsProvider>
 			<SettingsContent />

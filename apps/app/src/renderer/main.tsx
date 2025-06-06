@@ -2,10 +2,10 @@ import './assets/main.css'
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Pet } from './screens/pet/pet'
+import { Routes } from './routes'
 
 createRoot(document?.getElementById('root') as HTMLElement).render(
 	<StrictMode>
-		<Pet />
+		<Routes />
 	</StrictMode>
 )

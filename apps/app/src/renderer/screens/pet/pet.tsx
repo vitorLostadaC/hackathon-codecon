@@ -12,7 +12,7 @@ enum PetState {
 	STOPPED = 'stopped'
 }
 
-export const Pet = (): React.JSX.Element => {
+export const PetScreen = (): React.JSX.Element => {
 	const currentStateRef = useRef<PetState>(PetState.WALKING)
 	const chatRef = useRef<HTMLDivElement>(null)
 
