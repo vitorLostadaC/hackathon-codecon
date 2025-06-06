@@ -1,9 +1,8 @@
-import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { BrowserWindow, app, ipcMain, shell } from 'electron'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { BrowserWindow, app, ipcMain } from 'electron'
 import { join } from 'node:path'
+import { createMainWindow, createWindow } from './factories'
 import { takeScreenshot } from './process-functions/take-screenshot'
-import { configureInvisibleOverlayWindow } from './utils/overlayWindow'
-import { createSettingsWindow } from './utils/settingsWindow'
 
 app.whenReady().then(() => {
 	if (process.platform === 'darwin') {
@@ -16,32 +15,48 @@ app.whenReady().then(() => {
 		optimizer.watchWindowShortcuts(window)
 	})
 
-	const mainWindow = configureInvisibleOverlayWindow()
-
-	if (is.dev && process.env.ELECTRON_RENDERER_URL) {
-		mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
-	} else {
-		mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-	}
-
-	mainWindow.webContents.setWindowOpenHandler((details) => {
-		shell.openExternal(details.url)
-		return { action: 'deny' }
-	})
+	createMainWindow()
 
 	app.on('activate', () => {
-		// On macOS it's common to re-create a window in the app when the
-		// dock icon is clicked and there are no other windows open.
 		if (BrowserWindow.getAllWindows().length === 0) {
-			configureInvisibleOverlayWindow()
+			createMainWindow()
 		}
 	})
 })
 
 ipcMain.handle('take-screenshot', takeScreenshot)
 
-ipcMain.handle('open-settings-window', () => {
-	createSettingsWindow()
+ipcMain.handle('create-settings-window', ({ sender }) => {
+	const settingsWindow = createWindow({
+		id: 'settings',
+		width: 774,
+		height: 484,
+		resizable: false,
+		title: 'Configurações',
+		show: false,
+		titleBarStyle: 'hiddenInset',
+		trafficLightPosition: {
+			x: 16,
+			y: 16
+		},
+		autoHideMenuBar: true,
+		frame: true,
+		roundedCorners: true,
+		webPreferences: {
+			preload: join(__dirname, '../preload/index.js'),
+			sandbox: false,
+			nodeIntegration: false,
+			contextIsolation: true
+		}
+	})
+
+	settingsWindow.on('closed', () => {
+		if (sender.isDestroyed()) {
+			return
+		}
+
+		sender.send('settings-window-closed')
+	})
 })
 
 app.on('window-all-closed', () => {

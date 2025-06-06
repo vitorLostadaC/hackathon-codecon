@@ -3,7 +3,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 const api = {
 	takeScreenshot: () => ipcRenderer.invoke('take-screenshot'),
-	openSettings: () => ipcRenderer.invoke('open-settings-window')
+	createSettingsWindow: () => ipcRenderer.invoke('create-settings-window')
 } as const
 
 if (process.contextIsolated) {

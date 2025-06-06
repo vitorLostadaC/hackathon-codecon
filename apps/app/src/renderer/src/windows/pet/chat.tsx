@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { cn } from 'renderer/src/lib/utils'
+import { cn } from '../../lib/utils'
 import { Direction } from './constants/pet'
 
 interface ChatProps {
