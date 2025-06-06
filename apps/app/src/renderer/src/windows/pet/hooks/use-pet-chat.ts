@@ -1,6 +1,6 @@
-import { MESSAGES } from '@renderer/windows/pet/constants/messages'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { MESSAGE_DURATION, MESSAGE_INTERVAL } from '../constants/chat'
+import { MESSAGES } from '../constants/messages'
 
 interface PetChatCallbacks {
 	onMessageShow: () => void
@@ -36,7 +36,7 @@ export const usePetChat = ({
 		messageIntervalRef.current = setTimeout(async () => {
 			const randomMessage = MESSAGES[Math.floor(Math.random() * MESSAGES.length)]
 			await new Promise((resolve) => setTimeout(resolve, 1000))
-			showMessage(randomMessage)
+			showMessage(randomMessage ?? '')
 		}, MESSAGE_INTERVAL)
 	}, [showMessage])
 

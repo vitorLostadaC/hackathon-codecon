@@ -19,6 +19,10 @@ export async function takeScreenshot(): Promise<string> {
 		// Get the primary display (or first available)
 		const primarySource = sources[0]
 
+		if (!primarySource) {
+			throw new Error('No primary source found')
+		}
+
 		// Get the thumbnail as base64
 		const thumbnail = primarySource.thumbnail.toDataURL()
 		return thumbnail

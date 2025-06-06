@@ -1,6 +1,6 @@
-import { join } from 'node:path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
+import { join } from 'node:path'
 import { takeScreenshot } from './process-functions/take-screenshot'
 import { configureInvisibleOverlayWindow } from './utils/overlayWindow'
 import { createSettingsWindow } from './utils/settingsWindow'

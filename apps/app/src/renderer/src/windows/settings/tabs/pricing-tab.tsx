@@ -1,4 +1,3 @@
-import { cn } from '@renderer/lib/utils'
 import type { Container, Engine } from '@tsparticles/engine'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
@@ -6,6 +5,7 @@ import { motion, useAnimation } from 'framer-motion'
 import { HandCoins, Mail } from 'lucide-react'
 import type React from 'react'
 import { useCallback, useEffect, useId, useState } from 'react'
+import { cn } from 'renderer/src/lib/utils'
 import { Button } from '../components/button'
 
 interface PricingPlan {

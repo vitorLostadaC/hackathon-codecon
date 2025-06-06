@@ -3,19 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "exports": {
-    "./base.json": "./base.json",
-    "./node.json": "./node.json",
-    "./web.json": "./web.json",
-    "./react.json": "./react.json",
-    "./react-library.json": "./react-library.json",
-    "./nextjs.json": "./nextjs.json",
-    "./electron-node.json": "./electron-node.json",
-    "./electron-web.json": "./electron-web.json"
-  },
-  "dependencies": {
-    "typescript": "^5.8.3"
-  },
   "publishConfig": {
     "access": "public"
   }

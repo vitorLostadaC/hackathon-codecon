@@ -1,5 +1,5 @@
-import { Direction, MOVEMENT_SPEED, PET_DIMENSIONS } from '@renderer/windows/pet/constants/pet'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Direction, MOVEMENT_SPEED, PET_DIMENSIONS } from '../constants/pet'
 
 interface UsePetMovementProps {
 	chatRef: React.RefObject<HTMLDivElement | null>

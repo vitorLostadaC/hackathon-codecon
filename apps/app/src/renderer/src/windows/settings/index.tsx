@@ -1,6 +1,6 @@
-import { cn } from '@renderer/lib/utils'
 import type React from 'react'
 import { useState } from 'react'
+import { cn } from 'renderer/src/lib/utils'
 import { Sidebar } from './components/sidebar'
 import { SettingsProvider } from './context/settings-context'
 import { useSettings } from './hooks/use-settings'

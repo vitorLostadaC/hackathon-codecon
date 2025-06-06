@@ -1,5 +1,5 @@
-import { cn } from '@renderer/lib/utils'
 import type { ButtonHTMLAttributes } from 'react'
+import { cn } from 'renderer/src/lib/utils'
 
 const variantStyles = {
 	primary: 'bg-gradient-to-t from-accent-from to-accent-to text-[#190A02]',

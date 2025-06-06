@@ -1,6 +1,6 @@
-import { cn } from '@renderer/lib/utils'
-import { Direction } from '@renderer/windows/pet/constants/pet'
 import { forwardRef } from 'react'
+import { cn } from 'renderer/src/lib/utils'
+import { Direction } from './constants/pet'
 
 interface ChatProps {
 	message: string
