@@ -10,7 +10,7 @@ import SettingIcon from '@renderer/assets/icons/setting.svg'
 import SettingSolidIcon from '@renderer/assets/icons/setting_solid.svg'
 import TShirtIcon from '@renderer/assets/icons/t_shirt.svg'
 import TShirtSolidIcon from '@renderer/assets/icons/t_shirt_solid.svg'
-import { cn } from 'renderer/src/lib/utils'
+import { cn } from 'renderer/lib/utils'
 
 interface SidebarProps {
 	activeTab: SidebarTab

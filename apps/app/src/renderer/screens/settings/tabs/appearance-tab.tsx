@@ -1,6 +1,6 @@
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import { cn } from 'renderer/src/lib/utils'
+import { cn } from 'renderer/lib/utils'
 import { Button } from '../components/button'
 
 interface AppearanceTabProps {

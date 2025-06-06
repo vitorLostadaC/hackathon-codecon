@@ -5,7 +5,7 @@ import { motion, useAnimation } from 'framer-motion'
 import { HandCoins, Mail } from 'lucide-react'
 import type React from 'react'
 import { useCallback, useEffect, useId, useState } from 'react'
-import { cn } from 'renderer/src/lib/utils'
+import { cn } from 'renderer/lib/utils'
 import { Button } from '../components/button'
 
 interface PricingPlan {
