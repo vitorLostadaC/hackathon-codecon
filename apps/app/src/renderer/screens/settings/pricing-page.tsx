@@ -191,9 +191,9 @@ export function PricingPage(): React.JSX.Element {
 						</>
 					)}
 					<div className="space-y-[22px]">
-						<h3 className="text-primary leading-[1.0] text-xl">{plan.name}</h3>
+						<h3 className="text-linen-200 leading-[1.0] text-xl">{plan.name}</h3>
 						<div className="space-y-5">
-							<span className="text-primary text-2xl leading-[1.0] font-semibold block">
+							<span className="text-linen-200 text-2xl leading-[1.0] font-semibold block">
 								{plan.price}
 							</span>
 							<div className="flex justify-between">

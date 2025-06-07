@@ -33,11 +33,9 @@ module.exports = {
           400: "#CCBDBD",
         },
 
-        // Text colors at root level
         primary: "#E8E5E5",
         secondary: "#CCBDBD",
         tertiary: "#C7C3C1",
-        // Background colors
         background: {
           primary: "#151313",
           secondary: "#201C1C",

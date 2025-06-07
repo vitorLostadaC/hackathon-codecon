@@ -6,7 +6,7 @@ export function UserProfile({ name, email }: UserProfileProps): React.JSX.Elemen
 		<div className="w-fit">
 			<div className="flex items-center gap-2.5 bg-background-secondary border border-border-tertiary rounded-[10px] p-2.5 px-4">
 				<div className="flex flex-col gap-1">
-					<span className="text-primary text-sm">{name}</span>
+					<span className="text-linen-200 text-sm">{name}</span>
 					<span className="text-tertiary text-xs">{email}</span>
 				</div>
 			</div>

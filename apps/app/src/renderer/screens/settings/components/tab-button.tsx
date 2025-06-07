@@ -16,7 +16,7 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 				'w-full flex items-center gap-1.5 p-1 px-2 rounded-lg relative overflow-hidden transition-all duration-200 border-secondary/0 border-t-[1px]',
 				'hover:bg-background-secondary/50',
 				isActive
-					? 'bg-background-button text-primary border-t-[1px] border-secondary/20'
+					? 'bg-background-button text-linen-200 border-t-[1px] border-secondary/20'
 					: 'bg-background-primary text-secondary hover:text-tertiary'
 			)}
 		>

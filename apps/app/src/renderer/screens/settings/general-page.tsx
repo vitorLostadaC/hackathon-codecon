@@ -13,7 +13,7 @@ function SettingItem({ label, description, children }: SettingItemProps): React.
 	return (
 		<div className="space-y-3">
 			<div className="flex justify-between items-center">
-				<span className="text-primary text-base">{label}</span>
+				<span className="text-linen-200 text-base">{label}</span>
 				{children}
 			</div>
 			{description && <p className="text-tertiary text-sm">{description}</p>}

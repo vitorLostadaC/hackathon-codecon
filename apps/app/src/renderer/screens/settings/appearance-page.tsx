@@ -20,7 +20,7 @@ export function AppearancePage(): React.JSX.Element {
 	return (
 		<div className="flex flex-col mx-8 pt-6 pb-[9px] items-end h-full">
 			<div className="w-full flex-1 space-y-8">
-				<h2 className="text-primary text-base">Aparencia</h2>
+				<h2 className="text-linen-200 text-base">Aparencia</h2>
 				<div className="flex gap-9">
 					{themes.map((theme) => (
 						<div

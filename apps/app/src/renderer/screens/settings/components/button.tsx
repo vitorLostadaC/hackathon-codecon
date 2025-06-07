@@ -4,7 +4,7 @@ import type { ButtonHTMLAttributes } from 'react'
 const variantStyles = {
 	primary: 'bg-gradient-to-t from-accent-from to-accent-to text-[#190A02]',
 	primaryDisabled: 'bg-gradient-to-t from-accent-from/50 to-accent-to/50 text-[#190A02]',
-	secondary: 'bg-background-tertiary text-primary'
+	secondary: 'bg-background-tertiary text-linen-200'
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
