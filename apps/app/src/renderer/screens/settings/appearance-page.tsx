@@ -1,11 +1,10 @@
 import { cn } from '@renderer/lib/utils'
-import type React from 'react'
 import { useConfig } from './hooks/use-config'
 
-export function AppearancePage(): React.JSX.Element {
+export function AppearancePage() {
 	const { configs, updateConfig } = useConfig()
 
-	if (!configs) return <>test</>
+	if (!configs) return null
 
 	const themes = [
 		{ slug: 'theme1', preview: 'theme1.png' },

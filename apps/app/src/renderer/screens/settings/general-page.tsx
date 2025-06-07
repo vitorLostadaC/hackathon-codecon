@@ -2,72 +2,35 @@ import type React from 'react'
 import { IntervalSelect } from './components/interval-select'
 import { Toogle } from './components/toogle'
 import { useConfig } from './hooks/use-config'
+import type { SettingsType } from './types/settings-type'
 
-interface SettingItemProps {
-	label: string
-	description?: string
-	children: React.ReactNode
-}
-
-function SettingItem({ label, description, children }: SettingItemProps): React.JSX.Element {
-	return (
-		<div className="space-y-3">
-			<div className="flex justify-between items-center">
-				<span className="text-linen-200 text-base">{label}</span>
-				{children}
-			</div>
-			{description && <p className="text-granite-100 text-sm">{description}</p>}
-		</div>
-	)
-}
-
-type IntervalSetting = {
-	id: string
-	label: string
-	description?: string
-	type: 'interval'
-	value: number
-	onChange: (value: number) => void
-}
-
-type ToggleSetting = {
-	id: string
-	label: string
-	description?: string
-	type: 'toggle'
-	value: boolean
-	onChange: (value: boolean) => void
-}
-
-type Setting = IntervalSetting | ToggleSetting
-
-export function GeneralPage(): React.JSX.Element {
+export function GeneralPage() {
 	const { configs, updateConfig } = useConfig()
 
-	if (!configs) return <>test</>
+	if (!configs) return null
 
-	const settings: Setting[] = [
+	const settings: SettingsType[] = [
 		{
-			id: 'printInterval',
-			label: 'Intervalo de print',
-			type: 'interval',
-			value: configs?.general.cursingInterval ?? 0,
-			onChange: (value) =>
-				updateConfig({ general: { ...configs?.general, cursingInterval: value } })
+			id: 0,
+			label: 'Intervalo de xingamento',
+			description: 'Tempo entre cada xingamento enviado pelo pet',
+			type: 'number',
+			value: configs.general.cursingInterval,
+			onChange: (value) => updateConfig({ general: { ...configs.general, cursingInterval: value } })
 		},
 		{
-			id: 'familyFriendly',
-			label: 'Family Friend',
-			description: 'Seu pato não ficará falando palavrões',
+			id: 1,
+			label: 'Modo família',
+			description: 'Seu pato não falará palavrões',
 			type: 'toggle',
-			value: configs?.general.safeMode ?? false,
-			onChange: (value) => updateConfig({ general: { ...configs?.general, safeMode: value } })
+			value: configs.general.safeMode,
+			onChange: (value) => updateConfig({ general: { ...configs.general, safeMode: value } })
 		}
 	]
 
-	const renderSettingControl = (setting: Setting): React.ReactNode => {
+	const renderSettingControl = (setting: SettingsType): React.ReactNode => {
 		switch (setting.type) {
-			case 'interval':
+			case 'number':
 				return <IntervalSelect value={setting.value as number} onChange={setting.onChange} />
 			case 'toggle':
 				return <Toogle checked={setting.value as boolean} onChange={setting.onChange} />
@@ -79,9 +42,13 @@ export function GeneralPage(): React.JSX.Element {
 	return (
 		<div className="space-y-8 ">
 			{settings.map((setting) => (
-				<SettingItem key={setting.id} label={setting.label} description={setting.description}>
-					{renderSettingControl(setting)}
-				</SettingItem>
+				<div key={setting.id} className="space-y-3">
+					<div className="flex justify-between items-center">
+						<span className="text-linen-200 text-base">{setting.label}</span>
+						{renderSettingControl(setting)}
+					</div>
+					{setting.description && <p className="text-granite-100 text-sm">{setting.description}</p>}
+				</div>
 			))}
 		</div>
 	)
