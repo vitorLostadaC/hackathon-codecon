@@ -17,7 +17,7 @@ export function IntervalSelect({ value, onChange }: IntervalSelectProps): React.
 	return (
 		<div className="flex items-center gap-4">
 			<div className="relative">
-				<div className="bg-background-input rounded-md px-2 py-2 space-x-3 flex justify-between items-center w-fit cursor-pointer">
+				<div className="bg-smoke-700 rounded-md px-2 py-2 space-x-3 flex justify-between items-center w-fit cursor-pointer">
 					<span className="text-linen-200 text-base w-5 text-center">{value}</span>
 					<div className="flex flex-col text-linen-200">
 						<button
@@ -43,7 +43,7 @@ export function IntervalSelect({ value, onChange }: IntervalSelectProps): React.
 					</div>
 				</div>
 			</div>
-			<span className="text-tertiary text-sm">Minutos</span>
+			<span className="text-granite-100 text-sm">Minutos</span>
 		</div>
 	)
 }

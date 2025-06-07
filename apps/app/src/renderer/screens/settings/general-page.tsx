@@ -16,7 +16,7 @@ function SettingItem({ label, description, children }: SettingItemProps): React.
 				<span className="text-linen-200 text-base">{label}</span>
 				{children}
 			</div>
-			{description && <p className="text-tertiary text-sm">{description}</p>}
+			{description && <p className="text-granite-100 text-sm">{description}</p>}
 		</div>
 	)
 }

@@ -29,7 +29,7 @@ export function AppearancePage(): React.JSX.Element {
 						>
 							<div
 								className={cn(
-									'bg-background-primary rounded-md w-full h-full',
+									'bg-granite-950 rounded-md w-full h-full',
 									configs.appearance.selectedPet === theme.slug && 'w-[105px] h-[98px]'
 								)}
 							>

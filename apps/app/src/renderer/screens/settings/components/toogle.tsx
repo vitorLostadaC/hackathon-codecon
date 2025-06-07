@@ -12,7 +12,7 @@ export function Toogle({ checked, onChange, className = '' }: toogleProps): Reac
 			type="button"
 			onClick={() => onChange(!checked)}
 			className={`w-11 h-[22px] rounded-full p-0.5 transition-colors ${
-				checked ? 'bg-accent-secondary' : 'bg-background-toggle'
+				checked ? 'bg-tangerine-400' : 'bg-background-toggle'
 			} ${className}`}
 		>
 			<div

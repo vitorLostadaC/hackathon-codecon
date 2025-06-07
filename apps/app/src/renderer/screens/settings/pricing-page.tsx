@@ -82,7 +82,7 @@ export function PricingPage(): React.JSX.Element {
 					key={plan.id}
 					className={cn(
 						'flex-1 min-w-[159px] p-4 px-[14px] rounded-lg border relative overflow-hidden',
-						plan.isHighlighted ? 'border-border-primary' : 'border-border-secondary'
+						plan.isHighlighted ? 'border-tangerine-200' : 'border-granite-500'
 					)}
 				>
 					{plan.isHighlighted && (
@@ -197,14 +197,14 @@ export function PricingPage(): React.JSX.Element {
 								{plan.price}
 							</span>
 							<div className="flex justify-between">
-								<div className="flex items-center gap-1.5 text-secondary">
+								<div className="flex items-center gap-1.5 text-linen-400">
 									<HandCoins size={16} />
 									<span className="text-sm">{plan.credits} créditos</span>
 								</div>
 								{plan.features.map((feature, index) => (
 									<div
 										key={`${feature}-${index}`}
-										className="flex items-center text-secondary gap-1.5"
+										className="flex items-center text-linen-400 gap-1.5"
 									>
 										<Mail size={16} />
 										<span className="text-sm">{feature}</span>

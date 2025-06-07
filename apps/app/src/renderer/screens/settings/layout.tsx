@@ -7,7 +7,7 @@ export function Layout(): React.JSX.Element {
 	const isMacOS = process.platform === 'darwin'
 
 	return (
-		<div className="flex h-screen bg-background-primary relative">
+		<div className="flex h-screen bg-granite-950 relative">
 			<div className={cn('h-8 w-full absolute region-drag', !isMacOS && 'hidden')} />
 			<Sidebar />
 			<div className="w-0.5 bg-background-secondary h-screen" />

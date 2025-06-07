@@ -13,16 +13,16 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 			className={cn(
-				'w-full flex items-center gap-1.5 p-1 px-2 rounded-lg relative overflow-hidden transition-all duration-200 border-secondary/0 border-t-[1px]',
+				'w-full flex items-center gap-1.5 p-1 px-2 rounded-lg relative overflow-hidden transition-all duration-200 border-granite-500/0 border-t-[1px]',
 				'hover:bg-background-secondary/50',
 				isActive
-					? 'bg-background-button text-linen-200 border-t-[1px] border-secondary/20'
-					: 'bg-background-primary text-secondary hover:text-tertiary'
+					? 'bg-background-button text-linen-200 border-t-[1px] border-granite-500/20'
+					: 'bg-background-950 text-linen-400 hover:text-granite-100'
 			)}
 		>
 			{/* Principal light animation */}
 			<motion.div
-				className="absolute z-0 -right-[10px] w-[65px] h-[15px] rounded-full bg-accent-secondary"
+				className="absolute z-0 -right-[10px] w-[65px] h-[15px] rounded-full bg-tangerine-400"
 				style={{ transformOrigin: 'right' }}
 				initial={{
 					opacity: 0,
@@ -55,7 +55,7 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 			/>
 
 			<motion.div
-				className="absolute z-0 -right-[6px] w-[45px] h-[8px] rounded-full bg-accent-secondary"
+				className="absolute z-0 -right-[6px] w-[45px] h-[8px] rounded-full bg-tangerine-400"
 				style={{ transformOrigin: 'right' }}
 				initial={{
 					opacity: 0,
@@ -84,7 +84,7 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 
 			{/* Borders with stagger (sequential animation) */}
 			<motion.div
-				className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-accent-secondary"
+				className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-tangerine-400"
 				initial={{ opacity: 0.1, scaleY: 0.6 }}
 				animate={
 					isActive || isHovered
@@ -98,7 +98,7 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 				}}
 			/>
 			<motion.div
-				className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-accent-secondary blur-[2.5px]"
+				className="absolute z-0 right-0 w-[3px] h-4 rounded-l-full bg-tangerine-400 blur-[2.5px]"
 				initial={{ opacity: 0.1, scaleY: 0.6 }}
 				animate={
 					isActive || isHovered
