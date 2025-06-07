@@ -76,7 +76,7 @@ export function PricingPage(): React.JSX.Element {
 	]
 
 	return (
-		<div className="flex gap-3 flex-wrap mx-4">
+		<div className="flex gap-3 flex-wrap">
 			{plans.map((plan) => (
 				<div
 					key={plan.id}

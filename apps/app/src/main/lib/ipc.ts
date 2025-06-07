@@ -47,7 +47,7 @@ ipcMain.handle(IPC.WINDOWS.CREATE_SETTINGS, async ({ sender }): Promise<void> =>
 	const settingsWindow = createWindow({
 		id: 'settings',
 		width: 774,
-		height: 484,
+		height: 476,
 		resizable: false,
 		title: 'Configurações',
 		show: false,

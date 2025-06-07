@@ -2,14 +2,25 @@ import { cn } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import type React from 'react'
 import { useState } from 'react'
-import type { TabButtonProps } from '../types'
+import { NavLink, useLocation } from 'react-router-dom'
 
-export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): React.JSX.Element {
+export interface TabButtonProps {
+	icon: (isActive: boolean) => React.ReactNode
+	label: string
+	value: string
+}
+
+const NavLinkMotion = motion.create(NavLink)
+
+export function TabButton({ icon, label, value }: TabButtonProps): React.JSX.Element {
+	const location = useLocation()
 	const [isHovered, setIsHovered] = useState(false)
 
+	const isActive = location.pathname === value
+
 	return (
-		<motion.button
-			onClick={onClick}
+		<NavLinkMotion
+			to={value}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 			className={cn(
@@ -118,7 +129,7 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 				animate={isActive ? { scale: 1.05 } : { scale: 1 }}
 				transition={{ duration: 0.2 }}
 			>
-				{icon}
+				{icon(isActive)}
 			</motion.div>
 			<motion.span
 				className="text-base leading-[1.0] relative z-10"
@@ -127,6 +138,6 @@ export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): R
 			>
 				{label}
 			</motion.span>
-		</motion.button>
+		</NavLinkMotion>
 	)
 }

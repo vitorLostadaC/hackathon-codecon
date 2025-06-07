@@ -77,7 +77,7 @@ export function GeneralPage(): React.JSX.Element {
 	}
 
 	return (
-		<div className="space-y-8 mx-8 pt-4">
+		<div className="space-y-8 ">
 			{settings.map((setting) => (
 				<SettingItem key={setting.id} label={setting.label} description={setting.description}>
 					{renderSettingControl(setting)}

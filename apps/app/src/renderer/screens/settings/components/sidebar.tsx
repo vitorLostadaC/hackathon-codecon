@@ -1,5 +1,5 @@
+import { CreditCard, Settings, Shirt } from 'lucide-react'
 import type React from 'react'
-import type { SidebarTab } from '../types'
 import { TabButton } from './tab-button'
 import { UserProfile } from './user-profile'
 
@@ -11,32 +11,33 @@ import SettingSolidIcon from '@renderer/assets/icons/setting_solid.svg'
 import TShirtIcon from '@renderer/assets/icons/t_shirt.svg'
 import TShirtSolidIcon from '@renderer/assets/icons/t_shirt_solid.svg'
 import { cn } from '@renderer/lib/utils'
-import { useState } from 'react'
 
-interface SidebarProps {
-	activeTab: SidebarTab
-	onTabChange: (tab: SidebarTab) => void
-}
-
-const tabIcons: Record<SidebarTab, { default: string; active: string }> = {
+const tabIcons: Record<string, { default: string; active: string }> = {
 	general: { default: SettingIcon, active: SettingSolidIcon },
 	appearance: { default: TShirtIcon, active: TShirtSolidIcon },
 	pricing: { default: CardIcon, active: CardSolidIcon }
 }
 
-const tabLabels: Record<SidebarTab, string> = {
-	general: 'Geral',
-	appearance: 'Aparência',
-	pricing: 'Preços'
-}
+const tabs = [
+	{
+		href: '/',
+		label: 'Geral',
+		icon: Settings
+	},
+	{
+		href: '/appearance',
+		label: 'Aparência',
+		icon: Shirt
+	},
+	{
+		href: '/pricing',
+		label: 'Preços',
+		icon: CreditCard
+	}
+]
 
 export function Sidebar(): React.JSX.Element {
-	const [activeTab, setActiveTab] = useState<SidebarTab>('general')
 	const isMacOS = process.platform === 'darwin'
-
-	const onTabChange = (tab: SidebarTab) => {
-		setActiveTab(tab)
-	}
 
 	return (
 		<div
@@ -46,18 +47,14 @@ export function Sidebar(): React.JSX.Element {
 			)}
 		>
 			<div className="flex flex-col gap-2">
-				{(Object.keys(tabLabels) as SidebarTab[]).map((tab) => (
+				{tabs.map((tab) => (
 					<TabButton
-						key={tab}
-						icon={
-							<img
-								src={activeTab === tab ? tabIcons[tab].active : tabIcons[tab].default}
-								alt={tabLabels[tab]}
-							/>
-						}
-						label={tabLabels[tab]}
-						isActive={activeTab === tab}
-						onClick={() => onTabChange(tab)}
+						value={tab.href}
+						key={tab.href}
+						icon={(isActive) => (
+							<tab.icon className={cn('size-6 stroke-linen-300', isActive && 'stroke-white')} />
+						)}
+						label={tab.label}
 					/>
 				))}
 			</div>

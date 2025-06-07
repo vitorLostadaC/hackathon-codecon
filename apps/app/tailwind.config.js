@@ -23,6 +23,7 @@ module.exports = {
           100: "#C7C3C1",
           500: "#4E4946",
           800: "#36312E",
+          950: "#151313",
         },
         smoke: {
           700: "#333333",
@@ -33,24 +34,14 @@ module.exports = {
           400: "#CCBDBD",
         },
 
-        primary: "#E8E5E5",
-        secondary: "#CCBDBD",
-        tertiary: "#C7C3C1",
         background: {
-          primary: "#151313",
           secondary: "#201C1C",
           tertiary: "#353535",
-          input: "#333333",
           toggle: "#363030",
         },
-        border: {
-          primary: "#DDA37A",
-          secondary: "#4E4946",
-          tertiary: "#333333",
-        },
+
         accent: {
           primary: "#FF6900",
-          secondary: "#FF8904",
           tertiary: "#FDA830",
         },
       },

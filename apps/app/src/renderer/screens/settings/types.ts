@@ -1,5 +1,3 @@
-export type SidebarTab = 'general' | 'appearance' | 'pricing'
-
 export interface SettingsState {
 	printInterval: number
 	familyFriendly: boolean
@@ -9,13 +7,6 @@ export interface SettingsState {
 
 export interface SettingsContextType extends SettingsState {
 	updateSettings: (key: keyof SettingsState, value: SettingsState[keyof SettingsState]) => void
-}
-
-export interface TabButtonProps {
-	icon: React.ReactNode
-	label: string
-	isActive: boolean
-	onClick: () => void
 }
 
 export interface UserProfileProps {
