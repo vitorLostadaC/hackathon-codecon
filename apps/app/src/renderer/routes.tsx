@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom'
 
-import { Router } from 'lib/electron-router-dom'
+import { Router } from 'shared/electron-router-dom'
 import { PetScreen } from './screens/pet/pet'
 import { SettingsScreen } from './screens/settings'
 
