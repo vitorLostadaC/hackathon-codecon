@@ -76,7 +76,7 @@ export function createMainWindow() {
 		show: false,
 		type: windowType(),
 		webPreferences: {
-			preload: join(__dirname, '../../preload/index.js'),
+			preload: join(__dirname, '../preload/index.js'),
 			sandbox: false,
 			nodeIntegration: false,
 			contextIsolation: true,

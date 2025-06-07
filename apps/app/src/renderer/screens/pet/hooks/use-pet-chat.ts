@@ -3,8 +3,8 @@ import { MESSAGE_DURATION, MESSAGE_INTERVAL } from '../constants/chat'
 import { MESSAGES } from '../constants/messages'
 
 interface PetChatCallbacks {
-	onMessageShow: () => void
-	onMessageHide: () => void
+	onMessageShow?: () => void
+	onMessageHide?: () => void
 }
 
 export const usePetChat = ({
@@ -20,11 +20,11 @@ export const usePetChat = ({
 
 	const showMessage = useCallback(
 		(message: string) => {
-			onMessageShow()
+			onMessageShow?.()
 			setMessage(message)
 
 			chatTimerRef.current = setTimeout(() => {
-				onMessageHide()
+				onMessageHide?.()
 				setMessage('')
 				scheduleNextMessage()
 			}, MESSAGE_DURATION)

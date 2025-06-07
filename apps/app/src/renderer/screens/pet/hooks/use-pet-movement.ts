@@ -5,6 +5,12 @@ interface UsePetMovementProps {
 	chatRef: React.RefObject<HTMLDivElement | null>
 }
 
+interface PetMovementState {
+	position: number
+	direction: Direction
+	chatDirection: Direction
+}
+
 export const usePetMovement = ({
 	chatRef
 }: UsePetMovementProps): {
@@ -14,70 +20,99 @@ export const usePetMovement = ({
 	stopMovement: () => void
 	resumeMovement: () => void
 } => {
-	const [position, setPosition] = useState(0)
-	const [direction, setDirection] = useState(Direction.RIGHT)
-	const [chatDirection, setChatDirection] = useState(Direction.RIGHT)
+	const [state, setState] = useState<PetMovementState>({
+		position: 0,
+		direction: Direction.RIGHT,
+		chatDirection: Direction.RIGHT
+	})
 
-	const animationFrameRef = useRef<number | null>(null)
-	const directionRef = useRef(Direction.RIGHT)
+	const animationRef = useRef<number | null>(null)
+	const isMovingRef = useRef(true)
 
-	const updatePosition = useCallback(() => {
-		setPosition((prev) => {
-			const nextPos = prev + directionRef.current * MOVEMENT_SPEED
-			const maxPos = window.innerWidth - PET_DIMENSIONS.width
+	const getBoundaries = useCallback(() => {
+		const maxPosition = window.innerWidth - PET_DIMENSIONS.width
+		const chatWidth = chatRef.current?.offsetWidth ?? 256
+		return { maxPosition, chatWidth }
+	}, [chatRef])
 
-			if (nextPos <= 0) {
-				directionRef.current = Direction.RIGHT
-				setDirection(Direction.RIGHT)
-				return 0
+	const getChatDirection = useCallback(
+		(position: number, chatWidth: number): Direction => {
+			if (position <= chatWidth - PET_DIMENSIONS.width) {
+				return Direction.RIGHT
+			}
+			if (position + chatWidth >= window.innerWidth) {
+				return Direction.LEFT
+			}
+			return state.chatDirection // Keep current if no change needed
+		},
+		[state.chatDirection]
+	)
+
+	// Handle boundary collisions and direction changes
+	const handleMovement = useCallback(
+		(currentState: PetMovementState): PetMovementState => {
+			const { maxPosition, chatWidth } = getBoundaries()
+			const nextPosition = currentState.position + currentState.direction * MOVEMENT_SPEED
+
+			let direction = currentState.direction
+
+			// Hit left boundary
+			if (nextPosition <= 0) {
+				direction = Direction.RIGHT
 			}
 
-			if (nextPos >= maxPos) {
-				directionRef.current = Direction.LEFT
-				setDirection(Direction.LEFT)
-				return maxPos
+			// Hit right boundary
+			if (nextPosition >= maxPosition) {
+				direction = Direction.LEFT
 			}
 
-			const chatElement = chatRef.current
-			const chatWidth = chatElement ? chatElement.offsetWidth : 256
-
-			if (nextPos <= chatWidth - PET_DIMENSIONS.width) {
-				setChatDirection(Direction.RIGHT)
-			} else if (nextPos + chatWidth >= window.innerWidth) {
-				setChatDirection(Direction.LEFT)
+			// Normal movement
+			return {
+				position: nextPosition,
+				direction,
+				chatDirection: getChatDirection(nextPosition, chatWidth)
 			}
+		},
+		[getBoundaries, getChatDirection]
+	)
 
-			return nextPos
-		})
+	// Animation loop
+	const animate = useCallback(() => {
+		if (!isMovingRef.current) return
 
-		animationFrameRef.current = requestAnimationFrame(updatePosition)
+		setState((prevState) => handleMovement(prevState))
+		animationRef.current = requestAnimationFrame(animate)
+	}, [handleMovement])
+
+	// Start animation
+	useEffect(() => {
+		animate()
+		return () => {
+			if (animationRef.current) {
+				cancelAnimationFrame(animationRef.current)
+			}
+		}
+	}, [animate])
+
+	const stopMovement = useCallback((): void => {
+		isMovingRef.current = false
+		if (animationRef.current) {
+			cancelAnimationFrame(animationRef.current)
+			animationRef.current = null
+		}
 	}, [])
 
-	useEffect(() => {
-		animationFrameRef.current = requestAnimationFrame(updatePosition)
-
-		return () => {
-			if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
+	const resumeMovement = useCallback((): void => {
+		if (!isMovingRef.current) {
+			isMovingRef.current = true
+			animate()
 		}
-	}, [updatePosition])
-
-	const stopMovement = (): void => {
-		if (animationFrameRef.current) {
-			cancelAnimationFrame(animationFrameRef.current)
-			animationFrameRef.current = null
-		}
-	}
-
-	const resumeMovement = (): void => {
-		if (!animationFrameRef.current) {
-			animationFrameRef.current = requestAnimationFrame(updatePosition)
-		}
-	}
+	}, [animate])
 
 	return {
-		position,
-		direction,
-		chatDirection,
+		position: state.position,
+		direction: state.direction,
+		chatDirection: state.chatDirection,
 		stopMovement,
 		resumeMovement
 	}
