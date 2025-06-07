@@ -14,7 +14,7 @@ const defaults: StoreConfig = {
 			selectedPet: 'duck'
 		},
 		general: {
-			cursingInterval: 30 * 1000, // 30 seconds
+			cursingInterval: 30,
 			safeMode: false
 		}
 	}

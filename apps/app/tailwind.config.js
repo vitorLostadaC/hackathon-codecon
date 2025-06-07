@@ -14,6 +14,25 @@ module.exports = {
         sans: ["Inter", "sans-serif"],
       },
       colors: {
+        tangerine: {
+          200: "#DDA37A",
+          400: "#FF8904",
+          950: "#190A02",
+        },
+        granite: {
+          100: "#C7C3C1",
+          500: "#4E4946",
+          800: "#36312E",
+        },
+        smoke: {
+          700: "#333333",
+        },
+        linen: {
+          200: "#E8E5E5",
+          300: "#D8CDCD",
+          400: "#CCBDBD",
+        },
+
         // Text colors at root level
         primary: "#E8E5E5",
         secondary: "#CCBDBD",
