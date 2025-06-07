@@ -1,7 +1,7 @@
+import { join } from 'node:path'
 import { IPC } from '@shared/constants/ipc'
 import type { TakeScreenshotResponse } from '@shared/types/ipc'
 import { desktopCapturer, ipcMain, screen } from 'electron'
-import { join } from 'node:path'
 import { createWindow } from '../factories'
 
 ipcMain.handle(IPC.ACTIONS.TAKE_SCREENSHOT, async (): Promise<TakeScreenshotResponse> => {
