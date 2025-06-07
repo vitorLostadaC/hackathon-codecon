@@ -1,8 +1,10 @@
+import { IPC } from '@shared/constants/ipc'
+import type { TakeScreenshotResponse } from '@shared/types/ipc'
 import { desktopCapturer, ipcMain, screen } from 'electron'
 import { join } from 'node:path'
 import { createWindow } from '../factories'
 
-ipcMain.handle('take-screenshot', async (): Promise<string | null> => {
+ipcMain.handle(IPC.ACTIONS.TAKE_SCREENSHOT, async (): Promise<TakeScreenshotResponse> => {
 	try {
 		const sources = await desktopCapturer.getSources({
 			types: ['screen'],
@@ -23,14 +25,18 @@ ipcMain.handle('take-screenshot', async (): Promise<string | null> => {
 		}
 
 		const thumbnail = primarySource.thumbnail.toDataURL()
-		return thumbnail
+		return {
+			screenshot: thumbnail
+		}
 	} catch (err) {
 		console.error('Error taking screenshot:', err)
-		return null
+		return {
+			screenshot: null
+		}
 	}
 })
 
-ipcMain.handle('create-settings-window', ({ sender }) => {
+ipcMain.handle(IPC.WINDOWS.CREATE_SETTINGS, async ({ sender }): Promise<void> => {
 	const settingsWindow = createWindow({
 		id: 'settings',
 		width: 774,

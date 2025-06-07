@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from 'electron'
 import path, { join } from 'node:path'
 
-import { registerRoute } from '../shared/electron-router-dom'
+import { registerRoute } from '../shared/lib/electron-router-dom'
 
 type Route = Parameters<typeof registerRoute>[0]
 

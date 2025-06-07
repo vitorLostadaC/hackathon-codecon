@@ -1,7 +1,7 @@
+import { cn } from '@renderer/lib/utils'
 import { motion } from 'framer-motion'
 import type React from 'react'
 import { useState } from 'react'
-import { cn } from 'renderer/lib/utils'
 import type { TabButtonProps } from '../types'
 
 export function TabButton({ icon, label, isActive, onClick }: TabButtonProps): React.JSX.Element {
