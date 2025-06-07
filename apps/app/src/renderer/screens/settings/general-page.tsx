@@ -1,13 +1,7 @@
 import type React from 'react'
-import { IntervalSelect } from '../components/interval-select'
-import { Toogle } from '../components/toogle'
-
-interface GeneralTabProps {
-	printInterval: number
-	onPrintIntervalChange: (value: number) => void
-	familyFriendly: boolean
-	onFamilyFriendlyChange: (value: boolean) => void
-}
+import { IntervalSelect } from './components/interval-select'
+import { Toogle } from './components/toogle'
+import { useConfig } from './hooks/use-config'
 
 interface SettingItemProps {
 	label: string
@@ -47,27 +41,27 @@ type ToggleSetting = {
 
 type Setting = IntervalSetting | ToggleSetting
 
-export function GeneralTab({
-	printInterval,
-	onPrintIntervalChange,
-	familyFriendly,
-	onFamilyFriendlyChange
-}: GeneralTabProps): React.JSX.Element {
+export function GeneralPage(): React.JSX.Element {
+	const { configs, updateConfig } = useConfig()
+
+	if (!configs) return <>test</>
+
 	const settings: Setting[] = [
 		{
 			id: 'printInterval',
 			label: 'Intervalo de print',
 			type: 'interval',
-			value: printInterval,
-			onChange: onPrintIntervalChange
+			value: configs?.general.cursingInterval ?? 0,
+			onChange: (value) =>
+				updateConfig({ general: { ...configs?.general, cursingInterval: value } })
 		},
 		{
 			id: 'familyFriendly',
 			label: 'Family Friend',
 			description: 'Seu pato não ficará falando palavrões',
 			type: 'toggle',
-			value: familyFriendly,
-			onChange: onFamilyFriendlyChange
+			value: configs?.general.safeMode ?? false,
+			onChange: (value) => updateConfig({ general: { ...configs?.general, safeMode: value } })
 		}
 	]
 

@@ -6,7 +6,7 @@ import { motion, useAnimation } from 'framer-motion'
 import { HandCoins, Mail } from 'lucide-react'
 import type React from 'react'
 import { useCallback, useEffect, useId, useState } from 'react'
-import { Button } from '../components/button'
+import { Button } from './components/button'
 
 interface PricingPlan {
 	id: number
@@ -17,12 +17,7 @@ interface PricingPlan {
 	isHighlighted?: boolean
 }
 
-interface PricingTabProps {
-	selectedPlan: number
-	onPlanSelect: (planId: number) => void
-}
-
-export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): React.JSX.Element {
+export function PricingPage(): React.JSX.Element {
 	const [init, setInit] = useState(false)
 	const controls = useAnimation()
 	const generatedId = useId()
@@ -48,7 +43,6 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
 		[controls]
 	)
 
-	console.log(selectedPlan)
 	const plans: PricingPlan[] = [
 		{
 			id: 1,
@@ -221,7 +215,7 @@ export function PricingTab({ selectedPlan, onPlanSelect }: PricingTabProps): Rea
 					</div>
 					<Button
 						variant={plan.isHighlighted ? 'primary' : 'secondary'}
-						onClick={() => onPlanSelect(plan.id)}
+						onClick={() => {}}
 						className="mt-7 w-full"
 					>
 						Escolher

@@ -11,6 +11,7 @@ import SettingSolidIcon from '@renderer/assets/icons/setting_solid.svg'
 import TShirtIcon from '@renderer/assets/icons/t_shirt.svg'
 import TShirtSolidIcon from '@renderer/assets/icons/t_shirt_solid.svg'
 import { cn } from '@renderer/lib/utils'
+import { useState } from 'react'
 
 interface SidebarProps {
 	activeTab: SidebarTab
@@ -29,8 +30,13 @@ const tabLabels: Record<SidebarTab, string> = {
 	pricing: 'Preços'
 }
 
-export function Sidebar({ activeTab, onTabChange }: SidebarProps): React.JSX.Element {
+export function Sidebar(): React.JSX.Element {
+	const [activeTab, setActiveTab] = useState<SidebarTab>('general')
 	const isMacOS = process.platform === 'darwin'
+
+	const onTabChange = (tab: SidebarTab) => {
+		setActiveTab(tab)
+	}
 
 	return (
 		<div

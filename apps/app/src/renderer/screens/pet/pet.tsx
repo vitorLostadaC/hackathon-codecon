@@ -1,6 +1,6 @@
 import duckStopped from '@renderer/assets/animals/duck/duck-stopped.png'
 import duckWalking from '@renderer/assets/animals/duck/duck-walking.gif'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Chat } from './chat'
 import { PET_DIMENSIONS } from './constants/pet'
 import { usePetChat } from './hooks/use-pet-chat'
@@ -15,6 +15,10 @@ enum PetState {
 export const PetScreen = (): React.JSX.Element => {
 	const currentStateRef = useRef<PetState>(PetState.WALKING)
 	const chatRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		window.api.windows.createSettingsWindow()
+	}, [])
 
 	const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement({
 		chatRef

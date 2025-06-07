@@ -4,5 +4,9 @@ export const IPC = {
 	},
 	WINDOWS: {
 		CREATE_SETTINGS: 'create-settings-window'
+	},
+	CONFIG: {
+		GET_CONFIGS: 'get-configs',
+		UPDATE_CONFIG: 'update-config'
 	}
 }
