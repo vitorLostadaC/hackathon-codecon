@@ -8,7 +8,8 @@ export default function App(): React.JSX.Element {
 				type="button"
 				className="bg-red-500"
 				onClick={async () => {
-					await getScreenContextReply()
+					const a = await getScreenContextReply()
+					console.log(a)
 				}}
 			>
 				take screenshot

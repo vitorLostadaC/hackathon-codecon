@@ -1,10 +1,15 @@
+import { openai } from '@ai-sdk/openai'
 import { generateText } from 'ai'
-import { openai } from '../../services/openai'
-import type { AiResponse, Memory } from '../types/ai'
+import { getDurationInSeconds } from '../../helpers/get-duration-in-seconds'
+import type { AiServiceResponse } from '../../types/ai'
+import type { Memory } from '../../types/memory'
 
-export const generateShortMemory = async (message: string): Promise<AiResponse<string>> => {
+const model = openai('gpt-4.1-nano')
+
+export const generateShortMemory = async (message: string): Promise<AiServiceResponse> => {
+	const startTime = Date.now()
 	const { text, usage } = await generateText({
-		model: openai('gpt-4.1-nano'),
+		model,
 		maxTokens: 200,
 		messages: [
 			{
@@ -18,18 +23,25 @@ export const generateShortMemory = async (message: string): Promise<AiResponse<s
 			}
 		]
 	})
+	const endTime = Date.now()
 
 	return {
-		usage,
-		response: text
+		tokens: {
+			[model.modelId]: {
+				input: usage.promptTokens,
+				output: usage.completionTokens
+			}
+		},
+		stepName: 'shortMemory',
+		response: text,
+		duration: getDurationInSeconds(startTime, endTime)
 	}
 }
 
-export const generateLongMemory = async (
-	shortTimeMemory: Memory[]
-): Promise<AiResponse<string>> => {
+export const generateLongMemory = async (shortTimeMemory: Memory[]): Promise<AiServiceResponse> => {
+	const startTime = Date.now()
 	const { text, usage } = await generateText({
-		model: openai('gpt-4.1-nano'),
+		model,
 		maxTokens: 150,
 		messages: [
 			{
@@ -58,8 +70,17 @@ O usuário adicionou o contato João e abriu a página de configurações.
 			}
 		]
 	})
+	const endTime = Date.now()
+
 	return {
-		usage,
-		response: text
+		tokens: {
+			[model.modelId]: {
+				input: usage.promptTokens,
+				output: usage.completionTokens
+			}
+		},
+		stepName: 'longMemory',
+		response: text,
+		duration: getDurationInSeconds(startTime, endTime)
 	}
 }

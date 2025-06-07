@@ -13,6 +13,10 @@
     "./electron-node.json": "./electron-node.json",
     "./electron-web.json": "./electron-web.json"
   },
+  "scripts": {
+    "lint": "biome check src",
+    "lint:fix": "biome check --fix --unsafe ./src"
+  },
   "dependencies": {
     "typescript": "^5.8.3"
   },
