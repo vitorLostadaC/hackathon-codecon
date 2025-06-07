@@ -1,20 +1,39 @@
-import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { resolve } from 'node:path'
+import tsconfigPathsPlugin from 'vite-tsconfig-paths'
+
+const tsconfigPaths = tsconfigPathsPlugin({
+	projects: [resolve('tsconfig.json')]
+})
 
 export default defineConfig({
 	main: {
-		plugins: [externalizeDepsPlugin()]
+		plugins: [tsconfigPaths, externalizeDepsPlugin()],
+		publicDir: resolve('resources')
 	},
 	preload: {
-		plugins: [externalizeDepsPlugin()]
+		plugins: [tsconfigPaths, externalizeDepsPlugin()]
 	},
 	renderer: {
+		define: {
+			'process.platform': JSON.stringify(process.platform)
+		},
 		resolve: {
 			alias: {
-				'@renderer': resolve('src/renderer/src')
+				'@renderer': resolve('src/renderer')
 			}
 		},
-		plugins: [react()]
+		plugins: [tsconfigPaths, react()],
+		build: {
+			rollupOptions: {
+				input: {
+					main: resolve('src/renderer/index.html'),
+					settings: resolve('src/renderer/settings.html'),
+					gear: resolve('src/renderer/gear.html')
+				}
+			}
+		},
+		assetsInclude: ['**/*.svg']
 	}
 })
