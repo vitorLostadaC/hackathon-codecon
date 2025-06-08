@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Configs } from '~/src/shared/types/configs'
-import { getConfigsOptions } from '../../../requests/config'
+import { getConfigsOptions } from '../../../requests/electron-store/config'
 
 export const useConfig = () => {
 	const queryClient = useQueryClient()

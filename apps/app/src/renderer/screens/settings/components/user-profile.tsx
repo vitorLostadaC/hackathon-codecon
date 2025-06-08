@@ -17,7 +17,7 @@ export function UserProfile() {
 
 	if (!auth.isSignedIn)
 		return (
-			<SignInButton mode="modal">
+			<SignInButton mode="modal" signUpForceRedirectUrl="/#/settings">
 				<Button className="w-full">Login</Button>
 			</SignInButton>
 		)

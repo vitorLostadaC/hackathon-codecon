@@ -39,7 +39,7 @@ export function GeneralPage() {
 							min={1}
 							className="w-16"
 						/>
-						<span className="text-granite-100 text-sm">minutos</span>
+						<span className="text-granite-100 text-sm">segundos</span>
 					</div>
 				)
 			case 'toggle':

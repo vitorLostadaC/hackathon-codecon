@@ -2,8 +2,10 @@ import { z } from 'zod'
 import type { FastifyTypedInstance } from '../../types/fastify'
 import type { PaymentWebhookPayload } from '../../types/payment'
 import { AbacatePayWebhook } from './use-cases/abacatepay-use-case'
+import { ClerkUseCase } from './use-cases/clerk-use-case'
 
 const abacatePayWebhook = new AbacatePayWebhook()
+const clerkUseCase = new ClerkUseCase()
 
 export async function webhookRoutes(fastify: FastifyTypedInstance) {
 	fastify.post(
@@ -24,4 +26,10 @@ export async function webhookRoutes(fastify: FastifyTypedInstance) {
 			return reply.status(200).send(result)
 		}
 	)
+
+	fastify.post('/clerk', async (request, reply) => {
+		const result = await clerkUseCase.execute(request)
+
+		return reply.status(200).send(result)
+	})
 }

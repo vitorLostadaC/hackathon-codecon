@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
+import { clerkPlugin, getAuth } from '@clerk/fastify'
 import cors from '@fastify/cors'
 import Fastify from 'fastify'
 import {
@@ -27,13 +28,35 @@ const fastify = Fastify({
 	disableRequestLogging: true
 }).withTypeProvider<ZodTypeProvider>()
 
+fastify.register(clerkPlugin, {
+	hookName: 'onRequest'
+})
+
 fastify.register(cors, {
 	origin: [env.FRONTEND_URL],
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+	credentials: true
 })
 
 fastify.setValidatorCompiler(validatorCompiler)
 fastify.setSerializerCompiler(serializerCompiler)
+
+fastify.addHook('onRequest', async (request, reply) => {
+	const isPublicRoute = request.routeOptions.config?.url.includes('webhook')
+
+	const adminHeader = request.headers['x-admin']
+	const allowAccess = (adminHeader === 'dev' && env.NODE_ENV === 'development') || isPublicRoute
+
+	if (allowAccess) {
+		return
+	}
+	const { userId } = getAuth(request)
+
+	if (!userId) {
+		return reply.code(401).send({ error: 'Unauthorized' })
+	}
+
+	return
+})
 
 fastify.register(routes)
 

@@ -1,22 +1,8 @@
+import { cn } from '@renderer/lib/utils'
 import { CreditCard, Settings, Shirt } from 'lucide-react'
 import type React from 'react'
 import { TabButton } from './tab-button'
 import { UserProfile } from './user-profile'
-
-// Import SVG icons
-import CardIcon from '@renderer/assets/icons/card.svg'
-import CardSolidIcon from '@renderer/assets/icons/card_solid.svg'
-import SettingIcon from '@renderer/assets/icons/setting.svg'
-import SettingSolidIcon from '@renderer/assets/icons/setting_solid.svg'
-import TShirtIcon from '@renderer/assets/icons/t_shirt.svg'
-import TShirtSolidIcon from '@renderer/assets/icons/t_shirt_solid.svg'
-import { cn } from '@renderer/lib/utils'
-
-const tabIcons: Record<string, { default: string; active: string }> = {
-	general: { default: SettingIcon, active: SettingSolidIcon },
-	appearance: { default: TShirtIcon, active: TShirtSolidIcon },
-	pricing: { default: CardIcon, active: CardSolidIcon }
-}
 
 const tabs = [
 	{

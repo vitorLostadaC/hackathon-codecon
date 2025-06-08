@@ -31,3 +31,17 @@ export const addCredits = async (userId: string, credits: number) => {
 		.updateOne({ userId }, { $inc: { credits } })
 	return user
 }
+
+interface CreateUserProps {
+	userId: string
+	email: string
+	name: string
+}
+
+export const createUser = async ({ userId, email, name }: CreateUserProps) => {
+	const db = await getDb()
+	const user = await db
+		.collection<User>(Collections.Users)
+		.insertOne({ userId, email, name, credits: 3, createdAt: new Date().toISOString() })
+	return user
+}
