@@ -1,4 +1,3 @@
-import { join } from 'node:path'
 import { IPC } from '@shared/constants/ipc'
 import type {
 	GetConfigResponse,
@@ -7,6 +6,7 @@ import type {
 	UpdateConfigResponse
 } from '@shared/types/ipc'
 import { desktopCapturer, ipcMain, screen } from 'electron'
+import { join } from 'node:path'
 import type { Configs } from '~/src/shared/types/configs'
 import { createWindow } from '../factories'
 import { store } from './store'
@@ -47,7 +47,7 @@ ipcMain.handle(IPC.WINDOWS.CREATE_SETTINGS, async ({ sender }): Promise<void> =>
 	const settingsWindow = createWindow({
 		id: 'settings',
 		width: 774,
-		height: 476,
+		height: 488,
 		resizable: false,
 		title: 'Configurações',
 		show: false,

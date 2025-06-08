@@ -41,7 +41,7 @@ export function Sidebar(): React.JSX.Element {
 
 	return (
 		<div
-			className={cn('space-y-2 flex flex-col justify-between p-4 pt-7 w-fit', isMacOS && 'pt-12')}
+			className={cn('space-y-2 flex flex-col justify-between px-4 py-6 w-fit', isMacOS && 'pt-12')}
 		>
 			<div className="flex flex-col gap-2">
 				{tabs.map((tab) => (

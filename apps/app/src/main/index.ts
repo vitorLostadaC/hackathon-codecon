@@ -22,7 +22,7 @@ app.whenReady().then(() => {
 	createWindow({
 		id: 'settings',
 		width: 774,
-		height: 476,
+		height: 488,
 		resizable: false,
 		title: 'Configurações',
 		show: false,
@@ -49,7 +49,7 @@ app.whenReady().then(() => {
 			createWindow({
 				id: 'settings',
 				width: 774,
-				height: 476,
+				height: 488,
 				resizable: false,
 				title: 'Configurações',
 				show: false,
