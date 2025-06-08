@@ -16,7 +16,9 @@ module.exports = {
       colors: {
         tangerine: {
           200: "#DDA37A",
+          300: "#FDA830",
           400: "#FF8904",
+          500: "#FF6900",
           950: "#190A02",
         },
         granite: {
@@ -39,15 +41,6 @@ module.exports = {
           tertiary: "#353535",
           toggle: "#363030",
         },
-
-        accent: {
-          primary: "#FF6900",
-          tertiary: "#FDA830",
-        },
-      },
-      gradientColorStops: {
-        "accent-from": "#FF6900",
-        "accent-to": "#FF8904",
       },
       keyframes: {
         "animated-border": {

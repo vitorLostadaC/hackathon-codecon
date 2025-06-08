@@ -40,7 +40,7 @@ export function AppearancePage() {
 								'rounded-[var(--border-radius)] bg-gradient-to-t bg-[length:400%_400%] p-[var(--padding)]',
 								'focus-visible:ring-ring/50 focus-visible:ring-[3px] animate-animated-border',
 								isSelected
-									? 'from-accent-from to-accent-to'
+									? 'from-tangerine-500 to-tangerine-400'
 									: 'hover:from-granite-500 hover:to-granite-100'
 							)}
 						>
