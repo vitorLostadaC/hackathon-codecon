@@ -43,7 +43,7 @@ export function Sidebar(): React.JSX.Element {
 		<div
 			className={cn('space-y-2 flex flex-col justify-between px-4 py-6 w-fit', isMacOS && 'pt-12')}
 		>
-			<div className="flex flex-col gap-2">
+			<div className="flex flex-col gap-2 w-40">
 				{tabs.map((tab) => (
 					<TabButton
 						value={tab.href}
