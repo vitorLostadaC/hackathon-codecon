@@ -24,6 +24,10 @@
       "correctness": {
         "useExhaustiveDependencies": "info"
       },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+
       "suspicious": {
         "noArrayIndexKey": "off"
       }

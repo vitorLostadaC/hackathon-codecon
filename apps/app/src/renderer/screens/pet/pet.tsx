@@ -1,6 +1,6 @@
 import duckStopped from '@renderer/assets/animals/duck/duck-stopped.png'
 import duckWalking from '@renderer/assets/animals/duck/duck-walking.gif'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Chat } from './chat'
 import { PET_DIMENSIONS } from './constants/pet'
 import { usePetChat } from './hooks/use-pet-chat'
@@ -13,23 +13,40 @@ enum PetState {
 }
 
 export const PetScreen = (): React.JSX.Element => {
+	const [settingsOpened, setSettingsOpened] = useState(false)
 	const currentStateRef = useRef<PetState>(PetState.WALKING)
 	const chatRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		window.api.windows.onOpenSettingsWindow(() => {
+			setSettingsOpened(true)
+			handleStoppedState()
+		})
+
+		window.api.windows.onCloseSettingsWindow(() => {
+			setSettingsOpened(false)
+			handleWalkingState()
+		})
+	}, [])
 
 	const { position, direction, chatDirection, stopMovement, resumeMovement } = usePetMovement({
 		chatRef
 	})
 
 	const { message } = usePetChat({
-		onMessageShow: () => {
-			currentStateRef.current = PetState.STOPPED
-			stopMovement()
-		},
-		onMessageHide: () => {
-			currentStateRef.current = PetState.WALKING
-			resumeMovement()
-		}
+		onMessageShow: handleStoppedState,
+		onMessageHide: handleWalkingState
 	})
+
+	function handleStoppedState() {
+		currentStateRef.current = PetState.STOPPED
+		stopMovement()
+	}
+
+	function handleWalkingState() {
+		currentStateRef.current = PetState.WALKING
+		resumeMovement()
+	}
 
 	return (
 		<div>

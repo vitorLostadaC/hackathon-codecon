@@ -12,7 +12,11 @@ const api = {
 		takeScreenshot: () => ipcRenderer.invoke(IPC.ACTIONS.TAKE_SCREENSHOT)
 	},
 	windows: {
-		createSettingsWindow: () => ipcRenderer.invoke(IPC.WINDOWS.CREATE_SETTINGS)
+		createSettingsWindow: () => ipcRenderer.invoke(IPC.WINDOWS.CREATE_SETTINGS),
+		onOpenSettingsWindow: (callback: () => void) =>
+			ipcRenderer.on(IPC.WINDOWS.ON_OPEN_SETTINGS, callback),
+		onCloseSettingsWindow: (callback: () => void) =>
+			ipcRenderer.on(IPC.WINDOWS.ON_CLOSE_SETTINGS, callback)
 	},
 	config: {
 		getConfigs: (): Promise<GetConfigResponse> => ipcRenderer.invoke(IPC.CONFIG.GET_CONFIGS),
