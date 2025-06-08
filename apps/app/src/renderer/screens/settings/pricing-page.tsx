@@ -5,7 +5,7 @@ import { loadSlim } from '@tsparticles/slim'
 import { motion, useAnimation } from 'framer-motion'
 import { HandCoins, Mail } from 'lucide-react'
 import { useCallback, useEffect, useId, useState } from 'react'
-import { Button } from './components/button'
+import { Button } from '../../components/ui/button'
 
 interface PricingPlan {
 	id: number
@@ -213,7 +213,7 @@ export function PricingPage() {
 						</div>
 					</div>
 					<Button
-						variant={plan.isHighlighted ? 'primary' : 'secondary'}
+						variant={plan.isHighlighted ? 'default' : 'secondary'}
 						onClick={() => {}}
 						className="mt-7 w-full"
 					>

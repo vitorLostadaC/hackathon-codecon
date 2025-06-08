@@ -1,6 +1,6 @@
 import type React from 'react'
-import { IntervalSelect } from './components/interval-select'
-import { Toogle } from './components/toogle'
+import { InputNumber } from '../../components/ui/input-number'
+import { Switch } from '../../components/ui/switch'
 import { useConfig } from './hooks/use-config'
 import type { SettingsType } from './types/settings-type'
 
@@ -31,9 +31,19 @@ export function GeneralPage() {
 	const renderSettingControl = (setting: SettingsType): React.ReactNode => {
 		switch (setting.type) {
 			case 'number':
-				return <IntervalSelect value={setting.value as number} onChange={setting.onChange} />
+				return (
+					<div className="flex items-center gap-4">
+						<InputNumber
+							value={setting.value as number}
+							onValueChange={setting.onChange}
+							min={1}
+							className="w-16"
+						/>
+						<span className="text-granite-100 text-sm">minutos</span>
+					</div>
+				)
 			case 'toggle':
-				return <Toogle checked={setting.value as boolean} onChange={setting.onChange} />
+				return <Switch checked={setting.value as boolean} onCheckedChange={setting.onChange} />
 			default:
 				return null
 		}
@@ -42,12 +52,14 @@ export function GeneralPage() {
 	return (
 		<div className="space-y-8 ">
 			{settings.map((setting) => (
-				<div key={setting.id} className="space-y-3">
-					<div className="flex justify-between items-center">
+				<div key={setting.id} className="flex justify-between items-start">
+					<div className="space-y-1">
 						<span className="text-linen-200 text-base">{setting.label}</span>
-						{renderSettingControl(setting)}
+						{setting.description && (
+							<p className="text-granite-100 text-sm">{setting.description}</p>
+						)}
 					</div>
-					{setting.description && <p className="text-granite-100 text-sm">{setting.description}</p>}
+					<div>{renderSettingControl(setting)}</div>
 				</div>
 			))}
 		</div>
