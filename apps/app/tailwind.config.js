@@ -23,6 +23,7 @@ module.exports = {
           100: "#C7C3C1",
           500: "#4E4946",
           800: "#36312E",
+          900: "#201C1C",
           950: "#151313",
         },
         smoke: {
@@ -35,7 +36,6 @@ module.exports = {
         },
 
         background: {
-          secondary: "#201C1C",
           tertiary: "#353535",
           toggle: "#363030",
         },

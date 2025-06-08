@@ -1,4 +1,5 @@
 import { cn } from '@renderer/lib/utils'
+import { plans as ApiPlans, type PaymentPlan } from '@repo/api-types/payment.dto'
 import type { Container, Engine } from '@tsparticles/engine'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
@@ -8,13 +9,54 @@ import { useCallback, useEffect, useId, useState } from 'react'
 import { Button } from '../../components/ui/button'
 
 interface PricingPlan {
-	id: number
+	slug: PaymentPlan
 	name: string
-	price: string
+	hoverText: string
+	price: number
 	credits: number
 	features: string[]
-	isHighlighted?: boolean
+	isHighlighted: boolean
 }
+
+const planExtensions: Record<
+	PaymentPlan,
+	Pick<PricingPlan, 'features' | 'isHighlighted' | 'hoverText'>
+> = {
+	basic: {
+		features: [],
+		isHighlighted: false,
+		hoverText: 'Mão de vaca'
+	},
+	premium: {
+		features: [],
+		isHighlighted: true,
+		hoverText: 'Só isso?'
+	},
+	'ultra-premium': {
+		features: [],
+		isHighlighted: false,
+		hoverText: 'Rico metido'
+	},
+	'ultra-master-premium': {
+		features: ['Email customizado com chuva de ofensas'],
+		isHighlighted: false,
+		hoverText: 'Tem certeza que vais comprar essa merd...?'
+	}
+}
+
+const plans: PricingPlan[] = Object.entries(ApiPlans).map(([slug, plan]) => {
+	const extension = planExtensions[slug as PaymentPlan]
+
+	return {
+		slug: slug as PaymentPlan,
+		name: plan.name,
+		price: plan.price,
+		credits: plan.credits,
+		features: extension.features,
+		isHighlighted: extension.isHighlighted,
+		hoverText: extension.hoverText
+	}
+})
 
 export function PricingPage() {
 	const [init, setInit] = useState(false)
@@ -42,43 +84,11 @@ export function PricingPage() {
 		[controls]
 	)
 
-	const plans: PricingPlan[] = [
-		{
-			id: 1,
-			name: 'Basic',
-			price: 'R$ 9,90',
-			credits: 50,
-			features: []
-		},
-		{
-			id: 2,
-			name: 'Premium',
-			price: 'R$ 9,90',
-			credits: 50,
-			features: [],
-			isHighlighted: true
-		},
-		{
-			id: 4,
-			name: 'Basic',
-			price: 'R$ 9,90',
-			credits: 50,
-			features: []
-		},
-		{
-			id: 3,
-			name: 'Ultra master premium',
-			price: 'R$ 149,90',
-			credits: 50,
-			features: ['Email customizado com chuva de ofensas']
-		}
-	]
-
 	return (
 		<div className="flex gap-3 flex-wrap">
 			{plans.map((plan) => (
 				<div
-					key={plan.id}
+					key={plan.slug}
 					className={cn(
 						'flex-1 min-w-[159px] p-4 px-[14px] rounded-lg border relative overflow-hidden',
 						plan.isHighlighted ? 'border-tangerine-200' : 'border-granite-500'
@@ -98,7 +108,7 @@ export function PricingPage() {
 							>
 								{init && (
 									<Particles
-										id={`particles-${generatedId}-${plan.id}`}
+										id={`particles-${generatedId}-${plan.slug}`}
 										className="h-full w-full"
 										particlesLoaded={particlesLoaded}
 										options={{
@@ -193,7 +203,7 @@ export function PricingPage() {
 						<h3 className="text-linen-200 leading-[1.0] text-xl">{plan.name}</h3>
 						<div className="space-y-5">
 							<span className="text-linen-200 text-2xl leading-[1.0] font-semibold block">
-								{plan.price}
+								R$ {plan.price.toFixed(2).replace('.', ',')}
 							</span>
 							<div className="flex justify-between">
 								<div className="flex items-center gap-1.5 text-linen-400">
@@ -215,9 +225,17 @@ export function PricingPage() {
 					<Button
 						variant={plan.isHighlighted ? 'default' : 'secondary'}
 						onClick={() => {}}
-						className="mt-7 w-full"
+						className="mt-7 w-full group"
 					>
-						Escolher
+						<div className="relative overflow-hidden w-full text-center">
+							<span className="invisible">Escolher</span>
+							<span className="group-hover:-translate-y-full absolute top-0 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out hover:duration-300">
+								Escolher
+							</span>
+							<span className="absolute top-0 left-1/2 -translate-x-1/2 translate-y-full transition-transform duration-300 ease-in-out hover:duration-300 group-hover:translate-y-0">
+								{plan.hoverText}
+							</span>
+						</div>
 					</Button>
 				</div>
 			))}

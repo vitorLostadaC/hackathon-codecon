@@ -25,7 +25,7 @@ export function TabButton({ icon, label, value }: TabButtonProps): React.JSX.Ele
 			onMouseLeave={() => setIsHovered(false)}
 			className={cn(
 				'w-full flex items-center gap-1.5 p-1 px-2 rounded-lg relative overflow-hidden transition-all duration-200 border-granite-500/0 border-t-[1px]',
-				'hover:bg-background-secondary/50',
+				'hover:bg-granite-900/50',
 				isActive
 					? 'bg-background-button text-linen-200 border-t-[1px] border-granite-500/20'
 					: 'bg-background-950 text-linen-400 hover:text-granite-100'
