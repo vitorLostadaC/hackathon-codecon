@@ -17,7 +17,11 @@ export default defineConfig({
 	},
 	renderer: {
 		define: {
-			'process.platform': JSON.stringify(process.platform)
+			'process.platform': JSON.stringify(process.platform),
+			'process.env.CLERK_TELEMETRY_DEBUG': JSON.stringify(
+				process.env.CLERK_TELEMETRY_DEBUG || 'false'
+			),
+			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
 		},
 		resolve: {
 			alias: {

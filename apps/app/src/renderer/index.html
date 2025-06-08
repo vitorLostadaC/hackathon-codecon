@@ -6,7 +6,16 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:3333 https://api.patoputo.com"
+      content="
+        default-src 'self';
+        script-src 'self' https://distinct-ostrich-48.clerk.accounts.dev;
+        worker-src 'self' blob:;
+        style-src 'self' 'unsafe-inline';
+        style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https://img.clerk.com https://images.clerk.dev;
+        connect-src 'self' http://localhost:3333 https://api.patoputo.com distinct-ostrich-48.clerk.accounts.dev https://clerk-telemetry.com;
+      "
     />
   </head>
 

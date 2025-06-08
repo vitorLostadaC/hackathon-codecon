@@ -55,7 +55,7 @@ export function Sidebar(): React.JSX.Element {
 					/>
 				))}
 			</div>
-			<UserProfile name="Vitor Lostada" email="vitorlostada@gmail.comsdf sdf" />
+			<UserProfile />
 		</div>
 	)
 }
