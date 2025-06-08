@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./curse.dto": "./src/curse.dto.ts",
-    "./payment.dto": "./src/payment.dto.ts"
+    "./payment.dto": "./src/payment.dto.ts",
+    "./user.dto": "./src/user.dto.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",

@@ -1,6 +1,6 @@
+import type { User } from '@repo/api-types/user.dto'
 import { Collections } from '../../constants/mongo'
 import { getDb } from '../../lib/mongo'
-import type { User } from '../../types/user'
 
 export const getUser = async (userId: string) => {
 	const db = await getDb()
