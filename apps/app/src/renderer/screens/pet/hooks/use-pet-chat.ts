@@ -6,12 +6,14 @@ import { getConfigsOptions } from '~/src/renderer/requests/electron-store/config
 import { MESSAGE_DURATION } from '../constants/chat'
 
 interface PetChatCallbacks {
+	enabled: boolean
 	onMessageShow?: () => void
 	onMessageHide?: () => void
 	onTakingScreenshot?: () => void
 }
 
 export const usePetChat = ({
+	enabled,
 	onMessageShow,
 	onMessageHide,
 	onTakingScreenshot
@@ -76,25 +78,29 @@ export const usePetChat = ({
 		const configs = c!
 
 		messageIntervalRef.current = setTimeout(async () => {
-			await new Promise((resolve) => setTimeout(resolve, configs.general.cursingInterval * 1000))
-
 			requestCurse()
 		}, configs.general.cursingInterval * 1000)
 	}
 
+	function clearTimersAndSetups() {
+		setMessage('')
+		if (chatTimerRef.current) clearTimeout(chatTimerRef.current)
+		if (messageIntervalRef.current) clearTimeout(messageIntervalRef.current)
+	}
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: this should be called only once
 	useEffect(() => {
-		if (!configs) {
+		if (!configs || !enabled) {
+			clearTimersAndSetups()
 			return
 		}
 
 		scheduleNextMessage()
 
 		return () => {
-			if (chatTimerRef.current) clearTimeout(chatTimerRef.current)
-			if (messageIntervalRef.current) clearTimeout(messageIntervalRef.current)
+			clearTimersAndSetups()
 		}
-	}, [!!configs])
+	}, [!!configs, enabled])
 
 	return { message }
 }

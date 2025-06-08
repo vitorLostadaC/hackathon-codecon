@@ -35,7 +35,8 @@ export const PetScreen = (): React.JSX.Element => {
 
 	const { message } = usePetChat({
 		onMessageShow: handleStoppedState,
-		onMessageHide: handleWalkingState
+		onMessageHide: handleWalkingState,
+		enabled: !settingsOpened
 	})
 
 	function handleStoppedState() {
@@ -58,7 +59,11 @@ export const PetScreen = (): React.JSX.Element => {
 					height: PET_DIMENSIONS.height
 				}}
 			>
-				<Chat message={message} direction={chatDirection} ref={chatRef} />
+				<Chat
+					message={settingsOpened ? 'Esquilo...' : message}
+					direction={chatDirection}
+					ref={chatRef}
+				/>
 				<img
 					src={currentStateRef.current === PetState.WALKING ? duckWalking : duckStopped}
 					alt="Duck"
