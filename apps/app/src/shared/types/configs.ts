@@ -10,6 +10,8 @@ export interface Configs {
 		safeMode: boolean
 	}
 	appearance: {
-		selectedPet: string
+		selectedPet: PetType
 	}
 }
+
+export type PetType = 'duck' | 'capybara' | 'codecon'

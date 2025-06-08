@@ -1,4 +1,4 @@
-export const MOVEMENT_SPEED = 2
+export const MOVEMENT_SPEED = 0.5
 
 export enum PetState {
 	WALKING = 'walking',

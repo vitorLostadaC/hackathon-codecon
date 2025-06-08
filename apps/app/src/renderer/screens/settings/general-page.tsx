@@ -54,7 +54,7 @@ export function GeneralPage() {
 			{settings.map((setting) => (
 				<div key={setting.id} className="flex justify-between items-start">
 					<div className="space-y-1">
-						<span className="text-linen-200 text-base">{setting.label}</span>
+						<span className="text-linen-200">{setting.label}</span>
 						{setting.description && (
 							<p className="text-granite-100 text-sm">{setting.description}</p>
 						)}
