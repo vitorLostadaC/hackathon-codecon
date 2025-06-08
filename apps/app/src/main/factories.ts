@@ -1,7 +1,8 @@
-import path, { join } from 'node:path'
 import { BrowserWindow, screen } from 'electron'
+import path, { join } from 'node:path'
 
 import { registerRoute } from '../shared/lib/electron-router-dom'
+import { createTray } from './lib/tray'
 
 type Route = Parameters<typeof registerRoute>[0]
 
@@ -86,9 +87,36 @@ export function createMainWindow() {
 
 	mainWindow.setIgnoreMouseEvents(true, { forward: true })
 
+	createTray(mainWindow)
+
 	mainWindow.on('closed', () => {
 		for (const browserWindow of BrowserWindow.getAllWindows()) {
 			browserWindow.close()
+		}
+	})
+}
+
+export function createSettingsWindow() {
+	return createWindow({
+		id: 'settings',
+		width: 774,
+		height: 488,
+		resizable: false,
+		title: 'Configurações',
+		show: false,
+		titleBarStyle: 'hiddenInset',
+		trafficLightPosition: {
+			x: 16,
+			y: 16
+		},
+		autoHideMenuBar: true,
+		frame: true,
+		roundedCorners: true,
+		webPreferences: {
+			preload: join(__dirname, '../preload/index.js'),
+			sandbox: false,
+			nodeIntegration: false,
+			contextIsolation: true
 		}
 	})
 }

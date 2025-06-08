@@ -6,9 +6,7 @@ import type {
 	UpdateConfigResponse
 } from '@shared/types/ipc'
 import { desktopCapturer, ipcMain, screen } from 'electron'
-import { join } from 'node:path'
 import type { Configs } from '~/src/shared/types/configs'
-import { createWindow } from '../factories'
 import { store } from './store'
 
 ipcMain.handle(IPC.ACTIONS.TAKE_SCREENSHOT, async (): Promise<TakeScreenshotResponse> => {
@@ -41,41 +39,6 @@ ipcMain.handle(IPC.ACTIONS.TAKE_SCREENSHOT, async (): Promise<TakeScreenshotResp
 			screenshot: null
 		}
 	}
-})
-
-ipcMain.handle(IPC.WINDOWS.CREATE_SETTINGS, async ({ sender }): Promise<void> => {
-	const settingsWindow = createWindow({
-		id: 'settings',
-		width: 774,
-		height: 488,
-		resizable: false,
-		title: 'Configurações',
-		show: false,
-		titleBarStyle: 'hiddenInset',
-		trafficLightPosition: {
-			x: 16,
-			y: 16
-		},
-		autoHideMenuBar: true,
-		frame: true,
-		roundedCorners: true,
-		webPreferences: {
-			preload: join(__dirname, '../preload/index.js'),
-			sandbox: false,
-			nodeIntegration: false,
-			contextIsolation: true
-		}
-	})
-
-	sender.send(IPC.WINDOWS.ON_OPEN_SETTINGS)
-
-	settingsWindow.on('closed', () => {
-		if (sender.isDestroyed()) {
-			return
-		}
-
-		sender.send(IPC.WINDOWS.ON_CLOSE_SETTINGS)
-	})
 })
 
 ipcMain.handle(IPC.CONFIG.GET_CONFIGS, async (): Promise<GetConfigResponse> => {

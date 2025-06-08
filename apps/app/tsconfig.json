@@ -4,6 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "baseUrl": ".",
+    "types": ["electron-vite/node"],
     "paths": {
       "~/*": ["./*"],
       "@*": ["./src/*"]

@@ -32,9 +32,7 @@ export default defineConfig({
 		build: {
 			rollupOptions: {
 				input: {
-					main: resolve('src/renderer/index.html'),
-					settings: resolve('src/renderer/settings.html'),
-					gear: resolve('src/renderer/gear.html')
+					main: resolve('src/renderer/index.html')
 				}
 			}
 		},
