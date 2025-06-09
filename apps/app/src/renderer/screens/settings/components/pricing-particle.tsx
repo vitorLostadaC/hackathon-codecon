@@ -37,8 +37,6 @@ export const PricingParticle = () => {
 				className="absolute inset-0 opacity-0 w-[60%] h-[45%] rounded-full"
 				style={{
 					maskImage:
-						'linear-gradient(to bottom, #000, transparent), linear-gradient(to right, #000, transparent)',
-					WebkitMaskImage:
 						'linear-gradient(to bottom, #000, transparent), linear-gradient(to right, #000, transparent)'
 				}}
 			>
@@ -122,13 +120,13 @@ export const PricingParticle = () => {
 				)}
 			</motion.div>
 			<motion.div
-				className="absolute -top-3 left-0.5 w-[17px] h-[37px] bg-tangerine-300 opacity-95 blur-[6.7px]"
+				className="absolute -top-3 left-1 w-[17px] h-[37px] bg-tangerine-300 opacity-95 blur-[13px]"
 				initial={{ opacity: 0, scale: 0.5, rotate: -47 }}
 				animate={{ opacity: 1, scale: 1, rotate: -47 }}
 				transition={{ duration: 0.5, ease: 'easeOut' }}
 			/>
 			<motion.div
-				className="absolute -top-5 left-4 w-[17px] h-[80px] bg-tangerine-300 blur-[16px]"
+				className="absolute -top-5 left-5 w-[17px] h-[100px] bg-tangerine-300 blur-[20px]"
 				initial={{ opacity: 0, scale: 0.5, rotate: -47 }}
 				animate={{ opacity: 1, scale: 1, rotate: -47 }}
 				transition={{ duration: 0.5, ease: 'easeOut' }}
