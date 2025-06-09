@@ -7,10 +7,10 @@ export function Layout(): React.JSX.Element {
 	const isMacOS = process.platform === 'darwin'
 
 	return (
-		<div className="flex h-screen bg-granite-950 relative">
+		<div className="flex h-screen bg-gray-950 relative">
 			<div className={cn('h-8 w-full absolute region-drag', !isMacOS && 'hidden')} />
 			<Sidebar />
-			<div className="w-0.5 bg-granite-900 h-screen" />
+			<div className="w-px bg-gray-800 h-screen" />
 			<div className={cn('flex-1 m-6', isMacOS && '')}>
 				<Outlet />
 			</div>

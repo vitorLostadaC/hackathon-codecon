@@ -21,7 +21,7 @@ export function AppearancePage() {
 
 	return (
 		<div className="w-full flex-1 space-y-8">
-			<h2 className="text-linen-200">Aparência</h2>
+			<h2 className="">Aparência</h2>
 			<div className="grid grid-cols-4 gap-8">
 				{skins.map((skin) => {
 					const isSelected = configs.appearance.selectedPet === skin.slug
@@ -41,7 +41,7 @@ export function AppearancePage() {
 								'focus-visible:ring-ring/50 focus-visible:ring-[3px] animate-animated-border',
 								isSelected
 									? 'from-tangerine-500 to-tangerine-400'
-									: 'hover:from-granite-500 hover:to-granite-100'
+									: 'hover:from-gray-700 hover:to-gray-800'
 							)}
 						>
 							<input
@@ -55,7 +55,7 @@ export function AppearancePage() {
 							/>
 							<div
 								className={cn(
-									'bg-granite-950 rounded-[calc(var(--border-radius)-var(--padding))] w-full h-full'
+									'bg-gray-950 rounded-[calc(var(--border-radius)-var(--padding))] w-full h-full'
 								)}
 							>
 								<img

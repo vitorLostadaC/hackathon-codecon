@@ -35,7 +35,7 @@ export function Sidebar(): React.JSX.Element {
 						value={tab.href}
 						key={tab.href}
 						icon={(isActive) => (
-							<tab.icon className={cn('size-6 stroke-linen-300', isActive && 'stroke-white')} />
+							<tab.icon className={cn('size-6 stroke-gray-300', isActive && 'stroke-white')} />
 						)}
 						label={tab.label}
 					/>

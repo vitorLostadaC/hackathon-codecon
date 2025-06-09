@@ -13,7 +13,7 @@ const buttonVariants = cva(
 				destructive:
 					'bg-gradient-to-b from-red-500 to-red-600 text-white shadow-xs hover:opacity-90 focus-visible:ring-red-500/20',
 				secondary:
-					'bg-gradient-to-b from-granite-800 to-granite-900 text-white shadow-xs text-linen-200 hover:opacity-90'
+					'bg-gradient-to-b from-gray-900 to-gray-950 text-white shadow-xs  hover:opacity-90'
 			},
 			size: {
 				default: 'h-9 px-4 py-2 has-[>svg]:px-3',

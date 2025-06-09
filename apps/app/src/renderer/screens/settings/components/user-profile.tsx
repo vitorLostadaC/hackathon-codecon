@@ -34,9 +34,9 @@ export function UserProfile() {
 			</div>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<div className="flex flex-col w-40 gap-0.5 bg-granite-900 border border-smoke-700 rounded-lg p-2.5 px-4 select-none cursor-pointer">
-						<span className="text-linen-200 text-sm truncate">{auth.user?.fullName ?? ''}</span>
-						<span className="text-granite-100 text-xs truncate">
+					<div className="flex flex-col w-40 gap-0.5 bg-gray-900 rounded-lg p-2.5 px-4 select-none cursor-pointer">
+						<span className="text-sm truncate">{auth.user?.fullName ?? ''}</span>
+						<span className="text-gray-300 text-xs truncate">
 							{auth.user.primaryEmailAddress?.emailAddress ?? ''}
 						</span>
 					</div>

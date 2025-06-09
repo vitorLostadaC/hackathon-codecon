@@ -39,7 +39,7 @@ export function GeneralPage() {
 							min={1}
 							className="w-16"
 						/>
-						<span className="text-granite-100 text-sm">segundos</span>
+						<span className="text-gray-300 text-sm">segundos</span>
 					</div>
 				)
 			case 'toggle':
@@ -54,10 +54,8 @@ export function GeneralPage() {
 			{settings.map((setting) => (
 				<div key={setting.id} className="flex justify-between items-start">
 					<div className="space-y-1">
-						<span className="text-linen-200">{setting.label}</span>
-						{setting.description && (
-							<p className="text-granite-100 text-sm">{setting.description}</p>
-						)}
+						<span className="">{setting.label}</span>
+						{setting.description && <p className="text-gray-300 text-sm">{setting.description}</p>}
 					</div>
 					<div>{renderSettingControl(setting)}</div>
 				</div>

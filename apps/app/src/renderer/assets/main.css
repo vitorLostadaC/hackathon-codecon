@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  @apply text-linen-200;
+  @apply text-gray-200;
 }
 
 /* Chrome, Safari, Edge, Opera */

@@ -70,7 +70,7 @@ export const InputNumber = ({
 						disabled={disabled}
 						className="focus:outline-none disabled:opacity-50 cursor-pointer"
 					>
-						<Icon className="text-linen-200 size-3.5 cursor-pointer" />
+						<Icon className="size-3.5 cursor-pointer" />
 					</button>
 				))}
 			</div>

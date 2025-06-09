@@ -63,15 +63,15 @@ export function PricingPage() {
 					key={plan.slug}
 					className={cn(
 						'p-3 rounded-lg border relative overflow-hidden',
-						plan.isHighlighted ? 'border-tangerine-200' : 'border-granite-500',
+						plan.isHighlighted ? 'border-tangerine-200' : 'border-gray-800',
 						plan.slug === 'ultra-master-premium' && 'col-span-3'
 					)}
 				>
 					{plan.isHighlighted && <PricingParticle />}
 					<div className="space-y-6">
-						<h3 className="text-linen-200 font-light text-xl">{plan.name}</h3>
+						<h3 className="font-light text-xl">{plan.name}</h3>
 						<div className="space-y-5">
-							<span className="text-linen-200 text-2xl font-medium">
+							<span className="text-2xl font-medium">
 								R$ {plan.price.toFixed(2).replace('.', ',')}
 							</span>
 							<div
@@ -80,14 +80,14 @@ export function PricingPage() {
 									plan.slug !== 'ultra-master-premium' && 'flex-col gap-2'
 								)}
 							>
-								<div className="flex items-center gap-1.5 text-linen-400">
+								<div className="flex items-center gap-1.5 text-gray-400">
 									<HandCoins size={16} />
 									<span className="text-sm">{plan.credits} créditos</span>
 								</div>
 								{plan.features.map((feature, index) => (
 									<div
 										key={`${feature}-${index}`}
-										className="flex items-center text-linen-400 gap-1.5"
+										className="flex items-center text-gray-400 gap-1.5"
 									>
 										<Mail size={16} />
 										<span className="text-sm">{feature}</span>
