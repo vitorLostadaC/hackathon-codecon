@@ -1,10 +1,10 @@
 import { cn } from '@renderer/lib/utils'
-import { CreditCard, Settings, Shirt } from 'lucide-react'
+import { CreditCard, type LucideIcon, Settings, Shirt } from 'lucide-react'
 import type React from 'react'
 import { TabButton } from './tab-button'
 import { UserProfile } from './user-profile'
 
-const tabs = [
+const tabs: { href: string; label: string; icon: LucideIcon }[] = [
 	{
 		href: '/',
 		label: 'Geral',
@@ -31,14 +31,7 @@ export function Sidebar(): React.JSX.Element {
 		>
 			<div className="flex flex-col gap-2 w-40">
 				{tabs.map((tab) => (
-					<TabButton
-						value={tab.href}
-						key={tab.href}
-						icon={(isActive) => (
-							<tab.icon className={cn('size-6 stroke-gray-300', isActive && 'stroke-white')} />
-						)}
-						label={tab.label}
-					/>
+					<TabButton value={tab.href} key={tab.href} icon={tab.icon} label={tab.label} />
 				))}
 			</div>
 			<UserProfile />
