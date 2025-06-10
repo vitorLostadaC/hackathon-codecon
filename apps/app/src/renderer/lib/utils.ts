@@ -6,12 +6,13 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 // TODO: move this to a shared package
-export async function catchError<T>(promise: Promise<T>): Promise<[undefined, T] | [Error]> {
-	return promise
-		.then((data) => {
-			return [undefined, data] as [undefined, T]
-		})
-		.catch((error) => {
-			return [error]
-		})
+export async function catchError<T, E = Error>(
+	promise: Promise<T>
+): Promise<[E, undefined] | [undefined, T]> {
+	try {
+		const data = await promise
+		return [undefined, data]
+	} catch (error) {
+		return [error as E, undefined]
+	}
 }

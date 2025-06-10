@@ -10,6 +10,6 @@ export const curse = async ({
 	config,
 	userId
 }: CurseRequest): Promise<CurseScreenshotResponse> => {
-	const response = await api.post(`/curse/${userId}`, { imageBase64, config })
+	const response = await api.post(`/curse/screenshot/${userId}`, { imageBase64, config })
 	return response.data
 }

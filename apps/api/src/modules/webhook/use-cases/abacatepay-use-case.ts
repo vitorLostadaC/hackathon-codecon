@@ -1,9 +1,9 @@
 import { plans } from '@repo/api-types/payment.dto'
+import type { PaymentWebhookPayload } from '../../../../../../packages/api-types/src/payment'
 import { env } from '../../../env'
 import { AppError } from '../../../helpers/error-handler'
 import { getPaymentByGatewayId, paidPayment } from '../../../services/mongo/payment'
 import { addCredits } from '../../../services/mongo/user'
-import type { PaymentWebhookPayload } from '../../../types/payment'
 
 export class AbacatePayWebhook {
 	async execute(secret: string, event: PaymentWebhookPayload) {

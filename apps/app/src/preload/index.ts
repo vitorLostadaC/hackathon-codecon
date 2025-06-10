@@ -2,13 +2,15 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { IPC } from '../shared/constants/ipc'
 import type {
 	GetConfigResponse,
+	TakeScreenshotResponse,
 	UpdateConfigRequest,
 	UpdateConfigResponse
 } from '../shared/types/ipc'
 
 const api = {
 	actions: {
-		takeScreenshot: () => ipcRenderer.invoke(IPC.ACTIONS.TAKE_SCREENSHOT)
+		takeScreenshot: (): Promise<TakeScreenshotResponse> =>
+			ipcRenderer.invoke(IPC.ACTIONS.TAKE_SCREENSHOT)
 	},
 	windows: {
 		createSettingsWindow: () => ipcRenderer.invoke(IPC.WINDOWS.CREATE_SETTINGS),

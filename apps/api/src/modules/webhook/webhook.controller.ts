@@ -1,6 +1,6 @@
 import { z } from 'zod'
+import type { PaymentWebhookPayload } from '../../../../../packages/api-types/src/payment'
 import type { FastifyTypedInstance } from '../../types/fastify'
-import type { PaymentWebhookPayload } from '../../types/payment'
 import { AbacatePayWebhook } from './use-cases/abacatepay-use-case'
 import { ClerkUseCase } from './use-cases/clerk-use-case'
 

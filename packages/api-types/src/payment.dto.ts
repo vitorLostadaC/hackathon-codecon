@@ -37,12 +37,42 @@ export const paymentPlanSchema = z.enum([
 ])
 
 export const paymentRequestSchema = z.object({
-	plan: paymentPlanSchema
+	plan: paymentPlanSchema,
+	email: z.string(),
+	phone: z.string(),
+	document: z.string()
 })
 
 export const paymentResponseSchema = z.object({
 	qrCodeBase64: z.string()
 })
+
+export type PaymentWebhookPayload = {
+	data: {
+		payment: {
+			amount: number
+			fee: number
+			method: 'PIX'
+		}
+		pixQrCode: {
+			amount: number
+			id: string
+			kind: 'PIX'
+			status: 'PAID'
+		}
+	}
+	devMode: boolean
+	event: 'billing.paid'
+}
+
+export type Payment = {
+	userId: string
+	cupon?: string
+	plan: PaymentPlan
+	status: 'pending' | 'paid'
+	createdAt: string
+	gatewayId: string
+}
 
 export type PaymentPlan = z.infer<typeof paymentPlanSchema>
 export type PaymentResponse = z.infer<typeof paymentResponseSchema>

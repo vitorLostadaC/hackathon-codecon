@@ -1,8 +1,11 @@
 import { useUser } from '@clerk/clerk-react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
+import { catchError } from '~/src/renderer/lib/utils'
 import { curse } from '~/src/renderer/requests/curse/curse'
 import { getConfigsOptions } from '~/src/renderer/requests/electron-store/config'
+import { getAllPaymentsOptions } from '~/src/renderer/requests/payments/config'
+import { getUserOptions } from '~/src/renderer/requests/user/config'
 import { MESSAGE_DURATION } from '../constants/chat'
 
 interface PetChatCallbacks {
@@ -21,22 +24,34 @@ export const usePetChat = ({
 	message: string
 } => {
 	const auth = useUser()
+	const queryClient = useQueryClient()
 	const [message, setMessage] = useState('')
 
 	const chatTimerRef = useRef<NodeJS.Timeout | null>(null)
 	const messageIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
 	const { data: configs } = useQuery(getConfigsOptions())
+	const { data: payments } = useQuery(getAllPaymentsOptions(auth.user?.id ?? ''))
 
 	const updatedStates = useRef({
 		auth,
-		configs
+		configs,
+		payments
+	})
+
+	const { mutateAsync: curseMutation } = useMutation({
+		mutationFn: curse,
+		mutationKey: ['curse'],
+		onSuccess: (data, variables) => {
+			queryClient.invalidateQueries(getUserOptions(variables.userId))
+		}
 	})
 
 	useEffect(() => {
 		updatedStates.current.auth = auth
 		updatedStates.current.configs = configs
-	}, [auth, configs])
+		updatedStates.current.payments = payments
+	}, [auth, configs, payments])
 
 	const showMessage = (message: string) => {
 		onMessageShow?.()
@@ -50,36 +65,69 @@ export const usePetChat = ({
 	}
 
 	const requestCurse = async () => {
+		console.log('requestCurse')
 		onTakingScreenshot?.()
-		const { auth, configs: c } = updatedStates.current
-		const configs = c!
+		const updatedValues = updatedStates.current
 
-		if (!auth.isLoaded) {
+		if (!updatedValues.auth.isLoaded) {
 			scheduleNextMessage()
 			return
 		}
 
-		if (!auth.isSignedIn) {
-			showMessage('Você precisa estar logado, né cabeção')
+		if (!updatedValues.auth.isSignedIn) {
+			showMessage('Você precisa estar logado, né cabeção. Clica no ícone lá em cima')
 			return
 		}
 
-		await curse({
-			imageBase64: '',
-			config: {
-				safeMode: configs.general.safeMode
-			},
-			userId: auth.user?.id ?? ''
-		})
+		const [error, base64] = await catchError(window.api.actions.takeScreenshot())
+
+		if (error || !base64.screenshot) {
+			showMessage('Deu erro pra eu ver a tua tela aqui, me dá permissão por$a!')
+			return
+		}
+
+		const [errorCurse, curseResponse] = await catchError(
+			curseMutation({
+				imageBase64: base64.screenshot,
+				config: {
+					safeMode: updatedValues.configs!.general.safeMode
+				},
+				userId: updatedValues.auth.user?.id ?? ''
+			})
+		)
+
+		if (errorCurse) {
+			if (errorCurse.message === 'Insufficient credits') {
+				const isPaidUser = updatedValues.payments!.length !== 0
+
+				if (isPaidUser) {
+					showMessage(
+						'Jovem, passamos momentos lindos, mas infelizmente nada dura para sempre. E o dinheiro acabou...'
+					)
+					return
+				}
+
+				showMessage(
+					'Veio aqui só pra me fazer gastar com Clerk e OpenAI, mas pagar que é bom nada, né?'
+				)
+				return
+			}
+
+			showMessage(
+				'Meu amigo, parece que algo quebrou, e algo grande... Se isso continuar por muito tempo, pode mandar um xingamento na aba de feedback, porque o dev que fez isso tá de sacanagem.'
+			)
+			return
+		}
+
+		showMessage(curseResponse.message)
 	}
 
 	const scheduleNextMessage = async () => {
-		const { configs: c } = updatedStates.current
-		const configs = c!
+		const updatedValues = updatedStates.current
 
 		messageIntervalRef.current = setTimeout(async () => {
 			requestCurse()
-		}, configs.general.cursingInterval * 1000)
+		}, updatedValues.configs!.general.cursingInterval * 1000)
 	}
 
 	function clearTimersAndSetups() {
@@ -91,9 +139,11 @@ export const usePetChat = ({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: this should be called only once
 	useEffect(() => {
 		if (!configs || !enabled) {
+			console.log('clearTimersAndSetups via useEffect')
 			clearTimersAndSetups()
 			return
 		}
+		console.log('scheduleNextMessage')
 
 		scheduleNextMessage()
 

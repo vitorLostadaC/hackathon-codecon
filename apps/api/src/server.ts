@@ -41,7 +41,7 @@ fastify.setValidatorCompiler(validatorCompiler)
 fastify.setSerializerCompiler(serializerCompiler)
 
 fastify.addHook('onRequest', async (request, reply) => {
-	const isPublicRoute = request.routeOptions.config?.url.includes('webhook')
+	const isPublicRoute = request.url.includes('/webhook')
 
 	const adminHeader = request.headers['x-admin']
 	const allowAccess = (adminHeader === 'dev' && env.NODE_ENV === 'development') || isPublicRoute
