@@ -3,6 +3,7 @@ import { plans as ApiPlans, type PaymentPlan } from '@repo/api-types/payment.dto
 
 import { HandCoins, Mail } from 'lucide-react'
 import { Button } from '../../components/ui/button'
+import { PixDialog } from './components/pix-dialog'
 import { PricingParticle } from './components/pricing-particle'
 
 interface PricingPlan {
@@ -96,21 +97,22 @@ export function PricingPage() {
 							</div>
 						</div>
 					</div>
-					<Button
-						variant={plan.isHighlighted ? 'default' : 'secondary'}
-						onClick={() => {}}
-						className="mt-7 w-full group"
-					>
-						<div className="relative overflow-hidden w-full text-center">
-							<span className="invisible">Escolher</span>
-							<span className="group-hover:-translate-y-full absolute top-0 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out hover:duration-300">
-								Escolher
-							</span>
-							<span className="absolute top-0 left-1/2 -translate-x-1/2 translate-y-full transition-transform duration-300 ease-in-out hover:duration-300 group-hover:translate-y-0">
-								{plan.hoverText}
-							</span>
-						</div>
-					</Button>
+					<PixDialog>
+						<Button
+							variant={plan.isHighlighted ? 'default' : 'secondary'}
+							className="mt-7 w-full group"
+						>
+							<div className="relative overflow-hidden w-full text-center">
+								<span className="invisible">Escolher</span>
+								<span className="group-hover:-translate-y-full absolute top-0 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out hover:duration-300">
+									Escolher
+								</span>
+								<span className="absolute top-0 left-1/2 -translate-x-1/2 translate-y-full transition-transform duration-300 ease-in-out hover:duration-300 group-hover:translate-y-0">
+									{plan.hoverText}
+								</span>
+							</div>
+						</Button>
+					</PixDialog>
 				</div>
 			))}
 		</div>
