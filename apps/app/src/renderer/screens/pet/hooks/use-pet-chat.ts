@@ -98,7 +98,7 @@ export const usePetChat = ({
 
 		if (errorCurse) {
 			if (errorCurse.message === 'Insufficient credits') {
-				const isPaidUser = updatedValues.payments!.length !== 0
+				const isPaidUser = !!updatedValues.payments?.find((payment) => payment.status === 'paid')
 
 				if (isPaidUser) {
 					showMessage(

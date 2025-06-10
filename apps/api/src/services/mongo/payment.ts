@@ -1,21 +1,37 @@
 import type { Payment } from '@repo/api-types/payment.dto'
+import { ObjectId } from 'mongodb'
 import { Collections } from '../../constants/mongo'
 import { getDb } from '../../lib/mongo'
 
-export const createPayment = async (payment: Omit<Payment, 'createdAt' | 'status'>) => {
+export const createPayment = async (
+	payment: Omit<Payment, 'createdAt' | 'status' | 'type'>
+): Promise<string> => {
 	const db = await getDb()
 
-	await db.collection<Payment>(Collections.Payments).insertOne({
+	const result = await db.collection<Payment>(Collections.Payments).insertOne({
 		...payment,
 		createdAt: new Date().toISOString(),
-		status: 'pending'
+		status: 'pending',
+		type: 'pix'
 	} satisfies Payment)
+
+	return result.insertedId.toString()
 }
 
 export const getPaymentByGatewayId = async (gatewayId: string) => {
 	const db = await getDb()
 
 	const payment = await db.collection<Payment>(Collections.Payments).findOne({ gatewayId })
+
+	return payment
+}
+
+export const getPixPaymentById = async (id: string) => {
+	const db = await getDb()
+
+	const payment = await db
+		.collection<Payment>(Collections.Payments)
+		.findOne({ _id: new ObjectId(id) })
 
 	return payment
 }

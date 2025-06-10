@@ -38,13 +38,15 @@ export const paymentPlanSchema = z.enum([
 
 export const paymentRequestSchema = z.object({
 	plan: paymentPlanSchema,
+	name: z.string(),
 	email: z.string(),
 	phone: z.string(),
 	document: z.string()
 })
 
 export const paymentResponseSchema = z.object({
-	qrCodeBase64: z.string()
+	qrCodeBase64: z.string(),
+	paymentId: z.string()
 })
 
 export type PaymentWebhookPayload = {
@@ -71,7 +73,9 @@ export type Payment = {
 	plan: PaymentPlan
 	status: 'pending' | 'paid'
 	createdAt: string
+} & {
 	gatewayId: string
+	type: 'pix'
 }
 
 export type PaymentPlan = z.infer<typeof paymentPlanSchema>

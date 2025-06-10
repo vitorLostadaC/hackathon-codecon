@@ -5,7 +5,8 @@ import { useClerk, useUser } from '@clerk/clerk-react'
 import { HandCoins, Mail } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '../../components/ui/button'
-import { PixDialog, type PixFormValues } from './components/pix-dialog'
+import { PixDialog } from './components/pix-dialog'
+import type { PixFormValues } from './components/pix-dialog/pix-form'
 import { PricingParticle } from './components/pricing-particle'
 
 interface PricingPlan {
@@ -65,8 +66,6 @@ export function PricingPage() {
 	const [selectedPlan, setSelectedPlan] = useState<PaymentPlan>()
 
 	const [modalDefaultValues, setModalDefaultValues] = useState<PixFormValues>()
-
-	console.log(auth)
 
 	useEffect(() => {
 		if (!auth.isLoaded || !auth.isSignedIn) return

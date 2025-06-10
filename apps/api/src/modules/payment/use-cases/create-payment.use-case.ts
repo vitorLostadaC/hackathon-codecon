@@ -5,21 +5,27 @@ import { abacatePay } from '../../../lib/abacatepay'
 import { createPayment } from '../../../services/mongo/payment'
 
 interface CreatePaymentRequest extends PaymentRequest {
-	email: string
 	userId: string
 }
 
-export class CreatePaymentUseCase {
-	async execute({ plan, email, userId }: CreatePaymentRequest): Promise<PaymentResponse> {
+export class CreatePixPaymentUseCase {
+	async execute({
+		plan,
+		email,
+		document,
+		phone,
+		userId,
+		name
+	}: CreatePaymentRequest): Promise<PaymentResponse> {
 		const billing = await abacatePay.pixQrCode.create({
 			amount: plans[plan].price * 100,
-			description: 'teste',
+			description: `${plans[plan].credits} Créditos`,
 			expiresIn: 3600, // 1 hour
 			customer: {
-				name: 'John Doe',
+				name,
 				email,
-				cellphone: '4883449696',
-				taxId: '11244551910'
+				cellphone: phone,
+				taxId: document
 			}
 		})
 
@@ -31,7 +37,7 @@ export class CreatePaymentUseCase {
 			throw new AppError('Invalid billing response', 'Missing QR code', 500)
 		}
 
-		const [error] = await catchError(
+		const [error, paymentId] = await catchError(
 			createPayment({
 				userId,
 				plan,
@@ -44,7 +50,8 @@ export class CreatePaymentUseCase {
 		}
 
 		return {
-			qrCodeBase64: billing.data.brCodeBase64
+			qrCodeBase64: billing.data.brCodeBase64,
+			paymentId
 		}
 	}
 }

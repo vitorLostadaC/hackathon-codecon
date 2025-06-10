@@ -8,7 +8,7 @@ export const api = axios.create({
 })
 
 api.interceptors.response.use(
-	(response) => response,
+	(response) => response.data,
 	(e) => {
 		const error = e.response?.data as ApiError
 		throw new Error(error.error, { cause: error.message })
