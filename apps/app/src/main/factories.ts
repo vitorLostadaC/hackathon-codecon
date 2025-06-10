@@ -62,6 +62,7 @@ export function createMainWindow() {
 		id: 'main',
 		width: screenWidth,
 		height: screenHeight,
+
 		x: workArea.x,
 		y: workArea.y,
 		frame: false,
@@ -109,6 +110,7 @@ export function createSettingsWindow() {
 			x: 16,
 			y: 16
 		},
+		backgroundColor: '#151414',
 		autoHideMenuBar: true,
 		frame: true,
 		roundedCorners: true,

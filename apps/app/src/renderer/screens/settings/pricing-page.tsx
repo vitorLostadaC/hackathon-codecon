@@ -1,9 +1,11 @@
 import { cn } from '@renderer/lib/utils'
 import { plans as ApiPlans, type PaymentPlan } from '@repo/api-types/payment.dto'
 
+import { useClerk, useUser } from '@clerk/clerk-react'
 import { HandCoins, Mail } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from '../../components/ui/button'
-import { PixDialog } from './components/pix-dialog'
+import { PixDialog, type PixFormValues } from './components/pix-dialog'
 import { PricingParticle } from './components/pricing-particle'
 
 interface PricingPlan {
@@ -57,8 +59,44 @@ const plans: PricingPlan[] = Object.entries(ApiPlans).map(([slug, plan]) => {
 })
 
 export function PricingPage() {
+	const auth = useUser()
+	const clerk = useClerk()
+	const [modalOpen, setModalOpen] = useState(false)
+	const [selectedPlan, setSelectedPlan] = useState<PaymentPlan>()
+
+	const [modalDefaultValues, setModalDefaultValues] = useState<PixFormValues>()
+
+	console.log(auth)
+
+	useEffect(() => {
+		if (!auth.isLoaded || !auth.isSignedIn) return
+
+		const { user } = auth
+
+		setModalDefaultValues({
+			name: user.fullName ?? '',
+			cpf: '',
+			phone: user.primaryPhoneNumber?.phoneNumber ?? ''
+		})
+	}, [auth.isLoaded])
+
+	const handlePlanClick = (plan: PaymentPlan) => {
+		if (!auth.isSignedIn) {
+			clerk.openSignIn()
+			return
+		}
+		setSelectedPlan(plan)
+		setModalOpen(true)
+	}
+
 	return (
 		<div className="grid grid-cols-3 gap-3">
+			<PixDialog
+				open={modalOpen}
+				onOpenChange={setModalOpen}
+				plan={selectedPlan ?? 'basic'}
+				defaultValues={modalDefaultValues}
+			/>
 			{plans.map((plan) => (
 				<div
 					key={plan.slug}
@@ -97,22 +135,22 @@ export function PricingPage() {
 							</div>
 						</div>
 					</div>
-					<PixDialog>
-						<Button
-							variant={plan.isHighlighted ? 'default' : 'secondary'}
-							className="mt-7 w-full group"
-						>
-							<div className="relative overflow-hidden w-full text-center">
-								<span className="invisible">Escolher</span>
-								<span className="group-hover:-translate-y-full absolute top-0 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out hover:duration-300">
-									Escolher
-								</span>
-								<span className="absolute top-0 left-1/2 -translate-x-1/2 translate-y-full transition-transform duration-300 ease-in-out hover:duration-300 group-hover:translate-y-0">
-									{plan.hoverText}
-								</span>
-							</div>
-						</Button>
-					</PixDialog>
+
+					<Button
+						variant={plan.isHighlighted ? 'default' : 'secondary'}
+						className="mt-7 w-full group"
+						onClick={() => handlePlanClick(plan.slug)}
+					>
+						<div className="relative overflow-hidden w-full text-center">
+							<span className="invisible">Escolher</span>
+							<span className="group-hover:-translate-y-full absolute top-0 left-1/2 -translate-x-1/2 transition-transform duration-300 ease-in-out hover:duration-300">
+								Escolher
+							</span>
+							<span className="absolute top-0 left-1/2 -translate-x-1/2 translate-y-full transition-transform duration-300 ease-in-out hover:duration-300 group-hover:translate-y-0">
+								{plan.hoverText}
+							</span>
+						</div>
+					</Button>
 				</div>
 			))}
 		</div>
