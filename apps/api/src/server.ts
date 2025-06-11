@@ -41,19 +41,25 @@ fastify.setValidatorCompiler(validatorCompiler)
 fastify.setSerializerCompiler(serializerCompiler)
 
 fastify.addHook('onRequest', async (request, reply) => {
+	const url = request.url
+	console.log('url', url)
 	const isPublicRoute = request.url.includes('/webhook')
 
 	const adminHeader = request.headers['x-admin']
 	const allowAccess = (adminHeader === 'dev' && env.NODE_ENV === 'development') || isPublicRoute
 
 	if (allowAccess) {
+		console.log('allowAccess', allowAccess)
 		return
 	}
 	const { userId } = getAuth(request)
 
 	if (!userId) {
+		console.log('userId', userId)
 		return reply.code(401).send({ error: 'Unauthorized' })
 	}
+
+	console.log('suserId', userId)
 
 	return
 })

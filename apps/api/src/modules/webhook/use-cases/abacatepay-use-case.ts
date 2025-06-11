@@ -1,5 +1,4 @@
-import { plans } from '@repo/api-types/payment.dto'
-import type { PaymentWebhookPayload } from '../../../../../../packages/api-types/src/payment'
+import { type PaymentWebhookPayload, plans } from '@repo/api-types/payment.dto'
 import { env } from '../../../env'
 import { AppError } from '../../../helpers/error-handler'
 import { getPaymentByGatewayId, paidPayment } from '../../../services/mongo/payment'
@@ -7,7 +6,8 @@ import { addCredits } from '../../../services/mongo/user'
 
 export class AbacatePayWebhook {
 	async execute(secret: string, event: PaymentWebhookPayload) {
-		if (secret !== env.ABACATEPAY_SECRET_KEY) {
+		console.log('event', event)
+		if (secret !== env.ABACATEPAY_WEBHOOK_SECRET_KEY) {
 			throw new AppError('Webhook secret mismatch', 'Secret does not match', 401)
 		}
 

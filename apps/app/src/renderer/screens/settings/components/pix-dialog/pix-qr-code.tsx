@@ -63,7 +63,7 @@ export const PixQrCodeDialog = ({ paymentId, qrCodeBase64 }: PixQrCodeDialogProp
 		})
 	}, [isPaid])
 
-	if (!isPaid) {
+	if (isPaid) {
 		return (
 			<div className="flex flex-col items-center gap-4">
 				<Lottie

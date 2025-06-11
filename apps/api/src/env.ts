@@ -7,7 +7,7 @@ export const envSchema = z.object({
   MONGO_URI: z.string(),
   FRONTEND_URL: z.string(),
   ABACATEPAY_API_KEY: z.string(),
-  ABACATEPAY_SECRET_KEY: z.string(),
+  ABACATEPAY_WEBHOOK_SECRET_KEY: z.string(),
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
   CLERK_WEBHOOK_SIGNING_SECRET: z.string()
