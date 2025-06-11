@@ -28,6 +28,7 @@ export default defineConfig({
 				'@renderer': resolve('src/renderer')
 			}
 		},
+
 		plugins: [tsconfigPaths, react()],
 		build: {
 			rollupOptions: {
