@@ -3,6 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { PaymentPlan, PaymentResponse } from '@repo/api-types/payment.dto'
 import { useMutation } from '@tanstack/react-query'
 import { cpf } from 'cpf-cnpj-validator'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Loader2 } from 'lucide-react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
@@ -48,7 +50,7 @@ export const PixQrCodeForm = ({ plan, defaultValues, setPixPayment }: PixQrCodeF
 		defaultValues
 	})
 
-	const { mutateAsync: createPixPaymentMutation } = useMutation({
+	const { mutateAsync: createPixPaymentMutation, isPending } = useMutation({
 		mutationKey: ['create-pix-payment'],
 		mutationFn: createPixPayment
 	})
@@ -124,8 +126,25 @@ export const PixQrCodeForm = ({ plan, defaultValues, setPixPayment }: PixQrCodeF
 					)}
 				/>
 				<DialogFooter className="col-span-2">
-					<Button type="submit" variant="default" className="w-full mt-2">
-						Gerar QR Code
+					<Button type="submit" variant="default" className="w-full mt-2" disabled={isPending}>
+						<AnimatePresence initial={false} mode="popLayout">
+							<motion.span
+								key={isPending ? 'loading' : 'default'}
+								initial={{
+									y: -25,
+									opacity: 0
+								}}
+								animate={{
+									y: 0,
+									opacity: 1,
+									transition: { bounce: 0, type: 'spring', duration: 0.3 }
+								}}
+								exit={{ y: 25, opacity: 0 }}
+							>
+								{isPending && <Loader2 className="size-4 animate-spin text-tangerine-950" />}
+								{!isPending && 'Gerar QR Code'}
+							</motion.span>
+						</AnimatePresence>
 					</Button>
 				</DialogFooter>
 			</form>
