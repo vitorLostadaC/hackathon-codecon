@@ -29,6 +29,7 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.5",
+    "@radix-ui/react-tooltip": "^1.2.7",
     "@repo/api-types": "workspace:*",
     "@tanstack/query-broadcast-client-experimental": "5.80.6",
     "@tanstack/react-query": "^5.80.6",
@@ -40,6 +41,7 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cpf-cnpj-validator": "^1.0.3",
     "electron-router-dom": "^2.1.0",
     "electron-store": "^10.0.1",
     "electron-updater": "^6.3.9",
@@ -49,6 +51,7 @@
     "react-hook-form": "^7.57.0",
     "react-router-dom": "^7.6.2",
     "tailwind-merge": "^3.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "vite-tsconfig-paths": "^5.1.4",
     "zod": "^3.25.42"
   },

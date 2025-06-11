@@ -2,6 +2,7 @@ import { useUser } from '@clerk/clerk-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { PaymentPlan, PaymentResponse } from '@repo/api-types/payment.dto'
 import { useMutation } from '@tanstack/react-query'
+import { cpf } from 'cpf-cnpj-validator'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
@@ -28,7 +29,13 @@ type PixQrCodeFormProps = {
 
 const formSchema = z.object({
 	name: z.string().min(3, 'Mínimo 3 caracteres.').max(100, 'Máximo 100 caracteres.'),
-	cpf: z.string().min(14, 'Mínimo 14 caracteres.').max(14, 'Máximo 14 caracteres.'),
+	cpf: z
+		.string()
+		.min(14, 'Mínimo 14 caracteres.')
+		.max(14, 'Máximo 14 caracteres.')
+		.refine((value) => cpf.isValid(value), {
+			message: 'CPF inválido.'
+		}),
 	phone: z.string().min(15, 'Mínimo 15 caracteres.').max(15, 'Máximo 15 caracteres.')
 })
 

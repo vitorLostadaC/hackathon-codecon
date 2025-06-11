@@ -55,6 +55,7 @@ module.exports = {
     },
   },
   plugins: [
+    require("tailwindcss-animate"),
     plugin(({ addUtilities }) => {
       addUtilities({
         ".region-drag": {

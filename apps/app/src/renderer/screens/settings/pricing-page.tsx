@@ -2,9 +2,10 @@ import { cn } from '@renderer/lib/utils'
 import { plans as ApiPlans, type PaymentPlan } from '@repo/api-types/payment.dto'
 
 import { useClerk, useUser } from '@clerk/clerk-react'
-import { HandCoins, Mail } from 'lucide-react'
+import { HandCoins, InfoIcon, Mail } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '../../components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../components/ui/tooltip'
 import { PixDialog } from './components/pix-dialog'
 import type { PixFormValues } from './components/pix-dialog/pix-form'
 import { PricingParticle } from './components/pricing-particle'
@@ -120,7 +121,18 @@ export function PricingPage() {
 							>
 								<div className="flex items-center gap-1.5 text-gray-400">
 									<HandCoins size={16} />
-									<span className="text-sm">{plan.credits} créditos</span>
+									<span className="text-sm">{plan.credits} créditos</span>{' '}
+									<Tooltip>
+										<TooltipTrigger>
+											<InfoIcon className="size-4 mb-2" />
+										</TooltipTrigger>
+										<TooltipContent className="">
+											<p>
+												Aproximadamente {(plan.credits / 60).toFixed(2).replace('.', ',')} horas de
+												xingamentos seguidos
+											</p>
+										</TooltipContent>
+									</Tooltip>
 								</div>
 								{plan.features.map((feature, index) => (
 									<div
