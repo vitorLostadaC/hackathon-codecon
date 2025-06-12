@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+ignoredBuiltDependencies:
+  - '@biomejs/biome'
+  - esbuild
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - electron
+  - esbuild
