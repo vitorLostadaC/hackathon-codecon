@@ -14,7 +14,7 @@ createRoot(document?.getElementById('root') as HTMLElement).render(
 		<ClerkProvider publishableKey={env.VITE_CLERK_PUBLISHABLE_KEY} afterSignOutUrl="#/settings">
 			<QueryClientProvider client={queryClient}>
 				<Routes />
-				<Toaster />
+				<Toaster richColors />
 			</QueryClientProvider>
 		</ClerkProvider>
 	</StrictMode>

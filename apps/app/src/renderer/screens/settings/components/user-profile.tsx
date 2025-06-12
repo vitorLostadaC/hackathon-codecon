@@ -1,6 +1,6 @@
 import { SignInButton, SignOutButton, useUser } from '@clerk/clerk-react'
 import { useQuery } from '@tanstack/react-query'
-import { CoinsIcon, LogOutIcon, MessageCircleIcon } from 'lucide-react'
+import { CoinsIcon, LogOutIcon } from 'lucide-react'
 import { Button } from '~/src/renderer/components/ui/button'
 import {
 	DropdownMenu,
@@ -10,9 +10,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '~/src/renderer/components/ui/dropdown-menu'
-import { Popover, PopoverContent, PopoverTrigger } from '~/src/renderer/components/ui/popover'
 import { getUserOptions } from '~/src/renderer/requests/user/config'
-import { FeedbackForm } from './sidebar-feedback'
+import { SidebarFeedback } from './sidebar-feedback'
 
 export function UserProfile() {
 	const auth = useUser()
@@ -30,20 +29,7 @@ export function UserProfile() {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<Popover>
-				<PopoverTrigger>
-					<Button
-						variant="ghost"
-						className="flex gap-2 items-center text-gray-500 pl-2 justify-start w-full"
-					>
-						<MessageCircleIcon className="size-4" />
-						Feedback
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent side="right">
-					<FeedbackForm />
-				</PopoverContent>
-			</Popover>
+			<SidebarFeedback />
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<div className="flex flex-col w-40 gap-0.5 bg-gray-900 rounded-lg p-2.5 px-4 select-none cursor-pointer">
