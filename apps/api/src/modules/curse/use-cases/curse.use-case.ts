@@ -3,6 +3,7 @@ import type {
 	CurseScreenshotRequest,
 	CurseScreenshotResponse
 } from '@repo/api-types/curse.dto'
+import type { User } from '@repo/api-types/user.dto'
 import type { WithId } from 'mongodb'
 import { MAX_LONG_MEMORY_LENGTH, MAX_SHORT_MEMORY_LENGTH } from '../../../constants/memory'
 import { aggregateTokens } from '../../../helpers/agregate-tokens'
@@ -22,7 +23,6 @@ import {
 import { chargeUser, getUser, refundUser } from '../../../services/mongo/user'
 import type { AiServiceResponse } from '../../../types/ai'
 import type { Memory } from '../../../types/memory'
-import type { User } from '../../../types/user'
 
 interface Memories {
 	shortTermMemories: WithId<Memory>[]

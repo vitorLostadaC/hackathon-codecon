@@ -1,9 +1,12 @@
 {
   "extends": "@repo/typescript-config/node.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src"
+    "outDir": "dist"
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "../../packages/api-types/src/user.dto.ts",
+    "../../packages/api-types/src/payment.ts"
+  ],
   "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*"]
 }

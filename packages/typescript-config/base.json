@@ -1,39 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Default",
   "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "allowImportingTsExtensions": false,
-    "resolveJsonModule": true,
-    "removeComments": true,
-    "importHelpers": true,
-    "downlevelIteration": true,
-    "allowJs": false,
-    "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
     "incremental": false,
-    "composite": false,
-    "noErrorTruncation": true,
-    "preserveWatchOutput": true,
-    "pretty": true
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "out",
-    ".turbo",
-    "coverage",
-    "*.tsbuildinfo"
-  ]
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022"
+  }
 }
