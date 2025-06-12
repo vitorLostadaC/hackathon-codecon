@@ -1,5 +1,5 @@
-import { BrowserWindow, screen } from 'electron'
 import path, { join } from 'node:path'
+import { BrowserWindow, screen } from 'electron'
 
 import { registerRoute } from '../shared/lib/electron-router-dom'
 import { createTray } from './lib/tray'

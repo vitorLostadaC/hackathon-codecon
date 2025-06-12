@@ -10,22 +10,22 @@ export const plans: Record<PaymentPlan, Plan> = {
 	basic: {
 		name: 'Basic',
 		price: 4.99,
-		credits: 50
+		credits: 150
 	},
 	premium: {
 		name: 'Premium',
 		price: 9.99,
-		credits: 150
+		credits: 400
 	},
 	'ultra-premium': {
 		name: 'Ultra Premium',
 		price: 49.99,
-		credits: 675
+		credits: 1570
 	},
 	'ultra-master-premium': {
 		name: 'Ultra Master Premium',
 		price: 149.99,
-		credits: 3750
+		credits: 7230
 	}
 }
 
