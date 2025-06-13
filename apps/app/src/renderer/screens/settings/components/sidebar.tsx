@@ -4,7 +4,14 @@ import type React from 'react'
 import { TabButton } from './tab-button'
 import { UserProfile } from './user-profile'
 
-const tabs: { href: string; label: string; icon: LucideIcon }[] = [
+interface Tab {
+	href: string
+	label: string
+	icon: LucideIcon
+	component?: React.ReactElement
+}
+
+const tabs: Tab[] = [
 	{
 		href: '/',
 		label: 'Geral',

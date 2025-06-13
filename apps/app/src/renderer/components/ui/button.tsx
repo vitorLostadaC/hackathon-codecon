@@ -12,6 +12,7 @@ const buttonVariants = cva(
 					'bg-gradient-to-b from-tangerine-400 to-tangerine-500 text-tangerine-950 shadow-xs hover:opacity-90',
 				destructive:
 					'bg-gradient-to-b from-red-500 to-red-600 text-white shadow-xs hover:opacity-90 focus-visible:ring-red-500/20',
+				ghost: 'bg-transparent text-gray-500 hover:bg-gray-900 hover:text-white',
 				secondary:
 					'bg-gradient-to-b from-gray-800 to-gray-900 text-white shadow-xs  hover:opacity-90'
 			},
