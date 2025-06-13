@@ -8,6 +8,12 @@ export interface Configs {
 		 * If true, the AI will not say bad words
 		 */
 		safeMode: boolean
+		/**
+		 * If true, the AI will be in focus mode
+		 */
+		focusMode: {
+			job: string
+		} | null
 	}
 	appearance: {
 		selectedPet: PetType

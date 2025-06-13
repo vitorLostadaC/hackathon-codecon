@@ -2,6 +2,7 @@ interface BaseSettings {
 	id: number
 	label: string
 	description?: string
+	soon?: boolean
 }
 
 type NumberSetting = BaseSettings & {
