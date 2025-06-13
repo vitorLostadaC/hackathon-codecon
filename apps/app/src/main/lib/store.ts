@@ -15,7 +15,8 @@ const defaults: StoreConfig = {
 		},
 		general: {
 			cursingInterval: 30,
-			safeMode: false
+			safeMode: false,
+			focusMode: null
 		}
 	}
 }
