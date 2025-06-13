@@ -11,6 +11,7 @@ import {
 	DropdownMenuTrigger
 } from '~/src/renderer/components/ui/dropdown-menu'
 import { getUserOptions } from '~/src/renderer/requests/user/config'
+import { SidebarFeedback } from './sidebar-feedback'
 
 export function UserProfile() {
 	const auth = useUser()
@@ -27,15 +28,18 @@ export function UserProfile() {
 		)
 
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="text-sm flex gap-2 items-center">
-				<CoinsIcon className="size-4" />
-				{data?.credits}
-			</div>
+		<div className="flex flex-col gap-2">
+			<SidebarFeedback />
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<div className="flex flex-col w-40 gap-0.5 bg-gray-900 rounded-lg p-2.5 px-4 select-none cursor-pointer">
-						<span className="text-sm truncate">{auth.user?.fullName ?? ''}</span>
+						<div className="flex justify-between items-center">
+							<span className="text-sm truncate">{auth.user?.fullName ?? ''}</span>
+							<div className="text-sm flex gap-1 items-center">
+								<CoinsIcon className="size-4" />
+								{data?.credits}
+							</div>
+						</div>
 						<span className="text-gray-300 text-xs truncate">
 							{auth.user.primaryEmailAddress?.emailAddress ?? ''}
 						</span>
