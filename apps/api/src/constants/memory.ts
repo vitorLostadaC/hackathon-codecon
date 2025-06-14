@@ -1,0 +1,2 @@
+export const MAX_SHORT_MEMORY_LENGTH = 10
+export const MAX_LONG_MEMORY_LENGTH = 6
