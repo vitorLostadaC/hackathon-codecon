@@ -1,3 +1,5 @@
+import type { PetType } from '~/src/renderer/screens/pet/constants/pet'
+
 export interface Configs {
 	general: {
 		/**
@@ -19,5 +21,3 @@ export interface Configs {
 		selectedPet: PetType
 	}
 }
-
-export type PetType = 'duck' | 'capybara' | 'codecon'

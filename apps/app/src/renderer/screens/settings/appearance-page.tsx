@@ -1,19 +1,12 @@
 import { cn } from '@renderer/lib/utils'
-import type { PetType } from '~/src/shared/types/configs'
 import { useConfig } from './hooks/use-config'
 
-import duck from '@renderer/assets/animals/duck/duck-walking.gif'
+import { type PetType, pets } from '../pet/constants/pet'
 
 export function AppearancePage() {
 	const { configs, updateConfig } = useConfig()
 
 	if (!configs) return null
-
-	const skins: { slug: PetType; preview: string }[] = [
-		{ slug: 'duck', preview: duck },
-		{ slug: 'capybara', preview: duck },
-		{ slug: 'codecon', preview: duck }
-	]
 
 	const handleChangeSkin = (slug: PetType) => {
 		updateConfig({ appearance: { ...configs.appearance, selectedPet: slug } })
@@ -23,12 +16,12 @@ export function AppearancePage() {
 		<div className="w-full flex-1 space-y-8">
 			<h2 className="">Aparência</h2>
 			<div className="grid grid-cols-4 gap-8">
-				{skins.map((skin) => {
-					const isSelected = configs.appearance.selectedPet === skin.slug
+				{Object.entries(pets).map(([slug, preview]) => {
+					const isSelected = configs.appearance.selectedPet === slug
 
 					return (
 						<label
-							key={skin.slug}
+							key={slug}
 							style={
 								{
 									'--padding': '0.125rem',
@@ -47,11 +40,11 @@ export function AppearancePage() {
 							<input
 								type="radio"
 								name="pet-skin"
-								value={skin.slug}
+								value={slug}
 								checked={isSelected}
-								onChange={() => handleChangeSkin(skin.slug)}
+								onChange={() => handleChangeSkin(slug as PetType)}
 								className="sr-only"
-								aria-label={`Tema ${skin.slug}`}
+								aria-label={`Tema ${slug}`}
 							/>
 							<div
 								className={cn(
@@ -59,8 +52,8 @@ export function AppearancePage() {
 								)}
 							>
 								<img
-									src={skin.preview}
-									alt={`Prévia do tema ${skin.slug}`}
+									src={preview.walking}
+									alt={`Prévia do tema ${slug}`}
 									className="w-full h-full"
 								/>
 							</div>
