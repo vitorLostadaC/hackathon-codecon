@@ -2,7 +2,7 @@
   "name": "electron-app",
   "productName": "Pato Puto",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "A virtual assistant focused on cursing everything you do",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
@@ -16,7 +16,8 @@
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
     "lint": "biome check src",
-    "lint:fix": "biome check --fix --unsafe ./src"
+    "lint:fix": "biome check --fix --unsafe ./src",
+    "release": "electron-builder --publish always"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.22",
