@@ -1,21 +1,16 @@
-import duckStopped from '@renderer/assets/animals/duck/duck-stopped.png'
-import duckWalking from '@renderer/assets/animals/duck/duck-walking.gif'
+import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
+import { getConfigsOptions } from '../../requests/electron-store/config'
 import { Chat } from './chat'
-import { PET_DIMENSIONS } from './constants/pet'
+import { PET_DIMENSIONS, PetState, pets } from './constants/pet'
 import { usePetChat } from './hooks/use-pet-chat'
 import { usePetMovement } from './hooks/use-pet-movement'
-
-enum PetState {
-	WALKING = 'walking',
-	PRINTING = 'printing',
-	STOPPED = 'stopped'
-}
 
 export const PetScreen = (): React.JSX.Element => {
 	const [settingsOpened, setSettingsOpened] = useState(false)
 	const currentStateRef = useRef<PetState>(PetState.WALKING)
 	const chatRef = useRef<HTMLDivElement>(null)
+	const { data: configs } = useQuery(getConfigsOptions())
 
 	useEffect(() => {
 		window.api.windows.onOpenSettingsWindow(() => {
@@ -65,7 +60,7 @@ export const PetScreen = (): React.JSX.Element => {
 					ref={chatRef}
 				/>
 				<img
-					src={currentStateRef.current === PetState.WALKING ? duckWalking : duckStopped}
+					src={pets[configs?.appearance.selectedPet ?? 'duck'][currentStateRef.current]}
 					alt="Duck"
 					className="w-full h-full object-contain"
 					style={{ transform: `scaleX(${direction})` }}
