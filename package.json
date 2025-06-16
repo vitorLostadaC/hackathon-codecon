@@ -7,7 +7,10 @@
     "check-types": "turbo run check-types",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "release": "turbo run release"
+    "release": "turbo run release",
+    "build:linux": "turbo run build:linux",
+    "build:mac": "turbo run build:mac",
+    "build:win": "turbo run build:win"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
