@@ -19,6 +19,15 @@
     "release": {
       "dependsOn": ["^release"]
     },
+    "build:linux": {
+      "dependsOn": ["^build:linux"]
+    },
+    "build:mac": {
+      "dependsOn": ["^build:mac"]
+    },
+    "build:win": {
+      "dependsOn": ["^build:win"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
