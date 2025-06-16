@@ -1,3 +1,4 @@
+import { is } from '@electron-toolkit/utils'
 import Store from 'electron-store'
 import type { Configs } from '../../shared/types/configs'
 
@@ -19,6 +20,7 @@ const defaults: StoreConfig = {
 }
 
 export const store = new Store<StoreConfig>({
+	name: is.dev ? 'dev-store' : 'store',
 	defaults
 	// I'm just keeping this commented as reference for future migrations
 	// migrations: {
