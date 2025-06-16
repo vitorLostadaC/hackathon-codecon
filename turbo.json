@@ -16,6 +16,9 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "release": {
+      "dependsOn": ["^release"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
