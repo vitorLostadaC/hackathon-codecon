@@ -7,6 +7,7 @@ on:
 
 jobs:
   release:
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -25,35 +26,23 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
+      - name: apt-update
+        if: startsWith(matrix.os, 'ubuntu-latest')
+        run: sudo apt-get update
+
+      - name: autoremove
+        if: startsWith(matrix.os, 'ubuntu-latest')
+        run: sudo apt autoremove
+
+      - name: Install libarchive rpm on Linux
+        if: startsWith(matrix.os, 'ubuntu-latest')
+        run: sudo apt-get install libarchive-tools rpm
+
       - name: Install Dependencies
         run: pnpm install
 
-      - name: build-linux
-        if: matrix.os == 'ubuntu-latest'
-        run: pnpm run build:linux
-
-      - name: build-mac
-        if: matrix.os == 'macos-latest'
-        run: pnpm run build:mac
-
-      - name: build-win
-        if: matrix.os == 'windows-latest'
-        run: pnpm run build:win
-
-      - name: release
-        uses: softprops/action-gh-release@v1
+      - name: Release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
         with:
-          draft: true
-          files: |
-            dist/*.exe
-            dist/*.zip
-            dist/*.dmg
-            dist/*.AppImage
-            dist/*.snap
-            dist/*.deb
-            dist/*.rpm
-            dist/*.tar.gz
-            dist/*.yml
-            dist/*.blockmap
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          github_token: ${{ secrets.github_token }}
+          release: true

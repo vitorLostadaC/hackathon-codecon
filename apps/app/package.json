@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "description": "A virtual assistant focused on cursing everything you do",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "patoputo.com",
+  "homepage": "https://patoputo.com",
   "scripts": {
     "check-types": "pnpm tsc --noEmit",
     "start": "electron-vite preview",
