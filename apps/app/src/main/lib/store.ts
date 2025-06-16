@@ -1,8 +1,5 @@
-import __Store from 'electron-store'
+import Store from 'electron-store'
 import type { Configs } from '../../shared/types/configs'
-
-// @ts-expect-error https://github.com/sindresorhus/electron-store/issues/289
-const Store = __Store?.default || __Store
 
 interface StoreConfig {
 	configs: Configs
