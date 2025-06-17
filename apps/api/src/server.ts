@@ -33,7 +33,7 @@ fastify.register(clerkPlugin, {
 })
 
 fastify.register(cors, {
-	origin: [env.FRONTEND_URL],
+	origin: '*',
 	credentials: true
 })
 
