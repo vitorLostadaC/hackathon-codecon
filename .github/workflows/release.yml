@@ -14,6 +14,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
+    env:
+      NODE_ENV: production
+      VITE_API_URL: https://api.patoputo.com
+      VITE_CLERK_PUBLISHABLE_KEY: pk_live_Y2xlcmsucGF0b3B1dG8uY29tJA
+
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
