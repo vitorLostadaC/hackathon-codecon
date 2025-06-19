@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "biome check src",
+    "lint:fix": "biome check --fix --unsafe ./src",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.0.0",
