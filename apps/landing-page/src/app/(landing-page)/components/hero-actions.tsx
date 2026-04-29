@@ -83,12 +83,6 @@ export const HeroActions = ({ setButtonHovered }: HeroActionsProps) => {
 			version: AppVersion.LinuxRpm,
 			variant: 'default',
 			os: 'linux'
-		},
-		{
-			label: 'Github',
-			icon: <GithubIcon className="w-4 h-4" />,
-			link: 'https://github.com/vitorLostadaC/angry-duck',
-			variant: 'secondary'
 		}
 	]
 
